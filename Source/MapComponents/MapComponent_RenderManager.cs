@@ -196,12 +196,16 @@ namespace ProgressRenderer
                 showTemperatureOverlay = settings.showTemperatureOverlay
             };
 
-            Find.PlaySettings.showZones = PRModSettings.renderZones;
-            Find.PlaySettings.showRoofOverlay = PRModSettings.renderOverlays;
-            Find.PlaySettings.showFertilityOverlay = PRModSettings.renderOverlays;
-            Find.PlaySettings.showTerrainAffordanceOverlay = PRModSettings.renderOverlays;
-            Find.PlaySettings.showPollutionOverlay = PRModSettings.renderOverlays;
-            Find.PlaySettings.showTemperatureOverlay = PRModSettings.renderOverlays;
+            if (!PRModSettings.renderZones)
+                Find.PlaySettings.showZones = false;
+            if (!PRModSettings.renderOverlays)
+            {
+                Find.PlaySettings.showRoofOverlay = false;
+                Find.PlaySettings.showFertilityOverlay = false;
+                Find.PlaySettings.showTerrainAffordanceOverlay = false;
+                Find.PlaySettings.showPollutionOverlay = false;
+                Find.PlaySettings.showTemperatureOverlay = false;
+            }
 
             //TODO: Hide plans
             //TODO: Hide blueprints
