@@ -483,7 +483,7 @@ namespace ProgressRenderer
             {
                 File.Copy(filePath, CreateFilePath(FileNamePattern.Numbered, true));
             }
-            if (PRModSettings.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
+            if (PRModSettings.encoding == EncodingType.UnityJPG & PRModSettings.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
             {
                 AdjustJPGQuality(filePath);
             }

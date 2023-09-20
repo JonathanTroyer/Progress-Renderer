@@ -185,7 +185,7 @@ namespace ProgressRenderer
                 }
                 else
                 {
-                    ls.Label("LPR_RenderSizeLabel".Translate() + renderSize.ToString(": ##0")+"MB (Current JPG quality: "+ JPGQuality.ToString(": ##0"), -1, "LPR_RenderSizeDescription".Translate());
+                    ls.Label("LPR_RenderSizeLabel".Translate() + renderSize.ToString(": ##0")+"MB (Current JPG quality: "+ JPGQuality.ToString(": ##0") + ")", -1, "LPR_RenderSizeDescription".Translate());
                     renderSize = (int)ls.Slider(renderSize, 5, 30);
                 }
             }
