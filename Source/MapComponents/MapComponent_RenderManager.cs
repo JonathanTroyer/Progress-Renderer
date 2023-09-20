@@ -483,9 +483,11 @@ namespace ProgressRenderer
             {
                 File.Copy(filePath, CreateFilePath(FileNamePattern.Numbered, true));
             }
-            AdjustJPGQuality(filePath);
+            if (PRModSettings.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
+            {
+                AdjustJPGQuality(filePath);
+            }
             DoEncodingPost();
-
         }
 
         private void AdjustJPGQuality(string filePath)
@@ -494,24 +496,21 @@ namespace ProgressRenderer
             if (File.Exists(filePath))
             {  
                 FileInfo RenderInfo = new FileInfo(filePath);
-                long RenderLenght = RenderInfo.Length / 1048576;
-                if (PRModSettings.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
+                long RenderLenght = RenderInfo.Length / 1048576;   
+                if (RenderLenght > PRModSettings.renderSize)
                 {
-                    if (RenderLenght > PRModSettings.renderSize)
+                    if (PRModSettings.JPGQuality > 0)
                     {
-                        if (PRModSettings.JPGQuality > 0)
-                        {
-                            PRModSettings.JPGQuality -= 1;
-                            Messages.Message("JPG quality decreased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
-                        }
+                        PRModSettings.JPGQuality -= 1;
+                        Messages.Message("JPG quality decreased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
                     }
-                    else if (RenderLenght < PRModSettings.renderSize)
+                }
+                else if (RenderLenght < PRModSettings.renderSize)
+                {
+                    if (PRModSettings.JPGQuality < 100)
                     {
-                        if (PRModSettings.JPGQuality < 100)
-                        {
-                            PRModSettings.JPGQuality += 1;
-                            Messages.Message("JPG quality increased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
-                        }
+                        PRModSettings.JPGQuality += 1;
+                        Messages.Message("JPG quality increased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
                     }
                 }
             }
