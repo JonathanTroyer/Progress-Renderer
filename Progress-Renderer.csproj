@@ -87,6 +87,7 @@
     <Compile Include="Source\Designator\Designator_CornerMarkerRemove.cs" />
     <Compile Include="Source\Enum\EnumUtils.cs" />
     <Compile Include="Source\Enum\FileNamePattern.cs" />
+    <Compile Include="Source\Enum\JPGQualityAdjust.cs" />
     <Compile Include="Source\Enum\RenderFeedback.cs" />
     <Compile Include="Source\Gen\MoreGenDate.cs" />
     <Compile Include="Source\Harmony_Patches\HarmonySetup.cs" />

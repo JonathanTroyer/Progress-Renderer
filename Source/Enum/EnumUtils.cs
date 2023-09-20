@@ -17,11 +17,23 @@
             switch(type)
             {
                 case EncodingType.UnityJPG:
-                    return "jpg_unity";
+                    return "JPG_unity";
                 case EncodingType.UnityPNG:
-                    return "png_unity";
+                    return "PNG_unity";
             }
-            return "jpg_unity";
+            return "`JPG_unity";
+        }
+
+        public static string ToFriendlyString(JPGQualityAdjustmentSetting type)
+        {
+            switch (type)
+            {
+                case JPGQualityAdjustmentSetting.Manual:
+                    return "Manual";
+                case JPGQualityAdjustmentSetting.Automatic:
+                    return "Automatic";
+            }
+            return "Manual";
         }
 
         public static string ToFriendlyString(FileNamePattern type)
