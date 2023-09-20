@@ -483,19 +483,18 @@ namespace ProgressRenderer
             {
                 File.Copy(filePath, CreateFilePath(FileNamePattern.Numbered, true));
             }
-            AdjustRenderSize(filePath);
+            AdjustJPGQuality(filePath);
             DoEncodingPost();
 
         }
 
-        private void AdjustRenderSize(string filePath)
+        private void AdjustJPGQuality(string filePath)
         {
+            // Adjust JPG quality to reach target filesize
             if (File.Exists(filePath))
             {  
                 FileInfo RenderInfo = new FileInfo(filePath);
                 long RenderLenght = RenderInfo.Length / 1048576;
-                Log.Warning(RenderLenght.ToString());
-                
                 if (PRModSettings.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
                 {
                     if (RenderLenght > PRModSettings.renderSize)
