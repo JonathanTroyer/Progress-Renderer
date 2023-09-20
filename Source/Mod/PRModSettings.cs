@@ -158,7 +158,7 @@ namespace ProgressRenderer
                 jpgQuality = (int)ls.Slider(jpgQuality, 1, 100);
             }
 
-            ls.Label("LPR_SettingsPixelPerCellLabel".Translate() + pixelPerCell.ToString(": ##0 pcc"), -1, "LPR_SettingsPixelPerCellDescription".Translate());
+            ls.Label("LPR_SettingsPixelPerCellLabel".Translate() + pixelPerCell.ToString(": ##0 ppc"), -1, "LPR_SettingsPixelPerCellDescription".Translate());
             pixelPerCell = (int)ls.Slider(pixelPerCell, 1, 64);
 
             ls.Gap();
