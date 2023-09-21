@@ -21,7 +21,7 @@
                 case EncodingType.UnityPNG:
                     return "PNG_unity";
             }
-            return "`JPG_unity";
+            return "JPG_unity";
         }
 
         public static string ToFriendlyString(JPGQualityAdjustmentSetting type)

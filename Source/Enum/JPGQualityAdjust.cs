@@ -1,6 +1,6 @@
 ﻿namespace ProgressRenderer
 {
-        public enum JPGQualityAdjustmentSetting
+    public enum JPGQualityAdjustmentSetting
     {
         Manual,
         Automatic

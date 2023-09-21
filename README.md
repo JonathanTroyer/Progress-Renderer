@@ -12,6 +12,9 @@ For example you can use them to create an animated gif or video of your current 
 Place special corner marker designators to limit the area of what should be rendered.
 You can limit this to your base and even just simply extend it later if you base grows larger than planned.
 
+#### Automatic quality control
+Quality can be controlled automatically by choosing a filesize in the settings.
+
 ---
 
 Forked from https://github.com/Lanilor/Progress-Renderer

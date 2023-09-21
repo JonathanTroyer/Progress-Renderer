@@ -511,6 +511,7 @@ namespace ProgressRenderer
                     {
                         PRModSettings.JPGQuality += 1;
                         Messages.Message("JPG quality increased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
+                        Scribe_Values.Look(ref variable, "key");
                     }
                 }
             }

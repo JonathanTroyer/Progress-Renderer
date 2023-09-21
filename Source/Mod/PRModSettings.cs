@@ -247,7 +247,7 @@ namespace ProgressRenderer
             Scribe_Values.Look(ref whichInterval, "whichInterval", RenderIntervalHelper.Intervals.IndexOf(DefaultInterval));
             Scribe_Values.Look(ref timeOfDay, "timeOfDay", DefaultTimeOfDay);
             Scribe_Values.Look(ref encoding, "encoding", DefaultEncoding);
-            Scribe_Values.Look(ref qualityAdjustment, "JPGQadjustment", DefaultJPGQualityAdjustment);
+            Scribe_Values.Look(ref qualityAdjustment, "JPGQualityAdjustment", DefaultJPGQualityAdjustment);
             Scribe_Values.Look(ref renderSize, "renderSize", DefaultRenderSize);
             Scribe_Values.Look(ref JPGQuality, "JPGQuality", DefaultJPGQuality);
             Scribe_Values.Look(ref pixelPerCell, "pixelPerCell", DefaultPixelPerCell);

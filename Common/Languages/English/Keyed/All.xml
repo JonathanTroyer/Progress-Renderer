@@ -62,7 +62,7 @@
 	<LPR_JPGQualityAdjustment_Automatic>Automatic</LPR_JPGQualityAdjustment_Automatic>
 	<LPR_SettingsJPGQualityAdjustmentFileSize>JPG filesize target</LPR_SettingsJPGQualityAdjustmentFileSize>
 	<LPR_RenderSizeLabel>Target render size</LPR_RenderSizeLabel>
-	<LPR_RenderSizeDescription>JPG quality will automatically be adjusted after each render to come as close to this value in Megabytes as possible.</LPR_RenderSizeDescription>
+	<LPR_RenderSizeDescription>JPG quality will automatically be adjusted after each render to be near this target, preferencing quality slightly.</LPR_RenderSizeDescription>
 	<LPR_JPGQualityLabel>JPG Quality</LPR_JPGQualityLabel>
 	<LPR_JPGQualityDescription>Higher values correspond to higher image quality, lower values correspond to smaller image size</LPR_JPGQualityDescription>
 	<LPR_SettingsPixelPerCellLabel>Pixel per cell (for image resolution)</LPR_SettingsPixelPerCellLabel>
