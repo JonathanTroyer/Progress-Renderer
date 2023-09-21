@@ -292,13 +292,13 @@ namespace ProgressRenderer
             int newImageHeight;
             if (PRModSettings.scaleOutputImage)
             {
-                newImageWidth = (int) (PRModSettings.outputImageFixedHeight / distZ * distX);
+                newImageWidth = (int)(PRModSettings.outputImageFixedHeight / distZ * distX);
                 newImageHeight = PRModSettings.outputImageFixedHeight;
             }
             else
             {
-                newImageWidth = (int) (distX * PRModSettings.pixelPerCell);
-                newImageHeight = (int) (distZ * PRModSettings.pixelPerCell);
+                newImageWidth = (int)(distX * PRModSettings.pixelPerCell);
+                newImageHeight = (int)(distZ * PRModSettings.pixelPerCell);
             }
 
             var mustUpdateTexture = false;
@@ -336,10 +336,10 @@ namespace ProgressRenderer
 
             // Overwrite current view rect in the camera driver
             var camViewRect = camDriver.CurrentViewRect;
-            var camRectMinX = Math.Min((int) startX, camViewRect.minX);
-            var camRectMinZ = Math.Min((int) startZ, camViewRect.minZ);
-            var camRectMaxX = Math.Max((int) Math.Ceiling(endX), camViewRect.maxX);
-            var camRectMaxZ = Math.Max((int) Math.Ceiling(endZ), camViewRect.maxZ);
+            var camRectMinX = Math.Min((int)startX, camViewRect.minX);
+            var camRectMinZ = Math.Min((int)startZ, camViewRect.minZ);
+            var camRectMaxX = Math.Max((int)Math.Ceiling(endX), camViewRect.maxX);
+            var camRectMaxZ = Math.Max((int)Math.Ceiling(endZ), camViewRect.maxZ);
             var camDriverTraverse = Traverse.Create(camDriver);
             camDriverTraverse.Field("lastViewRect").SetValue(CellRect.FromLimits(camRectMinX, camRectMinZ, camRectMaxX, camRectMaxZ));
             camDriverTraverse.Field("lastViewRectGetFrame").SetValue(Time.frameCount);
@@ -492,31 +492,27 @@ namespace ProgressRenderer
 
         private void AdjustJPGQuality(string filePath)
         {
-            // Adjust JPG quality to reach target filesize
-            if (File.Exists(filePath))
-            {  
-                FileInfo RenderInfo = new FileInfo(filePath);
-                long RenderLength = RenderInfo.Length / 1048576;   
-                if (RenderLength > PRModSettings.renderSize)
-                {
-                    if (PRModSettings.JPGQuality > 0)
-                    {
-                        PRModSettings.JPGQuality -= 1;
-                        Messages.Message("JPG quality decreased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLength.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
-                    }
-                }
-                else if (RenderLength <= PRModSettings.renderSize)
-                {
-                    if (PRModSettings.JPGQuality < 100)
-                    {
-                        PRModSettings.JPGQuality += 1;
-                        Messages.Message("JPG quality increased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLength.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
-                    }
-                }
-            }
+            if (!File.Exists(filePath)) return;
+
+            //Get size in mb
+            FileInfo RenderInfo = new FileInfo(filePath);
+            var renderSize = RenderInfo.Length / 1048576f;
+
+            //How many mb we're off
+            var delta = PRModSettings.renderSize - renderSize;
+            //How much margin around the target to have in mb
+            var margin = PRModSettings.JPGQuality * 0.03;
+
+            //No need to adjust quality if we're within the margin
+            if (Mathf.Abs(delta) < margin) return;
+
+            //Adjust quality % by how much we're off
+            PRModSettings.JPGQuality += Mathf.RoundToInt(delta);
+            //TODO: save adjusted quality
+            Messages.Message($"JPG quality set to {PRModSettings.JPGQuality}% · Render file size: {renderSize} Target file size: {PRModSettings.renderSize}", MessageTypeDefOf.CautionInput, false);
         }
 
-    private string CreateCurrentFilePath()
+        private string CreateCurrentFilePath()
         {
             return CreateFilePath(manuallyTriggered ? FileNamePattern.DateTime : PRModSettings.fileNamePattern);
         }
