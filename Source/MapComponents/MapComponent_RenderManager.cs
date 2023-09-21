@@ -505,7 +505,7 @@ namespace ProgressRenderer
                         Messages.Message("JPG quality decreased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
                     }
                 }
-                else if (RenderLenght < PRModSettings.renderSize)
+                else if (RenderLenght <= PRModSettings.renderSize)
                 {
                     if (PRModSettings.JPGQuality < 100)
                     {
