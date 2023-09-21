@@ -496,7 +496,7 @@ namespace ProgressRenderer
             if (File.Exists(filePath))
             {  
                 FileInfo RenderInfo = new FileInfo(filePath);
-                long RenderLenght = RenderInfo.Length / 1048576;   
+                long RenderLength = RenderInfo.Length / 1048576;   
                 if (RenderLenght > PRModSettings.renderSize)
                 {
                     if (PRModSettings.JPGQuality > 0)
@@ -505,7 +505,7 @@ namespace ProgressRenderer
                         Messages.Message("JPG quality decreased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
                     }
                 }
-                else if (RenderLenght < PRModSettings.renderSize)
+                else if (RenderLenght <= PRModSettings.renderSize)
                 {
                     if (PRModSettings.JPGQuality < 100)
                     {
