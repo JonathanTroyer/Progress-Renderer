@@ -497,21 +497,20 @@ namespace ProgressRenderer
             {  
                 FileInfo RenderInfo = new FileInfo(filePath);
                 long RenderLength = RenderInfo.Length / 1048576;   
-                if (RenderLenght > PRModSettings.renderSize)
+                if (RenderLength > PRModSettings.renderSize)
                 {
                     if (PRModSettings.JPGQuality > 0)
                     {
                         PRModSettings.JPGQuality -= 1;
-                        Messages.Message("JPG quality decreased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
+                        Messages.Message("JPG quality decreased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLength.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
                     }
                 }
-                else if (RenderLenght <= PRModSettings.renderSize)
+                else if (RenderLength <= PRModSettings.renderSize)
                 {
                     if (PRModSettings.JPGQuality < 100)
                     {
                         PRModSettings.JPGQuality += 1;
-                        Messages.Message("JPG quality increased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
-                        Scribe_Values.Look(ref variable, "key");
+                        Messages.Message("JPG quality increased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLength.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
                     }
                 }
             }
