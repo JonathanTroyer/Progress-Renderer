@@ -21,6 +21,9 @@ namespace ProgressRenderer
         private static int DefaultInterval = 24;
         private static int DefaultTimeOfDay = 8;
         private static EncodingType DefaultEncoding = EncodingType.UnityJPG;
+        private static JPGQualityAdjustmentSetting DefaultJPGQualityAdjustment = JPGQualityAdjustmentSetting.Manual;
+        private static int JPGQualityAdjustmentDefaultFileSize = 25;
+        private static int DefaultRenderSize = 25;
         private static int DefaultJPGQuality = 93;
         private static int DefaultPixelPerCell = 32;
         private static bool DefaultScaleOutputImage = false;
@@ -41,8 +44,12 @@ namespace ProgressRenderer
         private static int whichInterval = RenderIntervalHelper.Intervals.IndexOf(DefaultInterval);
         public static int timeOfDay = DefaultTimeOfDay;
         public static EncodingType encoding = DefaultEncoding;
-        public static int jpgQuality = DefaultJPGQuality;
-        public static int pixelPerCell = DefaultPixelPerCell;
+               
+        public static JPGQualityAdjustmentSetting qualityAdjustment = DefaultJPGQualityAdjustment;
+        public static int JPGQualityAdjustmentFileSize = JPGQualityAdjustmentDefaultFileSize;
+        public static int renderSize = DefaultRenderSize;
+        public static int JPGQuality = DefaultJPGQuality;
+        public static int pixelPerCell = DefaultPixelPerCell; 
         public static bool scaleOutputImage = DefaultScaleOutputImage;
         public static int outputImageFixedHeight = DefaultOutputImageFixedHeight;
         public static string exportPath;
@@ -137,6 +144,8 @@ namespace ProgressRenderer
 
             backupAnchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleLeft;
+
+
             if (ls.ButtonTextLabeled("LPR_SettingsEncodingLabel".Translate(), ("LPR_ImgEncoding_" + EnumUtils.ToFriendlyString(encoding)).Translate()))
             {
                 var menuEntries = new List<FloatMenuOption>();
@@ -154,11 +163,34 @@ namespace ProgressRenderer
 
             if (encoding == EncodingType.UnityJPG)
             {
-                ls.Label("LPR_JPGQualityLabel".Translate() + jpgQuality.ToString(": ##0"), -1, "LPR_JPGQualityDescription".Translate());
-                jpgQuality = (int)ls.Slider(jpgQuality, 1, 100);
+                if (ls.ButtonTextLabeled("LPR_SettingsJPGQualityAdjustment".Translate(), ("LPR_JPGQualityAdjustment_" + EnumUtils.ToFriendlyString(qualityAdjustment)).Translate()))
+                {
+                    var menuEntries = new List<FloatMenuOption>();
+                    var JPGQualityAdjustmentSettings = (JPGQualityAdjustmentSetting[])Enum.GetValues(typeof(JPGQualityAdjustmentSetting));
+                    foreach (var JPGQualityAdjustmentSetting in JPGQualityAdjustmentSettings)
+                    {
+                        menuEntries.Add(new FloatMenuOption(("LPR_JPGQualityAdjustment_" + EnumUtils.ToFriendlyString(JPGQualityAdjustmentSetting)).Translate(), delegate
+                        {
+                            qualityAdjustment = JPGQualityAdjustmentSetting;
+                        }));
+                    }
+                    Find.WindowStack.Add(new FloatMenu(menuEntries));
+                }
+                Text.Anchor = backupAnchor;
+
+                if (qualityAdjustment == JPGQualityAdjustmentSetting.Manual)
+                {
+                    ls.Label("LPR_JPGQualityLabel".Translate() + JPGQuality.ToString(": ##0") + "%", -1, "LPR_JPGQualityDescription".Translate());
+                    JPGQuality = (int)ls.Slider(JPGQuality, 1, 100);
+                }
+                else
+                {
+                    ls.Label("LPR_RenderSizeLabel".Translate() + renderSize.ToString(": ##0")+"MB (Current JPG quality"+ JPGQuality.ToString(": ##0)"), -1, "LPR_RenderSizeDescription".Translate());
+                    renderSize = (int)ls.Slider(renderSize, 5, 30);
+                }
             }
 
-            ls.Label("LPR_SettingsPixelPerCellLabel".Translate() + pixelPerCell.ToString(": ##0 pcc"), -1, "LPR_SettingsPixelPerCellDescription".Translate());
+            ls.Label("LPR_SettingsPixelPerCellLabel".Translate() + pixelPerCell.ToString(": ##0 ppc"), -1, "LPR_SettingsPixelPerCellDescription".Translate());
             pixelPerCell = (int)ls.Slider(pixelPerCell, 1, 64);
 
             ls.Gap();
@@ -215,14 +247,15 @@ namespace ProgressRenderer
             Scribe_Values.Look(ref whichInterval, "whichInterval", RenderIntervalHelper.Intervals.IndexOf(DefaultInterval));
             Scribe_Values.Look(ref timeOfDay, "timeOfDay", DefaultTimeOfDay);
             Scribe_Values.Look(ref encoding, "encoding", DefaultEncoding);
-            Scribe_Values.Look(ref jpgQuality, "jpgQuality", DefaultJPGQuality);
+            Scribe_Values.Look(ref qualityAdjustment, "JPGQualityAdjustment", DefaultJPGQualityAdjustment);
+            Scribe_Values.Look(ref renderSize, "renderSize", DefaultRenderSize);
+            Scribe_Values.Look(ref JPGQuality, "JPGQuality", DefaultJPGQuality);
             Scribe_Values.Look(ref pixelPerCell, "pixelPerCell", DefaultPixelPerCell);
             Scribe_Values.Look(ref scaleOutputImage, "scaleOutputImage", DefaultScaleOutputImage);
             Scribe_Values.Look(ref outputImageFixedHeight, "outputImageFixedHeight", DefaultOutputImageFixedHeight);
             Scribe_Values.Look(ref exportPath, "exportPath", DesktopPath);
             Scribe_Values.Look(ref createSubdirs, "createSubdirs", DefaultCreateSubdirs);
             Scribe_Values.Look(ref fileNamePattern, "fileNamePattern", DefaultFileNamePattern);
-
             Scribe_Values.Look(ref migratedOutputImageSettings, "migratedOutputImageSettings", false, true);
             Scribe_Values.Look(ref migratedInterval, "migratedInterval", false, true);
         }

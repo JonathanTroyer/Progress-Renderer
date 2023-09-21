@@ -8,6 +8,7 @@ using ProgressRenderer.Source.Enum;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
+using UnityEngine.Rendering;
 using Verse;
 
 namespace ProgressRenderer
@@ -466,7 +467,7 @@ namespace ProgressRenderer
 
         private void EncodeUnityJpg()
         {
-            var encodedImage = imageTexture.EncodeToJPG(PRModSettings.jpgQuality);
+            var encodedImage = imageTexture.EncodeToJPG(PRModSettings.JPGQuality);
             SaveUnityEncoding(encodedImage);
         }
 
@@ -476,16 +477,47 @@ namespace ProgressRenderer
             var filePath = CreateCurrentFilePath();
 
             File.WriteAllBytes(filePath, encodedImage);
+
             // Create tmp copy to file if needed
             if (!manuallyTriggered && PRModSettings.fileNamePattern == FileNamePattern.BothTmpCopy)
             {
                 File.Copy(filePath, CreateFilePath(FileNamePattern.Numbered, true));
             }
-
+            if (PRModSettings.encoding == EncodingType.UnityJPG & PRModSettings.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
+            {
+                AdjustJPGQuality(filePath);
+            }
             DoEncodingPost();
         }
 
-        private string CreateCurrentFilePath()
+        private void AdjustJPGQuality(string filePath)
+        {
+            // Adjust JPG quality to reach target filesize
+            if (File.Exists(filePath))
+            {  
+                FileInfo RenderInfo = new FileInfo(filePath);
+                long RenderLength = RenderInfo.Length / 1048576;   
+                if (RenderLenght > PRModSettings.renderSize)
+                {
+                    if (PRModSettings.JPGQuality > 0)
+                    {
+                        PRModSettings.JPGQuality -= 1;
+                        Messages.Message("JPG quality decreased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
+                    }
+                }
+                else if (RenderLenght <= PRModSettings.renderSize)
+                {
+                    if (PRModSettings.JPGQuality < 100)
+                    {
+                        PRModSettings.JPGQuality += 1;
+                        Messages.Message("JPG quality increased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
+                        Scribe_Values.Look(ref variable, "key");
+                    }
+                }
+            }
+        }
+
+    private string CreateCurrentFilePath()
         {
             return CreateFilePath(manuallyTriggered ? FileNamePattern.DateTime : PRModSettings.fileNamePattern);
         }

@@ -55,8 +55,14 @@
 	<LPR_SettingsTimeOfDayLabel>Render at</LPR_SettingsTimeOfDayLabel>
 	<LPR_SettingsTimeOfDayDescription>Choose at which time (in hours) of the selected days the rendering should happen. If you chose an interval of multiple times per day above, this setting works as an offset.</LPR_SettingsTimeOfDayDescription>
 	<LPR_SettingsEncodingLabel>Exported image encoding</LPR_SettingsEncodingLabel>
-	<LPR_ImgEncoding_png_unity>PNG (Unity)</LPR_ImgEncoding_png_unity>
-	<LPR_ImgEncoding_jpg_unity>JPG (Unity)</LPR_ImgEncoding_jpg_unity>
+	<LPR_ImgEncoding_PNG_unity>PNG (Unity)</LPR_ImgEncoding_PNG_unity>
+	<LPR_ImgEncoding_JPG_unity>JPG (Unity)</LPR_ImgEncoding_JPG_unity>
+	<LPR_SettingsJPGQualityAdjustment>Quality adjustment</LPR_SettingsJPGQualityAdjustment>
+	<LPR_JPGQualityAdjustment_Manual>Manual</LPR_JPGQualityAdjustment_Manual>
+	<LPR_JPGQualityAdjustment_Automatic>Automatic</LPR_JPGQualityAdjustment_Automatic>
+	<LPR_SettingsJPGQualityAdjustmentFileSize>JPG filesize target</LPR_SettingsJPGQualityAdjustmentFileSize>
+	<LPR_RenderSizeLabel>Target render size</LPR_RenderSizeLabel>
+	<LPR_RenderSizeDescription>JPG quality will automatically be adjusted after each render to be near this target, preferencing quality slightly.</LPR_RenderSizeDescription>
 	<LPR_JPGQualityLabel>JPG Quality</LPR_JPGQualityLabel>
 	<LPR_JPGQualityDescription>Higher values correspond to higher image quality, lower values correspond to smaller image size</LPR_JPGQualityDescription>
 	<LPR_SettingsPixelPerCellLabel>Pixel per cell (for image resolution)</LPR_SettingsPixelPerCellLabel>
