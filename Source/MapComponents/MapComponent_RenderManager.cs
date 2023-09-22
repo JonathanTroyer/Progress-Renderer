@@ -16,7 +16,55 @@ namespace ProgressRenderer
     public class MapComponent_RenderManager : MapComponent
     {
         public static int nextGlobalRenderManagerTickOffset = 0;
-        public bool Rendering { get; private set; }
+        public bool currentlyRendering { get; private set; }
+
+        // ex-global settings and new ones for auto JPG quality adjustment
+        public static bool defaultRenderingEnabled = true;
+        public static bool defaultRenderDesignations = false;
+        public static bool defaultRenderThingIcons = false;
+        public static bool defaultRenderGameConditions = true;
+        public static bool defaultRenderWeather = true;
+        public static bool defaultRenderZones = true;
+        public static bool defaultRenderOverlays = false;
+        public static int defaultSmoothRenderAreaSteps = 0;
+        public static int defaultInterval = 24; // also exists in modsettings
+        public static int defaultTimeOfDay = 8;
+        public static EncodingType defaultEncoding = EncodingType.UnityJPG;
+        public static JPGQualityAdjustmentSetting defaultJPGQualityAdjustment = JPGQualityAdjustmentSetting.Manual;
+        public static int JPGQualityAdjustmentdefaultFileSize = 25;
+        public static int defaultRenderSize = 25;
+        public static int defaultJPGQuality = 93;
+        public static int defaultpixelsPerCell = 32;
+        public static bool defaultScaleOutputImage = false;
+        public static int defaultOutputImageFixedHeight = 1080;
+
+        public static bool renderingEnabled = defaultRenderingEnabled;
+        public static bool renderDesignations = defaultRenderDesignations;
+        public static bool renderThingIcons = defaultRenderThingIcons;
+        public static bool renderGameConditions = defaultRenderGameConditions;
+        public static bool renderWeather = defaultRenderWeather;
+        public static bool renderZones = defaultRenderZones;
+        public static bool renderOverlays = defaultRenderOverlays;
+
+        public static int smoothRenderAreaSteps = defaultSmoothRenderAreaSteps;
+        public static int whichInterval = RenderIntervalHelper.Intervals.IndexOf(defaultInterval);
+        public static int timeOfDay = defaultTimeOfDay;
+        public static EncodingType encoding = defaultEncoding;
+
+        public static JPGQualityAdjustmentSetting qualityAdjustment = defaultJPGQualityAdjustment;
+        public static int JPGQualityAdjustmentFileSize = JPGQualityAdjustmentdefaultFileSize;
+        public static int renderSize = defaultRenderSize;
+        public static int JPGQuality = defaultJPGQuality;
+        public static int pixelsPerCell = defaultpixelsPerCell;
+        public static bool scaleOutputImage = defaultScaleOutputImage;
+        public static int outputImageFixedHeight = defaultOutputImageFixedHeight;
+
+        public static bool JPGQualityGoingUp = false;
+        public static bool JPGQualitySteady = false;
+        public static int JPGQualityBottomMargin = -1;
+        public static int JPGQualityTopMargin = -1;
+        public static int JPGQualityLastTarget = defaultRenderSize;
+        // end of ex-global settings
 
         private int tickOffset = -1;
         private int lastRenderedHour = -999;
@@ -37,9 +85,35 @@ namespace ProgressRenderer
         private Task EncodingTask;
 
         private bool manuallyTriggered = false;
-        private bool encoding = false;
+        private bool currentlyEncoding = false;
         private bool ctrlEncodingPost = false;
         private SmallMessageBox messageBox;
+
+        private static class RenderIntervalHelper
+        {
+            public static readonly List<int> Intervals = new List<int>() { 15 * 24, 10 * 24, 6 * 24, 5 * 24, 4 * 24, 3 * 24, 2 * 24, 24, 12, 8, 6, 4, 3, 2, 1 };
+            public static readonly List<int> WhichLabelsForInterval = new List<int>() { 0, 0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 3 };
+            public static readonly List<string> Labels = new List<string>() { "LPR_RenderEveryDays", "LPR_RenderEveryDay", "LPR_RenderEveryHours", "LPR_RenderEveryHour" };
+
+            public static string GetLabel(int interval)
+            {
+                var labelIndex = Intervals.IndexOf(interval);
+                if (labelIndex < 0)
+                {
+                    Log.Error("Wrong configuration found for ProgressRenderer.PRModSettings.interval. Using default value.");
+                    labelIndex = Intervals.IndexOf(defaultInterval);
+                }
+
+                var whichLabel = WhichLabelsForInterval[labelIndex];
+                float labelVal = interval;
+                if (whichLabel == 0)
+                {
+                    labelVal /= 24f;
+                }
+
+                return Labels[whichLabel].Translate(labelVal.ToString("#0"));
+            }
+        }
 
         private struct VisibilitySettings
         {
@@ -97,7 +171,7 @@ namespace ProgressRenderer
                 return;
             }
 
-            if (currHour % PRModSettings.interval != PRModSettings.timeOfDay % PRModSettings.interval)
+            if (currHour % PRModSettings.interval != timeOfDay % PRModSettings.interval)
             {
                 return;
             }
@@ -106,7 +180,7 @@ namespace ProgressRenderer
             lastRenderedHour = currHour;
             lastRenderedCounter++;
             // Check if rendering is enabled
-            if (!PRModSettings.enabled)
+            if (!renderingEnabled)
             {
                 return;
             }
@@ -131,6 +205,31 @@ namespace ProgressRenderer
             Scribe_Values.Look(ref rsTargetEndX, "rsTargetEndX", -1f);
             Scribe_Values.Look(ref rsTargetEndZ, "rsTargetEndZ", -1f);
             Scribe_Values.Look(ref rsCurrentPosition, "rsCurrentPosition", 1f);
+
+            // ex-values from settings and new ones for adjustment margin
+
+            Scribe_Values.Look(ref renderDesignations, "renderDesignations", defaultRenderDesignations);
+            Scribe_Values.Look(ref renderThingIcons, "renderThingIcons", defaultRenderThingIcons);
+            Scribe_Values.Look(ref renderGameConditions, "renderGameConditions", defaultRenderGameConditions);
+            Scribe_Values.Look(ref renderWeather, "renderWeather", defaultRenderWeather);
+            Scribe_Values.Look(ref renderZones, "renderZones", defaultRenderZones);
+            Scribe_Values.Look(ref renderOverlays, "renderOverlays", defaultRenderOverlays);
+            Scribe_Values.Look(ref smoothRenderAreaSteps, "smoothRenderAreaSteps", defaultSmoothRenderAreaSteps);
+            Scribe_Values.Look(ref whichInterval, "whichInterval", RenderIntervalHelper.Intervals.IndexOf(defaultInterval));
+            Scribe_Values.Look(ref timeOfDay, "timeOfDay", defaultTimeOfDay);
+            Scribe_Values.Look(ref encoding, "encoding", defaultEncoding);
+            Scribe_Values.Look(ref qualityAdjustment, "JPGQualityAdjustment", defaultJPGQualityAdjustment);
+            Scribe_Values.Look(ref JPGQualityGoingUp, "JPGQualityAdjustmentGoingUp", false);
+            Scribe_Values.Look(ref JPGQualitySteady, "JPGQualitySteady", false);
+            Scribe_Values.Look(ref JPGQualityBottomMargin, "JPGQualityAdjustmentGoingUp", -1);
+            Scribe_Values.Look(ref JPGQualityTopMargin, "JPGQualitySteady", -1);
+            Scribe_Values.Look(ref JPGQualityLastTarget, "JPGQualityLastTarget", defaultRenderSize);
+            Scribe_Values.Look(ref renderSize, "renderSize", defaultRenderSize);
+            Scribe_Values.Look(ref JPGQuality, "JPGQuality", defaultJPGQuality);
+            Scribe_Values.Look(ref pixelsPerCell, "pixelsPerCell", defaultpixelsPerCell);
+            Scribe_Values.Look(ref scaleOutputImage, "scaleOutputImage", defaultScaleOutputImage);
+            Scribe_Values.Look(ref outputImageFixedHeight, "outputImageFixedHeight", defaultOutputImageFixedHeight);
+
         }
 
         public static void TriggerCurrentMapManualRendering(bool forceRenderFullMap = false)
@@ -161,12 +260,12 @@ namespace ProgressRenderer
         private IEnumerator DoRendering(bool forceRenderFullMap = false)
         {
             yield return new WaitForFixedUpdate();
-            if (Rendering)
+            if (currentlyRendering)
             {
-                Log.Error("Progress Renderer is still rendering an image while a new rendering was requested. This can lead to missing or wrong data. (This can also happen in rare situations when you trigger manual rendering the exact same time as an automatic rendering happens. If you did that, just check your export folder if both renderings were done corrently and ignore this error.)");
+                Log.Error("Progress renderer is still rendering an image while a new rendering was requested. This can lead to missing or wrong data. (This can also happen in rare situations when you trigger manual rendering the exact same time as an automatic rendering happens. If you did that, just check your export folder if both renderings were done corrently and ignore this error.)");
             }
 
-            Rendering = true;
+            currentlyRendering = true;
 
             // Temporary switch to this map for rendering
             var switchedMap = false;
@@ -197,9 +296,9 @@ namespace ProgressRenderer
                 showTemperatureOverlay = settings.showTemperatureOverlay
             };
 
-            if (!PRModSettings.renderZones)
+            if (!renderZones)
                 Find.PlaySettings.showZones = false;
-            if (!PRModSettings.renderOverlays)
+            if (!renderOverlays)
             {
                 Find.PlaySettings.showRoofOverlay = false;
                 Find.PlaySettings.showFertilityOverlay = false;
@@ -256,7 +355,7 @@ namespace ProgressRenderer
                     }
                     else
                     {
-                        rsCurrentPosition = 1f / (PRModSettings.smoothRenderAreaSteps + 1);
+                        rsCurrentPosition = 1f / (smoothRenderAreaSteps + 1);
                     }
 
                     rsOldStartX = rsTargetStartX;
@@ -276,7 +375,7 @@ namespace ProgressRenderer
                     startZ = rsOldStartZ + (rsTargetStartZ - rsOldStartZ) * rsCurrentPosition;
                     endX = rsOldEndX + (rsTargetEndX - rsOldEndX) * rsCurrentPosition;
                     endZ = rsOldEndZ + (rsTargetEndZ - rsOldEndZ) * rsCurrentPosition;
-                    rsCurrentPosition += 1f / (PRModSettings.smoothRenderAreaSteps + 1);
+                    rsCurrentPosition += 1f / (smoothRenderAreaSteps + 1);
                 }
             }
 
@@ -290,15 +389,15 @@ namespace ProgressRenderer
             // Calculate basic values that are used for rendering
             int newImageWidth;
             int newImageHeight;
-            if (PRModSettings.scaleOutputImage)
+            if (scaleOutputImage)
             {
-                newImageWidth = (int) (PRModSettings.outputImageFixedHeight / distZ * distX);
-                newImageHeight = PRModSettings.outputImageFixedHeight;
+                newImageWidth = (int) (outputImageFixedHeight / distZ * distX);
+                newImageHeight = outputImageFixedHeight;
             }
             else
             {
-                newImageWidth = (int) (distX * PRModSettings.pixelPerCell);
-                newImageHeight = (int) (distZ * PRModSettings.pixelPerCell);
+                newImageWidth = (int) (distX * pixelsPerCell);
+                newImageHeight = (int) (distZ * pixelsPerCell);
             }
 
             var mustUpdateTexture = false;
@@ -352,16 +451,16 @@ namespace ProgressRenderer
             camera.orthographicSize = orthographicSize;
             camera.farClipPlane = cameraBasePos.y + 6.5f;
 
-            #region Render
+            #region render
 
             // Set render textures
             camera.targetTexture = renderTexture;
             RenderTexture.active = renderTexture;
 
-            // Render the image texture
+            // render the image texture
             try
             {
-                if (PRModSettings.renderWeather)
+                if (renderWeather)
                 {
                     map.weatherManager.DrawAllWeather();
                 }
@@ -411,7 +510,7 @@ namespace ProgressRenderer
             #endregion
 
             // Signal finished rendering
-            Rendering = false;
+            currentlyRendering = false;
             // Hide message box
             if (messageBox != null)
             {
@@ -429,12 +528,12 @@ namespace ProgressRenderer
 
         private void DoEncoding()
         {
-            if (encoding)
+            if (currentlyEncoding)
             {
-                Log.Error("Progress Renderer is still encoding an image while the encoder was called again. This can lead to missing or wrong data.");
+                Log.Error("Progress renderer is still encoding an image while the encoder was called again. This can lead to missing or wrong data.");
             }
 
-            switch (PRModSettings.encoding)
+            switch (encoding)
             {
                 case EncodingType.UnityJPG:
                     EncodeUnityJpg();
@@ -443,7 +542,7 @@ namespace ProgressRenderer
                     EncodeUnityPng();
                     break;
                 default:
-                    Log.Error("Progress Renderer encoding setting is wrong or missing. Using default for now. Go to the settings and set a new value.");
+                    Log.Error("Progress renderer encoding setting is wrong or missing. Using default for now. Go to the settings and set a new value.");
                     EncodeUnityJpg();
                     break;
             }
@@ -456,7 +555,7 @@ namespace ProgressRenderer
 
             // Signal finished encoding
             manuallyTriggered = false;
-            encoding = false;
+            currentlyEncoding = false;
         }
 
         private void EncodeUnityPng()
@@ -467,7 +566,7 @@ namespace ProgressRenderer
 
         private void EncodeUnityJpg()
         {
-            var encodedImage = imageTexture.EncodeToJPG(PRModSettings.JPGQuality);
+            var encodedImage = imageTexture.EncodeToJPG(JPGQuality);
             SaveUnityEncoding(encodedImage);
         }
 
@@ -483,7 +582,7 @@ namespace ProgressRenderer
             {
                 File.Copy(filePath, CreateFilePath(FileNamePattern.Numbered, true));
             }
-            if (PRModSettings.encoding == EncodingType.UnityJPG & PRModSettings.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
+            if (encoding == EncodingType.UnityJPG & qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
             {
                 AdjustJPGQuality(filePath);
             }
@@ -492,26 +591,58 @@ namespace ProgressRenderer
 
         private void AdjustJPGQuality(string filePath)
         {
-            // Adjust JPG quality to reach target filesize
+            // Adjust JPG quality to reach target filesize. Prefer quality going up over down.
             if (File.Exists(filePath))
-            {  
-                FileInfo RenderInfo = new FileInfo(filePath);
-                long RenderLength = RenderInfo.Length / 1048576;   
-                if (RenderLenght > PRModSettings.renderSize)
+            {
+                FileInfo renderInfo = new FileInfo(filePath);
+                long renderLength = renderInfo.Length / 1048576;
+                var renderMessage = "";
+                
+                if (renderSize != JPGQualityLastTarget) // quality has been adjusted in settings
                 {
-                    if (PRModSettings.JPGQuality > 0)
-                    {
-                        PRModSettings.JPGQuality -= 1;
-                        Messages.Message("JPG quality decreased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
-                    }
+                    JPGQualityLastTarget = renderSize;
+                    JPGQualityGoingUp = false;
+                    JPGQualitySteady = false;
+                    renderMessage += "Target size adjusted, quality adjustment started, ";
                 }
-                else if (RenderLenght <= PRModSettings.renderSize)
+                else if (JPGQualitySteady & ((renderLength > JPGQualityTopMargin) | (renderLength < JPGQualityBottomMargin))) // margin after size target reached
                 {
-                    if (PRModSettings.JPGQuality < 100)
+                    renderMessage += "JPG quality adjustment resumed, ";
+                    JPGQualitySteady = false;
+                }
+
+                if (!JPGQualitySteady) // quality is not steady (or min/max reached), so keep adjusting 
+                {
+                    if (renderLength > renderSize) // render is too large, let's take a closer look
                     {
-                        PRModSettings.JPGQuality += 1;
-                        Messages.Message("JPG quality increased to " + PRModSettings.JPGQuality.ToString() + "% · Render size: " + RenderLenght.ToString() + " Target: " + PRModSettings.renderSize.ToString(), MessageTypeDefOf.CautionInput, false);
-                        Scribe_Values.Look(ref variable, "key");
+                        if (JPGQuality > 0)
+                        {
+                            if (!JPGQualityGoingUp) // just increase the quality
+                            {
+                                JPGQuality -= 1;
+                                renderMessage += "JPG quality decreased to " + JPGQuality.ToString() + "% · render size: " + renderLength.ToString() + " Target: " + renderSize.ToString();
+                                Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
+                            }
+                            else if (!JPGQualitySteady) // if quality was going up and then down again, we have found the target quality
+                            {
+                                JPGQualitySteady = true;
+                                JPGQualityTopMargin = Convert.ToInt32(renderLength);
+                                renderMessage += "JPG quality target reached (" + JPGQuality.ToString() + "%), pausing adjusment · render size: " + renderLength.ToString() + " Target: " + renderSize.ToString();
+                                Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
+                            }
+                            JPGQualityGoingUp = false;
+                        }
+                    }
+                    else if (renderLength <= renderSize) // render is too small, increase quality
+                    {
+                        if (JPGQuality < 100)
+                        {
+                            JPGQuality += 1;
+                            JPGQualityBottomMargin = Convert.ToInt32(renderLength);
+                            renderMessage += "JPG quality increased to " + JPGQuality.ToString() + "% · render size: " + renderLength.ToString() + " Target: " + renderSize.ToString();
+                            Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
+                            JPGQualityGoingUp = true;
+                        }
                     }
                 }
             }
@@ -558,7 +689,7 @@ namespace ProgressRenderer
             }
 
             // Get correct file and location
-            var fileExt = EnumUtils.GetFileExtension(PRModSettings.encoding);
+            var fileExt = EnumUtils.GetFileExtension(encoding);
             var filePath = Path.Combine(path, imageName + "." + fileExt);
             if (!File.Exists(filePath))
             {

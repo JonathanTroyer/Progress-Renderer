@@ -12,7 +12,7 @@ namespace ProgressRenderer
 
         public static bool Prefix()
         {
-            if (!PRModSettings.renderThingIcons && Find.CurrentMap.GetComponent<MapComponent_RenderManager>().Rendering)
+            if (!MapComponent_RenderManager.renderThingIcons && Find.CurrentMap.GetComponent<MapComponent_RenderManager>().currentlyRendering)
             {
                 return false;
             }

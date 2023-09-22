@@ -62,11 +62,11 @@
 	<LPR_JPGQualityAdjustment_Automatic>Automatic</LPR_JPGQualityAdjustment_Automatic>
 	<LPR_SettingsJPGQualityAdjustmentFileSize>JPG filesize target</LPR_SettingsJPGQualityAdjustmentFileSize>
 	<LPR_RenderSizeLabel>Target render size</LPR_RenderSizeLabel>
-	<LPR_RenderSizeDescription>JPG quality will automatically be adjusted after each render to be near this target, preferencing quality slightly.</LPR_RenderSizeDescription>
+	<LPR_RenderSizeDescription>JPG quality will automatically be adjusted after each render to be near this target, preferencing quality slightly. Not recommended with multiple maps.</LPR_RenderSizeDescription>
 	<LPR_JPGQualityLabel>JPG Quality</LPR_JPGQualityLabel>
 	<LPR_JPGQualityDescription>Higher values correspond to higher image quality, lower values correspond to smaller image size</LPR_JPGQualityDescription>
-	<LPR_SettingsPixelPerCellLabel>Pixel per cell (for image resolution)</LPR_SettingsPixelPerCellLabel>
-	<LPR_SettingsPixelPerCellDescription>Define with how many pixels each ingame map cell should be displayed on the rendered image.</LPR_SettingsPixelPerCellDescription>
+	<LPR_SettingspixelsPerCellLabel>Pixel per cell (for image resolution)</LPR_SettingspixelsPerCellLabel>
+	<LPR_SettingspixelsPerCellDescription>Define with how many pixels each ingame map cell should be displayed on the rendered image.</LPR_SettingspixelsPerCellDescription>
 	<LPR_SettingsScaleOutputImageLabel>Rescale to fixed height</LPR_SettingsScaleOutputImageLabel>
 	<LPR_SettingsScaleOutputImageDescription>Set this if you want the rendered output image to have a fixed height. The width will be calculated to preserve the aspect ratio. Useful when you change the rendered area size mid-game and and plan to animate the image sequence later, so you can work with one fixed image size.</LPR_SettingsScaleOutputImageDescription>
 	<LPR_SettingsOutputImageFixedHeightLabel>Output height (px)</LPR_SettingsOutputImageFixedHeightLabel>

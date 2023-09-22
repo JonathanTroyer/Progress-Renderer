@@ -11,7 +11,7 @@ namespace ProgressRenderer
 
         public static bool Prefix(AreaManager __instance)
         {
-            if (__instance.map.GetComponent<MapComponent_RenderManager>().Rendering)
+            if (__instance.map.GetComponent<MapComponent_RenderManager>().currentlyRendering)
             {
                 return false;
             }

@@ -11,7 +11,7 @@ namespace ProgressRenderer
 
         public static bool Prefix(DesignationManager __instance)
         {
-            if (!PRModSettings.renderDesignations && __instance.map.GetComponent<MapComponent_RenderManager>().Rendering)
+            if (!MapComponent_RenderManager.renderDesignations && __instance.map.GetComponent<MapComponent_RenderManager>().currentlyRendering)
             {
                 return false;
             }
