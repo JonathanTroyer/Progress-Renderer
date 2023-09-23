@@ -208,8 +208,6 @@ namespace ProgressRenderer
                 Find.PlaySettings.showTemperatureOverlay = false;
             }
 
-            //TODO: Hide plans
-            //TODO: Hide blueprints
             //TODO: Hide fog of war (stretch) 
 
             #endregion
