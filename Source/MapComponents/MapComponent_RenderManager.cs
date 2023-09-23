@@ -41,6 +41,27 @@ namespace ProgressRenderer
         private bool ctrlEncodingPost = false;
         private SmallMessageBox messageBox;
 
+        public static bool DefaultEnabled = true;
+        public static bool enabled = DefaultEnabled;
+
+        // variables related to automatic quality adjustment
+
+        public static JPGQualityAdjustmentSetting defaultJPGQualityAdjustment = JPGQualityAdjustmentSetting.Manual;
+        public static int defaultRenderSize = 25;
+        public static int defaultJPGQuality_WORLD = 93;
+        public static int defaultpixelsPerCell_WORLD = 32;
+
+        public static JPGQualityAdjustmentSetting qualityAdjustment = defaultJPGQualityAdjustment;
+        public static int renderSize = defaultRenderSize;
+        public static int JPGQuality_WORLD = defaultJPGQuality_WORLD;
+        public static int pixelsPerCell_WORLD = defaultpixelsPerCell_WORLD;
+
+        public static bool JPGQualityGoingUp = false;
+        public static bool JPGQualitySteady = false;
+        public static int JPGQualityBottomMargin = -1;
+        public static int JPGQualityTopMargin = -1;
+        public static int JPGQualityLastTarget = defaultRenderSize;
+
         private struct VisibilitySettings
         {
             public bool showZones;
@@ -106,7 +127,7 @@ namespace ProgressRenderer
             lastRenderedHour = currHour;
             lastRenderedCounter++;
             // Check if rendering is enabled
-            if (!PRModSettings.enabled)
+            if (enabled)
             {
                 return;
             }
@@ -120,6 +141,7 @@ namespace ProgressRenderer
         public override void ExposeData()
         {
             base.ExposeData();
+            Scribe_Values.Look(ref enabled, "enabled", DefaultEnabled);
             Scribe_Values.Look(ref lastRenderedHour, "lastRenderedHour", -999);
             Scribe_Values.Look(ref lastRenderedCounter, "lastRenderedCounter", 0);
             Scribe_Values.Look(ref rsOldStartX, "rsOldStartX", -1f);
@@ -131,6 +153,15 @@ namespace ProgressRenderer
             Scribe_Values.Look(ref rsTargetEndX, "rsTargetEndX", -1f);
             Scribe_Values.Look(ref rsTargetEndZ, "rsTargetEndZ", -1f);
             Scribe_Values.Look(ref rsCurrentPosition, "rsCurrentPosition", 1f);
+            Scribe_Values.Look(ref qualityAdjustment, "JPGQualityAdjustment", defaultJPGQualityAdjustment);
+            Scribe_Values.Look(ref renderSize, "renderSize", defaultRenderSize);
+            Scribe_Values.Look(ref JPGQuality_WORLD, "JPGQuality", defaultJPGQuality_WORLD);
+            Scribe_Values.Look(ref pixelsPerCell_WORLD, "pixelsPerCell", defaultpixelsPerCell_WORLD);
+            Scribe_Values.Look(ref JPGQualityGoingUp, "JPGQualityAdjustmentGoingUp", false);
+            Scribe_Values.Look(ref JPGQualitySteady, "JPGQualitySteady", false);
+            Scribe_Values.Look(ref JPGQualityBottomMargin, "JPGQualityAdjustmentGoingUp", -1);
+            Scribe_Values.Look(ref JPGQualityTopMargin, "JPGQualitySteady", -1);
+            Scribe_Values.Look(ref JPGQualityLastTarget, "JPGQualityLastTarget", defaultRenderSize);
         }
 
         public static void TriggerCurrentMapManualRendering(bool forceRenderFullMap = false)
@@ -297,8 +328,15 @@ namespace ProgressRenderer
             }
             else
             {
-                newImageWidth = (int)(distX * PRModSettings.pixelPerCell);
-                newImageHeight = (int)(distZ * PRModSettings.pixelPerCell);
+                newImageWidth = (int)(distX * PRModSettings.pixelsPerCell);
+                newImageHeight = (int)(distZ * PRModSettings.pixelsPerCell);
+                if (qualityAdjustment == JPGQualityAdjustmentSetting.Automatic) // if image quality is set to automatic, PPC is also stored per map
+                {     
+                    
+                        newImageWidth = (int)(distX * pixelsPerCell_WORLD);
+                        newImageHeight = (int)(distZ * pixelsPerCell_WORLD);
+                }
+                
             }
 
             var mustUpdateTexture = false;
@@ -467,7 +505,18 @@ namespace ProgressRenderer
 
         private void EncodeUnityJpg()
         {
-            var encodedImage = imageTexture.EncodeToJPG(PRModSettings.JPGQuality);
+            int encodeQuality = 0;
+            switch (qualityAdjustment)
+            { 
+                case JPGQualityAdjustmentSetting.Manual:
+                    encodeQuality= PRModSettings.JPGQuality;
+                    break;
+                case JPGQualityAdjustmentSetting.Automatic:
+                    encodeQuality = JPGQuality_WORLD;
+                    break;
+            }
+                            
+            var encodedImage = imageTexture.EncodeToJPG(encodeQuality);
             SaveUnityEncoding(encodedImage);
         }
 
@@ -483,7 +532,7 @@ namespace ProgressRenderer
             {
                 File.Copy(filePath, CreateFilePath(FileNamePattern.Numbered, true));
             }
-            if (PRModSettings.encoding == EncodingType.UnityJPG & PRModSettings.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
+            if (PRModSettings.encoding == EncodingType.UnityJPG & qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
             {
                 AdjustJPGQuality(filePath);
             }
@@ -492,24 +541,61 @@ namespace ProgressRenderer
 
         private void AdjustJPGQuality(string filePath)
         {
-            if (!File.Exists(filePath)) return;
+            // Adjust JPG quality to reach target filesize. Prefer quality going up over down.
+            if (File.Exists(filePath))
+            {
+                FileInfo renderInfo = new FileInfo(filePath);
+                long renderLength = renderInfo.Length / 1048576;
+                var renderMessage = "";
 
-            //Get size in mb
-            FileInfo RenderInfo = new FileInfo(filePath);
-            var renderSize = RenderInfo.Length / 1048576f;
+                if (renderSize != JPGQualityLastTarget) // quality has been adjusted in settings
+                {
+                    JPGQualityLastTarget = renderSize;
+                    JPGQualityGoingUp = false;
+                    JPGQualitySteady = false;
+                    renderMessage += "Target size adjusted, quality adjustment started, ";
+                }
+                else if (JPGQualitySteady & ((renderLength > JPGQualityTopMargin) | (renderLength < JPGQualityBottomMargin))) // margin after size target reached
+                {
+                    renderMessage += "JPG quality adjustment resumed, ";
+                    JPGQualitySteady = false;
+                }
 
-            //How many mb we're off
-            var delta = PRModSettings.renderSize - renderSize;
-            //How much margin around the target to have in mb
-            var margin = PRModSettings.JPGQuality * 0.03;
-
-            //No need to adjust quality if we're within the margin
-            if (Mathf.Abs(delta) < margin) return;
-
-            //Adjust quality % by how much we're off
-            PRModSettings.JPGQuality += Mathf.RoundToInt(delta);
-            //TODO: save adjusted quality
-            Messages.Message($"JPG quality set to {PRModSettings.JPGQuality}% · Render file size: {renderSize} Target file size: {PRModSettings.renderSize}", MessageTypeDefOf.CautionInput, false);
+                if (!JPGQualitySteady) // quality is not steady (or min/max reached), so keep adjusting 
+                {
+                    if (renderLength > renderSize) // render is too large, let's take a closer look
+                    {
+                        if (JPGQuality_WORLD > 0)
+                        {
+                            if (!JPGQualityGoingUp) // just increase the quality
+                            {
+                                JPGQuality_WORLD -= 1;
+                                renderMessage += "JPG quality decreased to " + JPGQuality_WORLD.ToString() + "% · render size: " + renderLength.ToString() + " Target: " + renderSize.ToString();
+                                Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
+                            }
+                            else if (!JPGQualitySteady) // if quality was going up and then down again, we have found the target quality
+                            {
+                                JPGQualitySteady = true;
+                                JPGQualityTopMargin = Convert.ToInt32(renderLength);
+                                renderMessage += "JPG quality target reached (" + JPGQuality_WORLD.ToString() + "%), pausing adjusment · render size: " + renderLength.ToString() + " Target: " + renderSize.ToString();
+                                Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
+                            }
+                            JPGQualityGoingUp = false;
+                        }
+                    }
+                    else if (renderLength <= renderSize) // render is too small, increase quality
+                    {
+                        if (JPGQuality_WORLD < 100)
+                        {
+                            JPGQuality_WORLD += 1;
+                            JPGQualityBottomMargin = Convert.ToInt32(renderLength);
+                            renderMessage += "JPG quality increased to " + JPGQuality_WORLD.ToString() + "% · render size: " + renderLength.ToString() + " Target: " + renderSize.ToString();
+                            Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
+                            JPGQualityGoingUp = true;
+                        }
+                    }
+                }
+            }
         }
 
         private string CreateCurrentFilePath()
