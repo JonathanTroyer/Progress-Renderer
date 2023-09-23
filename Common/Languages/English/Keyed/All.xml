@@ -30,7 +30,7 @@
 	<LPR_SettingsCategory>Progress Renderer</LPR_SettingsCategory>
 	<LPR_SettingsEnabledLabel>Enabled</LPR_SettingsEnabledLabel>
 	<LPR_SettingsEnabledDescription>When enabled, this mod takes automatic renderings of current maps while playing and uses the settings below. You can temporary disable this here so you don't have to remove the mod each time.</LPR_SettingsEnabledDescription>
-	<LPR_SettingsRenderFeedbackLabel>Render feedback</LPR_SettingsRenderFeedbackLabel>
+	<LPR_SettingsRenderFeedbackLabel>Render feedback (global)</LPR_SettingsRenderFeedbackLabel>
 	<LPR_RenderFeedback_None>None</LPR_RenderFeedback_None>
 	<LPR_RenderFeedback_Message>Message</LPR_RenderFeedback_Message>
 	<LPR_RenderFeedback_Window>Popup</LPR_RenderFeedback_Window>
@@ -65,12 +65,12 @@
 	<LPR_RenderSizeDescription>JPG quality will automatically be adjusted after each render to be near this target, preferencing quality slightly. Not recommended with multiple maps.</LPR_RenderSizeDescription>
 	<LPR_JPGQualityLabel>JPG Quality</LPR_JPGQualityLabel>
 	<LPR_JPGQualityDescription>Higher values correspond to higher image quality, lower values correspond to smaller image size</LPR_JPGQualityDescription>
-	<LPR_SettingspixelsPerCellLabel>Pixel per cell (for image resolution)</LPR_SettingspixelsPerCellLabel>
+	<LPR_SettingspixelsPerCellLabel>Pixels per cell (for image resolution)</LPR_SettingspixelsPerCellLabel>
 	<LPR_SettingspixelsPerCellDescription>Define with how many pixels each ingame map cell should be displayed on the rendered image.</LPR_SettingspixelsPerCellDescription>
 	<LPR_SettingsScaleOutputImageLabel>Rescale to fixed height</LPR_SettingsScaleOutputImageLabel>
 	<LPR_SettingsScaleOutputImageDescription>Set this if you want the rendered output image to have a fixed height. The width will be calculated to preserve the aspect ratio. Useful when you change the rendered area size mid-game and and plan to animate the image sequence later, so you can work with one fixed image size.</LPR_SettingsScaleOutputImageDescription>
 	<LPR_SettingsOutputImageFixedHeightLabel>Output height (px)</LPR_SettingsOutputImageFixedHeightLabel>
-	<LPR_SettingsExportPathLabel>Export path</LPR_SettingsExportPathLabel>
+	<LPR_SettingsExportPathLabel>Export path (these settings are global)</LPR_SettingsExportPathLabel>
 	<LPR_SettingsExportPathDescription>The path where rendered images will be saved. Note that this must be a valid path to an existing and accessible directory on your computer. You can copy+paste a directory from your file explorer here for simple editing.</LPR_SettingsExportPathDescription>
 	<LPR_SettingsFileNamePatternLabel>Exported image name pattern</LPR_SettingsFileNamePatternLabel>
 	<LPR_FileNamePattern_DateTime>Ingame date and time</LPR_FileNamePattern_DateTime>
@@ -78,6 +78,4 @@
 	<LPR_FileNamePattern_BothTmpCopy>Both (numbered copy in tmp subdir)</LPR_FileNamePattern_BothTmpCopy>
 	<LPR_SettingsCreateSubdirsLabel>Create subdirectories for each world</LPR_SettingsCreateSubdirsLabel>
 	<LPR_SettingsCreateSubdirsDescription>Enable this if you want rendered images to be stored in subdirectories for each game/world by the world seed.</LPR_SettingsCreateSubdirsDescription>
-
-
 </LanguageData>
