@@ -505,7 +505,9 @@ namespace ProgressRenderer
             if (Mathf.Abs(delta) < margin) return;
 
             //Adjust quality % by how much we're off
-            PRModSettings.JPGQuality += Mathf.RoundToInt(delta);
+            var newQuality = PRModSettings.JPGQuality + Mathf.Pow(0.2f * delta, 2);
+            PRModSettings.JPGQuality = Mathf.Clamp(Mathf.RoundToInt(newQuality), 0, 100);
+            
             //TODO: save adjusted quality
             Messages.Message($"JPG quality set to {PRModSettings.JPGQuality}% · Render file size: {renderSize} Target file size: {PRModSettings.renderSize}", MessageTypeDefOf.CautionInput, false);
         }
