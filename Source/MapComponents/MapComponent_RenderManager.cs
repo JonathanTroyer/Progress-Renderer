@@ -41,27 +41,6 @@ namespace ProgressRenderer
         private bool ctrlEncodingPost = false;
         private SmallMessageBox messageBox;
 
-        public static bool DefaultEnabled = true;
-        public static bool enabled = DefaultEnabled;
-
-        // variables related to automatic quality adjustment
-
-        public static JPGQualityAdjustmentSetting defaultJPGQualityAdjustment = JPGQualityAdjustmentSetting.Manual;
-        public static int defaultRenderSize = 25;
-        public static int defaultJPGQuality_WORLD = 93;
-        public static int defaultpixelsPerCell_WORLD = 32;
-
-        public static JPGQualityAdjustmentSetting qualityAdjustment = defaultJPGQualityAdjustment;
-        public static int renderSize = defaultRenderSize;
-        public static int JPGQuality_WORLD = defaultJPGQuality_WORLD;
-        public static int pixelsPerCell_WORLD = defaultpixelsPerCell_WORLD;
-
-        public static bool JPGQualityGoingUp = false;
-        public static bool JPGQualitySteady = false;
-        public static int JPGQualityBottomMargin = -1;
-        public static int JPGQualityTopMargin = -1;
-        public static int JPGQualityLastTarget = defaultRenderSize;
-
         private struct VisibilitySettings
         {
             public bool showZones;
@@ -127,7 +106,7 @@ namespace ProgressRenderer
             lastRenderedHour = currHour;
             lastRenderedCounter++;
             // Check if rendering is enabled
-            if (enabled)
+            if (!GameComponentProgressManager.enabled)
             {
                 return;
             }
@@ -141,7 +120,6 @@ namespace ProgressRenderer
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref enabled, "enabled", DefaultEnabled);
             Scribe_Values.Look(ref lastRenderedHour, "lastRenderedHour", -999);
             Scribe_Values.Look(ref lastRenderedCounter, "lastRenderedCounter", 0);
             Scribe_Values.Look(ref rsOldStartX, "rsOldStartX", -1f);
@@ -153,15 +131,6 @@ namespace ProgressRenderer
             Scribe_Values.Look(ref rsTargetEndX, "rsTargetEndX", -1f);
             Scribe_Values.Look(ref rsTargetEndZ, "rsTargetEndZ", -1f);
             Scribe_Values.Look(ref rsCurrentPosition, "rsCurrentPosition", 1f);
-            Scribe_Values.Look(ref qualityAdjustment, "JPGQualityAdjustment", defaultJPGQualityAdjustment);
-            Scribe_Values.Look(ref renderSize, "renderSize", defaultRenderSize);
-            Scribe_Values.Look(ref JPGQuality_WORLD, "JPGQuality", defaultJPGQuality_WORLD);
-            Scribe_Values.Look(ref pixelsPerCell_WORLD, "pixelsPerCell", defaultpixelsPerCell_WORLD);
-            Scribe_Values.Look(ref JPGQualityGoingUp, "JPGQualityAdjustmentGoingUp", false);
-            Scribe_Values.Look(ref JPGQualitySteady, "JPGQualitySteady", false);
-            Scribe_Values.Look(ref JPGQualityBottomMargin, "JPGQualityAdjustmentGoingUp", -1);
-            Scribe_Values.Look(ref JPGQualityTopMargin, "JPGQualitySteady", -1);
-            Scribe_Values.Look(ref JPGQualityLastTarget, "JPGQualityLastTarget", defaultRenderSize);
         }
 
         public static void TriggerCurrentMapManualRendering(bool forceRenderFullMap = false)
@@ -330,11 +299,10 @@ namespace ProgressRenderer
             {
                 newImageWidth = (int)(distX * PRModSettings.pixelsPerCell);
                 newImageHeight = (int)(distZ * PRModSettings.pixelsPerCell);
-                if (qualityAdjustment == JPGQualityAdjustmentSetting.Automatic) // if image quality is set to automatic, PPC is also stored per map
+                if (GameComponentProgressManager.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic) // if image quality is set to automatic, PPC is also stored per map
                 {     
-                    
-                        newImageWidth = (int)(distX * pixelsPerCell_WORLD);
-                        newImageHeight = (int)(distZ * pixelsPerCell_WORLD);
+                        newImageWidth = (int)(distX * GameComponentProgressManager.pixelsPerCell_WORLD);
+                        newImageHeight = (int)(distZ * GameComponentProgressManager.pixelsPerCell_WORLD);
                 }
                 
             }
@@ -506,13 +474,13 @@ namespace ProgressRenderer
         private void EncodeUnityJpg()
         {
             int encodeQuality = 0;
-            switch (qualityAdjustment)
+            switch (GameComponentProgressManager.qualityAdjustment)
             { 
                 case JPGQualityAdjustmentSetting.Manual:
                     encodeQuality= PRModSettings.JPGQuality;
                     break;
                 case JPGQualityAdjustmentSetting.Automatic:
-                    encodeQuality = JPGQuality_WORLD;
+                    encodeQuality = GameComponentProgressManager.JPGQuality_WORLD;
                     break;
             }
                             
@@ -532,7 +500,7 @@ namespace ProgressRenderer
             {
                 File.Copy(filePath, CreateFilePath(FileNamePattern.Numbered, true));
             }
-            if (PRModSettings.encoding == EncodingType.UnityJPG & qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
+            if (PRModSettings.encoding == EncodingType.UnityJPG & GameComponentProgressManager.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
             {
                 AdjustJPGQuality(filePath);
             }
@@ -548,50 +516,50 @@ namespace ProgressRenderer
                 long renderLength = renderInfo.Length / 1048576;
                 var renderMessage = "";
 
-                if (renderSize != JPGQualityLastTarget) // quality has been adjusted in settings
+                if (GameComponentProgressManager.renderSize != GameComponentProgressManager.JPGQualityLastTarget) // quality has been adjusted in settings
                 {
-                    JPGQualityLastTarget = renderSize;
-                    JPGQualityGoingUp = false;
-                    JPGQualitySteady = false;
+                    GameComponentProgressManager.JPGQualityLastTarget = GameComponentProgressManager.renderSize;
+                    GameComponentProgressManager.JPGQualityGoingUp = false;
+                    GameComponentProgressManager.JPGQualitySteady = false;
                     renderMessage += "Target size adjusted, quality adjustment started, ";
                 }
-                else if (JPGQualitySteady & ((renderLength > JPGQualityTopMargin) | (renderLength < JPGQualityBottomMargin))) // margin after size target reached
+                else if (GameComponentProgressManager.JPGQualitySteady & ((renderLength > GameComponentProgressManager.JPGQualityTopMargin) | (renderLength < GameComponentProgressManager.JPGQualityBottomMargin))) // margin after size target reached
                 {
                     renderMessage += "JPG quality adjustment resumed, ";
-                    JPGQualitySteady = false;
+                    GameComponentProgressManager.JPGQualitySteady = false;
                 }
 
-                if (!JPGQualitySteady) // quality is not steady (or min/max reached), so keep adjusting 
+                if (!GameComponentProgressManager.JPGQualitySteady) // quality is not steady (or min/max reached), so keep adjusting 
                 {
-                    if (renderLength > renderSize) // render is too large, let's take a closer look
+                    if (renderLength > GameComponentProgressManager.renderSize) // render is too large, let's take a closer look
                     {
-                        if (JPGQuality_WORLD > 0)
+                        if (GameComponentProgressManager.JPGQuality_WORLD > 0)
                         {
-                            if (!JPGQualityGoingUp) // just increase the quality
+                            if (!GameComponentProgressManager.JPGQualityGoingUp) // just increase the quality
                             {
-                                JPGQuality_WORLD -= 1;
-                                renderMessage += "JPG quality decreased to " + JPGQuality_WORLD.ToString() + "% · render size: " + renderLength.ToString() + " Target: " + renderSize.ToString();
+                                GameComponentProgressManager.JPGQuality_WORLD -= 1;
+                                renderMessage += "JPG quality decreased to " + GameComponentProgressManager.JPGQuality_WORLD.ToString() + "% · render size: " + renderLength.ToString() + " Target: " + GameComponentProgressManager.renderSize.ToString();
                                 Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
                             }
-                            else if (!JPGQualitySteady) // if quality was going up and then down again, we have found the target quality
+                            else if (!GameComponentProgressManager.JPGQualitySteady) // if quality was going up and then down again, we have found the target quality
                             {
-                                JPGQualitySteady = true;
-                                JPGQualityTopMargin = Convert.ToInt32(renderLength);
-                                renderMessage += "JPG quality target reached (" + JPGQuality_WORLD.ToString() + "%), pausing adjusment · render size: " + renderLength.ToString() + " Target: " + renderSize.ToString();
+                                GameComponentProgressManager.JPGQualitySteady = true;
+                                GameComponentProgressManager.JPGQualityTopMargin = Convert.ToInt32(renderLength);
+                                renderMessage += "JPG quality target reached (" + GameComponentProgressManager.JPGQuality_WORLD.ToString() + "%), pausing adjusment · render size: " + renderLength.ToString() + " Target: " + GameComponentProgressManager.renderSize.ToString();
                                 Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
                             }
-                            JPGQualityGoingUp = false;
+                            GameComponentProgressManager.JPGQualityGoingUp = false;
                         }
                     }
-                    else if (renderLength <= renderSize) // render is too small, increase quality
+                    else if (renderLength <= GameComponentProgressManager.renderSize) // render is too small, increase quality
                     {
-                        if (JPGQuality_WORLD < 100)
+                        if (GameComponentProgressManager.JPGQuality_WORLD < 100)
                         {
-                            JPGQuality_WORLD += 1;
-                            JPGQualityBottomMargin = Convert.ToInt32(renderLength);
-                            renderMessage += "JPG quality increased to " + JPGQuality_WORLD.ToString() + "% · render size: " + renderLength.ToString() + " Target: " + renderSize.ToString();
+                            GameComponentProgressManager.JPGQuality_WORLD += 1;
+                            GameComponentProgressManager.JPGQualityBottomMargin = Convert.ToInt32(renderLength);
+                            renderMessage += "JPG quality increased to " + GameComponentProgressManager.JPGQuality_WORLD.ToString() + "% · render size: " + renderLength.ToString() + " Target: " + GameComponentProgressManager.renderSize.ToString();
                             Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
-                            JPGQualityGoingUp = true;
+                            GameComponentProgressManager.JPGQualityGoingUp = true;
                         }
                     }
                 }

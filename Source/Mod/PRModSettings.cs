@@ -92,7 +92,7 @@ namespace ProgressRenderer
             ls.Begin(leftHalf);
 
             // Left half (general settings)
-            ls.CheckboxLabeled("LPR_SettingsEnabledLabel".Translate(), ref MapComponent_RenderManager.enabled, "LPR_SettingsEnabledDescription".Translate());
+            ls.CheckboxLabeled("LPR_SettingsEnabledLabel".Translate(), ref GameComponentProgressManager.enabled, "LPR_SettingsEnabledDescription".Translate());
             var backupAnchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleLeft;
             if (ls.ButtonTextLabeled("LPR_SettingsRenderFeedbackLabel".Translate(), ("LPR_RenderFeedback_" + renderFeedback).Translate()))
@@ -156,7 +156,7 @@ namespace ProgressRenderer
 
             if (encoding == EncodingType.UnityJPG)
             {
-                if (ls.ButtonTextLabeled("LPR_SettingsJPGQualityAdjustment".Translate(), ("LPR_JPGQualityAdjustment_" + EnumUtils.ToFriendlyString(MapComponent_RenderManager.qualityAdjustment)).Translate()))
+                if (ls.ButtonTextLabeled("LPR_SettingsJPGQualityAdjustment".Translate(), ("LPR_JPGQualityAdjustment_" + EnumUtils.ToFriendlyString(GameComponentProgressManager.qualityAdjustment)).Translate()))
                 {
                     var menuEntries = new List<FloatMenuOption>();
                     var JPGQualityAdjustmentSettings = (JPGQualityAdjustmentSetting[])Enum.GetValues(typeof(JPGQualityAdjustmentSetting));
@@ -164,14 +164,14 @@ namespace ProgressRenderer
                     {
                         menuEntries.Add(new FloatMenuOption(("LPR_JPGQualityAdjustment_" + EnumUtils.ToFriendlyString(JPGQualityAdjustmentSetting)).Translate(), delegate
                         {
-                            MapComponent_RenderManager.qualityAdjustment = JPGQualityAdjustmentSetting;
+                            GameComponentProgressManager.qualityAdjustment = JPGQualityAdjustmentSetting;
                         }));
                     }
                     Find.WindowStack.Add(new FloatMenu(menuEntries));
                 }
                 Text.Anchor = backupAnchor;
 
-                if (MapComponent_RenderManager.qualityAdjustment == JPGQualityAdjustmentSetting.Manual)
+                if (GameComponentProgressManager.qualityAdjustment == JPGQualityAdjustmentSetting.Manual)
                 {
                     ls.Label("LPR_JPGQualityLabel".Translate() + JPGQuality.ToString(": ##0") + "%", -1, "LPR_JPGQualityDescription".Translate());
                     JPGQuality = (int)ls.Slider(JPGQuality, 1, 100);
@@ -180,10 +180,10 @@ namespace ProgressRenderer
                 }
                 else
                 {
-                    ls.Label("LPR_RenderSizeLabel".Translate() + MapComponent_RenderManager.renderSize.ToString(": ##0") + "MB (Current JPG quality" + MapComponent_RenderManager.JPGQuality_WORLD.ToString(": ##0)"), -1, "LPR_RenderSizeDescription".Translate());
-                    MapComponent_RenderManager.renderSize = (int)ls.Slider(MapComponent_RenderManager.renderSize, 5, 30);
-                    ls.Label("LPR_SettingspixelsPerCell_WORLDLabel".Translate() + MapComponent_RenderManager.pixelsPerCell_WORLD.ToString(": ##0 ppc"), -1, "LPR_SettingspixelsPerCell_WORLDDescription".Translate());
-                    MapComponent_RenderManager.pixelsPerCell_WORLD = (int)ls.Slider(MapComponent_RenderManager.pixelsPerCell_WORLD, 1, 64);
+                    ls.Label("LPR_RenderSizeLabel".Translate() + GameComponentProgressManager.renderSize.ToString(": ##0") + "MB (Current JPG quality" + GameComponentProgressManager.JPGQuality_WORLD.ToString(": ##0)"), -1, "LPR_RenderSizeDescription".Translate());
+                    GameComponentProgressManager.renderSize = (int)ls.Slider(GameComponentProgressManager.renderSize, 5, 30);
+                    ls.Label("LPR_SettingspixelsPerCell_WORLDLabel".Translate() + GameComponentProgressManager.pixelsPerCell_WORLD.ToString(": ##0 ppc"), -1, "LPR_SettingspixelsPerCell_WORLDDescription".Translate());
+                    GameComponentProgressManager.pixelsPerCell_WORLD = (int)ls.Slider(GameComponentProgressManager.pixelsPerCell_WORLD, 1, 64);
                 }
             }
             else
