@@ -499,7 +499,7 @@ namespace ProgressRenderer
             //How many mb we're off
             var delta = PRModSettings.renderSize - renderSize;
             //How much margin around the target to have in mb
-            var margin = PRModSettings.renderSize * 0.01;
+            var margin = PRModSettings.renderSize * 0.15;
 
             //No need to adjust quality if we're within the margin
             if (Mathf.Abs(delta) < margin) return;
