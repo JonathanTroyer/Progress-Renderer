@@ -499,18 +499,17 @@ namespace ProgressRenderer
             //How many mb we're off
             var delta = PRModSettings.renderSize - renderSize;
             //How much margin around the target to have in mb
-            var margin = PRModSettings.JPGQuality * 0.03;
+            var margin = PRModSettings.renderSize * 0.01;
 
             //No need to adjust quality if we're within the margin
             if (Mathf.Abs(delta) < margin) return;
-
 
             //Adjust quality % by how much we're off
             var newQuality = PRModSettings.JPGQuality + Mathf.Clamp(delta, -1, 1); //TODO: be smarter about this, rather than always adjusting by 1
             PRModSettings.JPGQuality = Mathf.Clamp(Mathf.RoundToInt(newQuality), 0, 100);
 
             //TODO: save adjusted quality
-            Messages.Message($"JPG quality set to {PRModSettings.JPGQuality}% · Render file size: {renderSize} Target file size: {PRModSettings.renderSize}", MessageTypeDefOf.CautionInput, false);
+            Messages.Message($"JPG quality set to {PRModSettings.JPGQuality}% · Render file size: {renderSize:F} Target file size: {PRModSettings.renderSize}", MessageTypeDefOf.CautionInput, false);
         }
 
         private string CreateCurrentFilePath()
