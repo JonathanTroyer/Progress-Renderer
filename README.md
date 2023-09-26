@@ -14,6 +14,7 @@ You can limit this to your base and even just simply extend it later if you base
 
 #### Automatic quality control
 Quality can be controlled automatically in 1% steps for each individual world by setting a target filesize in the mod settings.
+The automatic system is limited by the fact that adjustments can only be made in 1% steps, so the target is not a hard limit.
 
 ---
 

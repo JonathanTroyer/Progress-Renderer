@@ -27,7 +27,7 @@ namespace ProgressRenderer
         private static int DefaultOutputImageFixedHeight = 1080;
         private static bool DefaultCreateSubdirs = false;
         private static FileNamePattern DefaultFileNamePattern = FileNamePattern.DateTime;
-
+        private static bool DefaultJPGQualityInitialize = false;
         public static RenderFeedback renderFeedback = DefaultRenderFeedback;
         public static bool renderDesignations = DefaultRenderDesignations;
         public static bool renderThingIcons = DefaultRenderThingIcons;
@@ -42,7 +42,8 @@ namespace ProgressRenderer
         public static EncodingType encoding = DefaultEncoding;
                
         public static int JPGQuality = DefaultJPGQuality;
-        public static int pixelsPerCell = DefaultpixelsPerCell; 
+        public static int pixelsPerCell = DefaultpixelsPerCell;
+        public static bool JPGQualityInitialize = DefaultJPGQualityInitialize;
         public static bool scaleOutputImage = DefaultScaleOutputImage;
         public static int outputImageFixedHeight = DefaultOutputImageFixedHeight;
         public static string exportPath;
@@ -184,6 +185,8 @@ namespace ProgressRenderer
                     GameComponentProgressManager.renderSize = (int)ls.Slider(GameComponentProgressManager.renderSize, 5, 30);
                     ls.Label("LPR_SettingspixelsPerCell_WORLDLabel".Translate() + GameComponentProgressManager.pixelsPerCell_WORLD.ToString(": ##0 ppc"), -1, "LPR_SettingspixelsPerCell_WORLDDescription".Translate());
                     GameComponentProgressManager.pixelsPerCell_WORLD = (int)ls.Slider(GameComponentProgressManager.pixelsPerCell_WORLD, 1, 64);
+                    ls.CheckboxLabeled("LPR_SettingsInitializeLabel".Translate(), ref JPGQualityInitialize, "LPR_SettingsInitializeDescription".Translate());
+                    ls.Gap();
                 }
             }
             else

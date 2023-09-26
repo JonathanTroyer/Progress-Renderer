@@ -49,6 +49,7 @@ namespace ProgressRenderer
             JPGQualityBottomMargin = -1;
             JPGQualityTopMargin = -1;
             JPGQualityLastTarget = defaultRenderSize;
+            PRModSettings.JPGQualityInitialize = false;
 
         }
 
