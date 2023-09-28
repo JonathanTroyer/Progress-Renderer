@@ -208,8 +208,6 @@ namespace ProgressRenderer
                 Find.PlaySettings.showTemperatureOverlay = false;
             }
 
-            //TODO: Hide plans
-            //TODO: Hide blueprints
             //TODO: Hide fog of war (stretch) 
 
             #endregion
@@ -524,9 +522,13 @@ namespace ProgressRenderer
         private void AdjustJPGQuality(string filePath)
         {
             // Adjust JPG quality to reach target filesize. Prefer quality going up over down.
+           
+            if (!File.Exists(filePath)) return;
+
+            //Get size in mb
+            FileInfo RenderInfo = new FileInfo(filePath);
+            var renderSize = RenderInfo.Length / 1048576f;
             
-            FileInfo renderInfo = new FileInfo(filePath);
-            long renderLength = renderInfo.Length / 1048576;
             var renderMessage = "";
             if (PRModSettings.JPGQualityInitialize)
             {
@@ -544,7 +546,7 @@ namespace ProgressRenderer
                 renderMessage += "JPG quality adjustment resumed, ";
                 GameComponentProgressManager.JPGQualitySteady = false;
             }
-
+            
             if (!GameComponentProgressManager.JPGQualitySteady) // quality is not steady (no margins set) | (within margin) | (min/max reached), so keep adjusting
             {
                 if (renderLength > GameComponentProgressManager.renderSize) // render is too large, let's take a closer look
@@ -586,7 +588,6 @@ namespace ProgressRenderer
                         renderMessage += "done";
                         PRModSettings.JPGQualityInitialize = false;
                     } 
-
                 }
                 if (PRModSettings.JPGQualityInitialize) // while initializing, delete the files after adjusting quality
                 {
