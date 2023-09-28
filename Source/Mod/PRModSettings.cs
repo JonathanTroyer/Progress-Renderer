@@ -1,6 +1,7 @@
 ﻿using ProgressRenderer.Source.Enum;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using UnityEngine;
 using Verse;
 
@@ -210,7 +211,11 @@ namespace ProgressRenderer
                 ls.Gap(); // All about that visual balance
             }
             ls.Label("LPR_SettingsExportPathLabel".Translate(), -1, "LPR_SettingsExportPathDescription".Translate());
-            exportPath = ls.TextEntry(exportPath);
+            exportPath = ls.TextEntry($"{exportPath}");
+            if(exportPath.IndexOfAny(Path.GetInvalidPathChars()) != -1)
+            {
+                ls.Label("LPR_SettingsExportPathInvalid".Translate());
+            }
 
             ls.Gap();
             ls.CheckboxLabeled("LPR_SettingsCreateSubdirsLabel".Translate(), ref createSubdirs, "LPR_SettingsCreateSubdirsDescription".Translate());

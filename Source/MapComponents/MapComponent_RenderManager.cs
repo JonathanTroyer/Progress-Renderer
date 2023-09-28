@@ -448,7 +448,7 @@ namespace ProgressRenderer
                     break;
                 default:
                     Log.Error("Progress Renderer encoding setting is wrong or missing. Using default for now. Go to the settings and set a new value.");
-                        EncodeUnityJpg();
+                    EncodeUnityJpg();
                     break;
             }
         }
@@ -624,11 +624,14 @@ namespace ProgressRenderer
                     imageName = CreateImageNameDateTime();
                 }
 
-                // Create path and subdirectory
-                var path = PRModSettings.exportPath;
-                if (PRModSettings.createSubdirs)
-                {
-                    path = Path.Combine(path, Find.World.info.seedString);
+                imageName = Escape(imageName, Path.GetInvalidFileNameChars());
+
+            // Create path and subdirectory
+            var path = PRModSettings.exportPath;
+            if (PRModSettings.createSubdirs)
+            {
+                var subDir = Escape(Find.World.info.seedString, Path.GetInvalidPathChars());
+                path = Path.Combine(path, subDir);
                 }
 
                 Directory.CreateDirectory(path);
@@ -648,7 +651,8 @@ namespace ProgressRenderer
 
                 // Get correct file and location
                 var fileExt = EnumUtils.GetFileExtension(PRModSettings.encoding);
-                var filePath = Path.Combine(path, imageName + "." + fileExt);
+                var fileName = $"{imageName}.{fileExt}";
+            var filePath = Path.Combine(path, fileName);
                 if (!File.Exists(filePath))
                 {
                     return filePath;
@@ -670,6 +674,16 @@ namespace ProgressRenderer
                 Log.Warning("Progress renderer could not locate or create the paths. Please check the path setting and if Rimworld is allowed to write there");
                 return null;
             }
+        }
+
+        private string Escape(string str, char[] invalidChars)
+        {
+            foreach (char c in invalidChars)
+            {
+                str = str.Replace(c.ToString(), "");
+            }
+
+            return str;
         }
 
         private string CreateImageNameDateTime()

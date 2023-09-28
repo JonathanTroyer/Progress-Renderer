@@ -75,6 +75,7 @@
 	<LPR_SettingsOutputImageFixedHeightLabel>Output height (px)</LPR_SettingsOutputImageFixedHeightLabel>
 	<LPR_SettingsExportPathLabel>Export path</LPR_SettingsExportPathLabel>
 	<LPR_SettingsExportPathDescription>The path where rendered images will be saved. Note that this must be a valid path to an existing and accessible directory on your computer. You can copy+paste a directory from your file explorer here for simple editing.</LPR_SettingsExportPathDescription>
+	<LPR_SettingsExportPathInvalid>INVALID PATH</LPR_SettingsExportPathInvalid>
 	<LPR_SettingsFileNamePatternLabel>Exported image name pattern</LPR_SettingsFileNamePatternLabel>
 	<LPR_FileNamePattern_DateTime>Ingame date and time</LPR_FileNamePattern_DateTime>
 	<LPR_FileNamePattern_Numbered>Numbered consecutively (for each map)</LPR_FileNamePattern_Numbered>
