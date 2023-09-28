@@ -106,7 +106,7 @@ namespace ProgressRenderer
             lastRenderedHour = currHour;
             lastRenderedCounter++;
             // Check if rendering is enabled
-            if (!PRModSettings.enabled)
+            if (!GameComponentProgressManager.enabled)
             {
                 return;
             }
@@ -295,8 +295,14 @@ namespace ProgressRenderer
             }
             else
             {
-                newImageWidth = (int)(distX * PRModSettings.pixelPerCell);
-                newImageHeight = (int)(distZ * PRModSettings.pixelPerCell);
+                newImageWidth = (int)(distX * PRModSettings.pixelsPerCell);
+                newImageHeight = (int)(distZ * PRModSettings.pixelsPerCell);
+                if (GameComponentProgressManager.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic) // if image quality is set to automatic, PPC is also stored per map
+                {     
+                        newImageWidth = (int)(distX * GameComponentProgressManager.pixelsPerCell_WORLD);
+                        newImageHeight = (int)(distZ * GameComponentProgressManager.pixelsPerCell_WORLD);
+                }
+                
             }
 
             var mustUpdateTexture = false;
@@ -442,7 +448,7 @@ namespace ProgressRenderer
                     break;
                 default:
                     Log.Error("Progress Renderer encoding setting is wrong or missing. Using default for now. Go to the settings and set a new value.");
-                    EncodeUnityJpg();
+                        EncodeUnityJpg();
                     break;
             }
         }
@@ -465,8 +471,26 @@ namespace ProgressRenderer
 
         private void EncodeUnityJpg()
         {
-            var encodedImage = imageTexture.EncodeToJPG(PRModSettings.JPGQuality);
+            int encodeQuality = 0;
+            switch (GameComponentProgressManager.qualityAdjustment)
+            { 
+                case JPGQualityAdjustmentSetting.Manual:
+                    encodeQuality= PRModSettings.JPGQuality;
+                    break;
+                case JPGQualityAdjustmentSetting.Automatic:
+                    encodeQuality = GameComponentProgressManager.JPGQuality_WORLD;
+                    break;
+            }
+                            
+            var encodedImage = imageTexture.EncodeToJPG(encodeQuality);
             SaveUnityEncoding(encodedImage);
+            while (PRModSettings.JPGQualityInitialize)
+            {
+                System.Threading.Thread.Sleep(500);
+                encodeQuality = GameComponentProgressManager.JPGQuality_WORLD;
+                encodedImage = imageTexture.EncodeToJPG(encodeQuality);
+                SaveUnityEncoding(encodedImage);
+            }
         }
 
         private void SaveUnityEncoding(byte[] encodedImage)
@@ -481,35 +505,103 @@ namespace ProgressRenderer
             {
                 File.Copy(filePath, CreateFilePath(FileNamePattern.Numbered, true));
             }
-            if (PRModSettings.encoding == EncodingType.UnityJPG & PRModSettings.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
+            if (File.Exists(filePath))
             {
-                AdjustJPGQuality(filePath);
+                if (PRModSettings.encoding == EncodingType.UnityJPG & GameComponentProgressManager.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
+                {
+                    AdjustJPGQuality(filePath);
+                }
+                DoEncodingPost();
             }
-            DoEncodingPost();
+            else
+            {
+                Log.Warning("Progress renderer could not write render to " + filePath);
+            }
         }
 
         private void AdjustJPGQuality(string filePath)
         {
+            // Adjust JPG quality to reach target filesize. Prefer quality going up over down.
+           
             if (!File.Exists(filePath)) return;
 
             //Get size in mb
             FileInfo RenderInfo = new FileInfo(filePath);
             var renderSize = RenderInfo.Length / 1048576f;
-
-            //How many mb we're off
-            var delta = PRModSettings.renderSize - renderSize;
-            //How much margin around the target to have in mb
-            var margin = PRModSettings.renderSize * 0.15;
-
-            //No need to adjust quality if we're within the margin
-            if (Mathf.Abs(delta) < margin) return;
-
-            //Adjust quality % by how much we're off
-            var newQuality = PRModSettings.JPGQuality + Mathf.Clamp(delta, -1, 1); //TODO: be smarter about this, rather than always adjusting by 1
-            PRModSettings.JPGQuality = Mathf.Clamp(Mathf.RoundToInt(newQuality), 0, 100);
-
-            //TODO: save adjusted quality
-            Messages.Message($"JPG quality set to {PRModSettings.JPGQuality}% · Render file size: {renderSize:F} Target file size: {PRModSettings.renderSize}", MessageTypeDefOf.CautionInput, false);
+            
+            var renderMessage = "";
+            if (PRModSettings.JPGQualityInitialize)
+            {
+                renderMessage+="Initializing (please wait), ";
+            }
+            if (GameComponentProgressManager.renderSize != GameComponentProgressManager.JPGQualityLastTarget) // quality has been adjusted in settings
+            {
+                GameComponentProgressManager.JPGQualityLastTarget = GameComponentProgressManager.renderSize;
+                GameComponentProgressManager.JPGQualityGoingUp = false;
+                GameComponentProgressManager.JPGQualitySteady = false;
+                renderMessage += "Target size adjusted, quality adjustment started, ";
+            }
+            else if (GameComponentProgressManager.JPGQualitySteady & ((renderLength > GameComponentProgressManager.JPGQualityTopMargin) | (renderLength < GameComponentProgressManager.JPGQualityBottomMargin))) // margin after size target reached
+            {
+                renderMessage += "JPG quality adjustment resumed, ";
+                GameComponentProgressManager.JPGQualitySteady = false;
+            }
+            
+            if (!GameComponentProgressManager.JPGQualitySteady) // quality is not steady (no margins set) | (within margin) | (min/max reached), so keep adjusting
+            {
+                if (renderLength > GameComponentProgressManager.renderSize) // render is too large, let's take a closer look
+                {
+                    if (GameComponentProgressManager.JPGQuality_WORLD > 0)
+                    {
+                        if (!GameComponentProgressManager.JPGQualityGoingUp) // just decrease the quality
+                        {
+                            GameComponentProgressManager.JPGQuality_WORLD -= 1;
+                            renderMessage += "JPG quality decreased to " + GameComponentProgressManager.JPGQuality_WORLD.ToString() + "% · render size: " + renderLength.ToString() + " Target: " + GameComponentProgressManager.renderSize.ToString();
+                        }
+                        else if (!GameComponentProgressManager.JPGQualitySteady) // if quality was going up and then down again, we have found the target quality
+                        {
+                            GameComponentProgressManager.JPGQualitySteady = true;
+                            GameComponentProgressManager.JPGQualityTopMargin = Convert.ToInt32(renderLength);
+                            PRModSettings.JPGQualityInitialize = false; // if initializing, end it now
+                            renderMessage += "JPG quality target reached (" + GameComponentProgressManager.JPGQuality_WORLD.ToString() + "%) · render size: " + renderLength.ToString() + " Target: " + GameComponentProgressManager.renderSize.ToString();
+                        }
+                        GameComponentProgressManager.JPGQualityGoingUp = false;
+                    }
+                    else if (PRModSettings.JPGQualityInitialize) // we've reached 0 going down, end initialization now
+                    {
+                        renderMessage += "done";
+                        PRModSettings.JPGQualityInitialize = false;
+                    }
+                    
+                }
+                else if (renderLength <= GameComponentProgressManager.renderSize) // render is too small, increase quality
+                {
+                    if (GameComponentProgressManager.JPGQuality_WORLD < 100)
+                    {
+                        GameComponentProgressManager.JPGQuality_WORLD += 1;
+                        GameComponentProgressManager.JPGQualityBottomMargin = Convert.ToInt32(renderLength);
+                        renderMessage += "JPG quality increased to " + GameComponentProgressManager.JPGQuality_WORLD.ToString() + "% · render size: " + renderLength.ToString() + " Target: " + GameComponentProgressManager.renderSize.ToString();
+                        GameComponentProgressManager.JPGQualityGoingUp = true;
+                    }
+                    else if (PRModSettings.JPGQualityInitialize) //we've reached 100 going up, end initialization now
+                    {
+                        renderMessage += "done";
+                        PRModSettings.JPGQualityInitialize = false;
+                    } 
+                }
+                if (PRModSettings.JPGQualityInitialize) // while initializing, delete the files after adjusting quality
+                {
+                    try
+                    {
+                        File.Delete(filePath);
+                    }
+                    catch
+                    {
+                        renderMessage += "Warning: could not delete initialization render";
+                    }   
+                }
+            }
+            Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
         }
 
         private string CreateCurrentFilePath()
@@ -520,56 +612,64 @@ namespace ProgressRenderer
         private string CreateFilePath(FileNamePattern fileNamePattern, bool addTmpSubdir = false)
         {
             // Build image name
-            string imageName;
-            if (fileNamePattern == FileNamePattern.Numbered)
+            try
             {
-                imageName = CreateImageNameNumbered();
-            }
-            else
-            {
-                imageName = CreateImageNameDateTime();
-            }
+                string imageName;
+                if (fileNamePattern == FileNamePattern.Numbered)
+                {
+                    imageName = CreateImageNameNumbered();
+                }
+                else
+                {
+                    imageName = CreateImageNameDateTime();
+                }
 
-            // Create path and subdirectory
-            var path = PRModSettings.exportPath;
-            if (PRModSettings.createSubdirs)
-            {
-                path = Path.Combine(path, Find.World.info.seedString);
-            }
+                // Create path and subdirectory
+                var path = PRModSettings.exportPath;
+                if (PRModSettings.createSubdirs)
+                {
+                    path = Path.Combine(path, Find.World.info.seedString);
+                }
 
-            Directory.CreateDirectory(path);
-            // Add subdir for manually triggered renderings
-            if (manuallyTriggered)
-            {
-                path = Path.Combine(path, "manually");
                 Directory.CreateDirectory(path);
+                // Add subdir for manually triggered renderings
+                if (manuallyTriggered)
+                {
+                    path = Path.Combine(path, "manually");
+                    Directory.CreateDirectory(path);
+                }
+
+                // Create additional subdir for numbered symlinks
+                if (addTmpSubdir)
+                {
+                    path = Path.Combine(path, "tmp");
+                    Directory.CreateDirectory(path);
+                }
+
+                // Get correct file and location
+                var fileExt = EnumUtils.GetFileExtension(PRModSettings.encoding);
+                var filePath = Path.Combine(path, imageName + "." + fileExt);
+                if (!File.Exists(filePath))
+                {
+                    return filePath;
+                }
+
+                var i = 1;
+                filePath = Path.Combine(path, imageName);
+                string newPath;
+                do
+                {
+                    newPath = filePath + "-alt" + i + "." + fileExt;
+                    i++;
+                } while (File.Exists(newPath));
+
+                return newPath;
             }
-
-            // Create additional subdir for numbered symlinks
-            if (addTmpSubdir)
+            catch
             {
-                path = Path.Combine(path, "tmp");
-                Directory.CreateDirectory(path);
+                Log.Warning("Progress renderer could not locate or create the paths. Please check the path setting and if Rimworld is allowed to write there");
+                return null;
             }
-
-            // Get correct file and location
-            var fileExt = EnumUtils.GetFileExtension(PRModSettings.encoding);
-            var filePath = Path.Combine(path, imageName + "." + fileExt);
-            if (!File.Exists(filePath))
-            {
-                return filePath;
-            }
-
-            var i = 1;
-            filePath = Path.Combine(path, imageName);
-            string newPath;
-            do
-            {
-                newPath = filePath + "-alt" + i + "." + fileExt;
-                i++;
-            } while (File.Exists(newPath));
-
-            return newPath;
         }
 
         private string CreateImageNameDateTime()

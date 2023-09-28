@@ -28,7 +28,7 @@
 
 	<!-- Settings -->
 	<LPR_SettingsCategory>Progress Renderer</LPR_SettingsCategory>
-	<LPR_SettingsEnabledLabel>Enabled</LPR_SettingsEnabledLabel>
+	<LPR_SettingsEnabledLabel>Enabled (must be disabled per world)</LPR_SettingsEnabledLabel>
 	<LPR_SettingsEnabledDescription>When enabled, this mod takes automatic renderings of current maps while playing and uses the settings below. You can temporary disable this here so you don't have to remove the mod each time.</LPR_SettingsEnabledDescription>
 	<LPR_SettingsRenderFeedbackLabel>Render feedback</LPR_SettingsRenderFeedbackLabel>
 	<LPR_RenderFeedback_None>None</LPR_RenderFeedback_None>
@@ -60,13 +60,16 @@
 	<LPR_SettingsJPGQualityAdjustment>Quality adjustment</LPR_SettingsJPGQualityAdjustment>
 	<LPR_JPGQualityAdjustment_Manual>Manual</LPR_JPGQualityAdjustment_Manual>
 	<LPR_JPGQualityAdjustment_Automatic>Automatic</LPR_JPGQualityAdjustment_Automatic>
-	<LPR_SettingsJPGQualityAdjustmentFileSize>JPG filesize target</LPR_SettingsJPGQualityAdjustmentFileSize>
-	<LPR_RenderSizeLabel>Target render size</LPR_RenderSizeLabel>
+	<LPR_RenderSizeLabel>Target render size for this map</LPR_RenderSizeLabel>
 	<LPR_RenderSizeDescription>JPG quality will automatically be adjusted after each render to be near this target, preferencing quality slightly.</LPR_RenderSizeDescription>
 	<LPR_JPGQualityLabel>JPG Quality</LPR_JPGQualityLabel>
 	<LPR_JPGQualityDescription>Higher values correspond to higher image quality, lower values correspond to smaller image size</LPR_JPGQualityDescription>
-	<LPR_SettingsPixelPerCellLabel>Pixel per cell (for image resolution)</LPR_SettingsPixelPerCellLabel>
-	<LPR_SettingsPixelPerCellDescription>Define with how many pixels each ingame map cell should be displayed on the rendered image.</LPR_SettingsPixelPerCellDescription>
+	<LPR_SettingspixelsPerCellLabel>Pixel per cell (for image resolution)</LPR_SettingspixelsPerCellLabel>
+	<LPR_SettingspixelsPerCell_WORLDLabel>Pixel per cell for this world (for image resolution)</LPR_SettingspixelsPerCell_WORLDLabel>
+	<LPR_SettingspixelsPerCellDescription>Define with how many pixels each ingame map cell should be displayed on the rendered image.</LPR_SettingspixelsPerCellDescription>
+	<LPR_SettingspixelsPerCell_WORLDDescription>Define with how many pixels each ingame map cell should be displayed on the rendered image. Because automatic mode is enabled, it is saved only for this world.</LPR_SettingspixelsPerCell_WORLDDescription>
+	<LPR_SettingsInitializeLabel>Initialize quality adjustment at first render</LPR_SettingsInitializeLabel>
+	<LPR_SettingsInitializeDescription>At first render, perform multiple renders, adjusting quality until the target is reached. !WARNING! this will take some time and cannot be interrupted and may be a lot of work for your computer. Pausing recommended.</LPR_SettingsInitializeDescription>
 	<LPR_SettingsScaleOutputImageLabel>Rescale to fixed height</LPR_SettingsScaleOutputImageLabel>
 	<LPR_SettingsScaleOutputImageDescription>Set this if you want the rendered output image to have a fixed height. The width will be calculated to preserve the aspect ratio. Useful when you change the rendered area size mid-game and and plan to animate the image sequence later, so you can work with one fixed image size.</LPR_SettingsScaleOutputImageDescription>
 	<LPR_SettingsOutputImageFixedHeightLabel>Output height (px)</LPR_SettingsOutputImageFixedHeightLabel>
@@ -78,6 +81,4 @@
 	<LPR_FileNamePattern_BothTmpCopy>Both (numbered copy in tmp subdir)</LPR_FileNamePattern_BothTmpCopy>
 	<LPR_SettingsCreateSubdirsLabel>Create subdirectories for each world</LPR_SettingsCreateSubdirsLabel>
 	<LPR_SettingsCreateSubdirsDescription>Enable this if you want rendered images to be stored in subdirectories for each game/world by the world seed.</LPR_SettingsCreateSubdirsDescription>
-
-
 </LanguageData>

@@ -9,7 +9,6 @@ namespace ProgressRenderer
 
     public class PRModSettings : ModSettings
     {
-        private static bool DefaultEnabled = true;
         private static RenderFeedback DefaultRenderFeedback = RenderFeedback.Window;
         private static bool DefaultRenderDesignations = false;
         private static bool DefaultRenderThingIcons = false;
@@ -21,17 +20,14 @@ namespace ProgressRenderer
         private static int DefaultInterval = 24;
         private static int DefaultTimeOfDay = 8;
         private static EncodingType DefaultEncoding = EncodingType.UnityJPG;
-        private static JPGQualityAdjustmentSetting DefaultJPGQualityAdjustment = JPGQualityAdjustmentSetting.Manual;
-        private static int JPGQualityAdjustmentDefaultFileSize = 25;
-        private static int DefaultRenderSize = 25;
+        
         private static int DefaultJPGQuality = 93;
-        private static int DefaultPixelPerCell = 32;
+        private static int DefaultpixelsPerCell = 32;
         private static bool DefaultScaleOutputImage = false;
         private static int DefaultOutputImageFixedHeight = 1080;
         private static bool DefaultCreateSubdirs = false;
         private static FileNamePattern DefaultFileNamePattern = FileNamePattern.DateTime;
-
-        public static bool enabled = DefaultEnabled;
+        private static bool DefaultJPGQualityInitialize = false;
         public static RenderFeedback renderFeedback = DefaultRenderFeedback;
         public static bool renderDesignations = DefaultRenderDesignations;
         public static bool renderThingIcons = DefaultRenderThingIcons;
@@ -45,11 +41,9 @@ namespace ProgressRenderer
         public static int timeOfDay = DefaultTimeOfDay;
         public static EncodingType encoding = DefaultEncoding;
                
-        public static JPGQualityAdjustmentSetting qualityAdjustment = DefaultJPGQualityAdjustment;
-        public static int JPGQualityAdjustmentFileSize = JPGQualityAdjustmentDefaultFileSize;
-        public static int renderSize = DefaultRenderSize;
         public static int JPGQuality = DefaultJPGQuality;
-        public static int pixelPerCell = DefaultPixelPerCell; 
+        public static int pixelsPerCell = DefaultpixelsPerCell;
+        public static bool JPGQualityInitialize = DefaultJPGQualityInitialize;
         public static bool scaleOutputImage = DefaultScaleOutputImage;
         public static int outputImageFixedHeight = DefaultOutputImageFixedHeight;
         public static string exportPath;
@@ -99,7 +93,7 @@ namespace ProgressRenderer
             ls.Begin(leftHalf);
 
             // Left half (general settings)
-            ls.CheckboxLabeled("LPR_SettingsEnabledLabel".Translate(), ref enabled, "LPR_SettingsEnabledDescription".Translate());
+            ls.CheckboxLabeled("LPR_SettingsEnabledLabel".Translate(), ref GameComponentProgressManager.enabled, "LPR_SettingsEnabledDescription".Translate());
             var backupAnchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleLeft;
             if (ls.ButtonTextLabeled("LPR_SettingsRenderFeedbackLabel".Translate(), ("LPR_RenderFeedback_" + renderFeedback).Translate()))
@@ -163,7 +157,7 @@ namespace ProgressRenderer
 
             if (encoding == EncodingType.UnityJPG)
             {
-                if (ls.ButtonTextLabeled("LPR_SettingsJPGQualityAdjustment".Translate(), ("LPR_JPGQualityAdjustment_" + EnumUtils.ToFriendlyString(qualityAdjustment)).Translate()))
+                if (ls.ButtonTextLabeled("LPR_SettingsJPGQualityAdjustment".Translate(), ("LPR_JPGQualityAdjustment_" + EnumUtils.ToFriendlyString(GameComponentProgressManager.qualityAdjustment)).Translate()))
                 {
                     var menuEntries = new List<FloatMenuOption>();
                     var JPGQualityAdjustmentSettings = (JPGQualityAdjustmentSetting[])Enum.GetValues(typeof(JPGQualityAdjustmentSetting));
@@ -171,27 +165,35 @@ namespace ProgressRenderer
                     {
                         menuEntries.Add(new FloatMenuOption(("LPR_JPGQualityAdjustment_" + EnumUtils.ToFriendlyString(JPGQualityAdjustmentSetting)).Translate(), delegate
                         {
-                            qualityAdjustment = JPGQualityAdjustmentSetting;
+                            GameComponentProgressManager.qualityAdjustment = JPGQualityAdjustmentSetting;
                         }));
                     }
                     Find.WindowStack.Add(new FloatMenu(menuEntries));
                 }
                 Text.Anchor = backupAnchor;
 
-                if (qualityAdjustment == JPGQualityAdjustmentSetting.Manual)
+                if (GameComponentProgressManager.qualityAdjustment == JPGQualityAdjustmentSetting.Manual)
                 {
                     ls.Label("LPR_JPGQualityLabel".Translate() + JPGQuality.ToString(": ##0") + "%", -1, "LPR_JPGQualityDescription".Translate());
                     JPGQuality = (int)ls.Slider(JPGQuality, 1, 100);
+                    ls.Label("LPR_SettingspixelsPerCellLabel".Translate() + pixelsPerCell.ToString(": ##0 ppc"), -1, "LPR_SettingspixelsPerCellDescription".Translate());
+                    pixelsPerCell = (int)ls.Slider(pixelsPerCell, 1, 64);
                 }
                 else
                 {
-                    ls.Label("LPR_RenderSizeLabel".Translate() + renderSize.ToString(": ##0")+"MB (Current JPG quality"+ JPGQuality.ToString(": ##0)"), -1, "LPR_RenderSizeDescription".Translate());
-                    renderSize = (int)ls.Slider(renderSize, 5, 30);
+                    ls.Label("LPR_RenderSizeLabel".Translate() + GameComponentProgressManager.renderSize.ToString(": ##0") + "MB (Current JPG quality" + GameComponentProgressManager.JPGQuality_WORLD.ToString(": ##0)"), -1, "LPR_RenderSizeDescription".Translate());
+                    GameComponentProgressManager.renderSize = (int)ls.Slider(GameComponentProgressManager.renderSize, 5, 30);
+                    ls.Label("LPR_SettingspixelsPerCell_WORLDLabel".Translate() + GameComponentProgressManager.pixelsPerCell_WORLD.ToString(": ##0 ppc"), -1, "LPR_SettingspixelsPerCell_WORLDDescription".Translate());
+                    GameComponentProgressManager.pixelsPerCell_WORLD = (int)ls.Slider(GameComponentProgressManager.pixelsPerCell_WORLD, 1, 64);
+                    ls.CheckboxLabeled("LPR_SettingsInitializeLabel".Translate(), ref JPGQualityInitialize, "LPR_SettingsInitializeDescription".Translate());
+                    ls.Gap();
                 }
             }
-
-            ls.Label("LPR_SettingsPixelPerCellLabel".Translate() + pixelPerCell.ToString(": ##0 ppc"), -1, "LPR_SettingsPixelPerCellDescription".Translate());
-            pixelPerCell = (int)ls.Slider(pixelPerCell, 1, 64);
+            else
+            {
+                ls.Label("LPR_SettingspixelsPerCellLabel".Translate() + pixelsPerCell.ToString(": ##0 ppc"), -1, "LPR_SettingspixelsPerCellDescription".Translate());
+                pixelsPerCell = (int)ls.Slider(pixelsPerCell, 1, 64);
+            }
 
             ls.Gap();
             ls.CheckboxLabeled("LPR_SettingsScaleOutputImageLabel".Translate(), ref scaleOutputImage, "LPR_SettingsScaleOutputImageDescription".Translate());
@@ -235,7 +237,6 @@ namespace ProgressRenderer
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref enabled, "enabled", DefaultEnabled);
             Scribe_Values.Look(ref renderFeedback, "renderFeedback", DefaultRenderFeedback);
             Scribe_Values.Look(ref renderDesignations, "renderDesignations", DefaultRenderDesignations);
             Scribe_Values.Look(ref renderThingIcons, "renderThingIcons", DefaultRenderThingIcons);
@@ -246,11 +247,8 @@ namespace ProgressRenderer
             Scribe_Values.Look(ref smoothRenderAreaSteps, "smoothRenderAreaSteps", DefaultSmoothRenderAreaSteps);
             Scribe_Values.Look(ref whichInterval, "whichInterval", RenderIntervalHelper.Intervals.IndexOf(DefaultInterval));
             Scribe_Values.Look(ref timeOfDay, "timeOfDay", DefaultTimeOfDay);
-            Scribe_Values.Look(ref encoding, "encoding", DefaultEncoding);
-            Scribe_Values.Look(ref qualityAdjustment, "JPGQualityAdjustment", DefaultJPGQualityAdjustment);
-            Scribe_Values.Look(ref renderSize, "renderSize", DefaultRenderSize);
             Scribe_Values.Look(ref JPGQuality, "JPGQuality", DefaultJPGQuality);
-            Scribe_Values.Look(ref pixelPerCell, "pixelPerCell", DefaultPixelPerCell);
+            Scribe_Values.Look(ref pixelsPerCell, "pixelsPerCell", DefaultpixelsPerCell);
             Scribe_Values.Look(ref scaleOutputImage, "scaleOutputImage", DefaultScaleOutputImage);
             Scribe_Values.Look(ref outputImageFixedHeight, "outputImageFixedHeight", DefaultOutputImageFixedHeight);
             Scribe_Values.Look(ref exportPath, "exportPath", DesktopPath);

@@ -13,7 +13,8 @@ Place special corner marker designators to limit the area of what should be rend
 You can limit this to your base and even just simply extend it later if you base grows larger than planned.
 
 #### Automatic quality control
-Quality can be controlled automatically by choosing a filesize in the settings.
+Quality can be controlled automatically in 1% steps for each individual world by setting a target filesize in the mod settings.
+The automatic system is limited by the fact that adjustments can only be made in 1% steps, so the target is not a hard limit.
 
 ---
 
