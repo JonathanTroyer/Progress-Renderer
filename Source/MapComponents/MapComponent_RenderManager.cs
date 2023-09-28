@@ -657,69 +657,53 @@ namespace ProgressRenderer
         private string CreateFilePath(FileNamePattern fileNamePattern, bool addTmpSubdir = false)
         {
             // Build image name
-            try
+            var imageName = fileNamePattern == FileNamePattern.Numbered
+                ? CreateImageNameNumbered()
+                : CreateImageNameDateTime();
+            imageName = Escape(imageName, Path.GetInvalidFileNameChars());
+
+            // Create path and subdirectory
+            var path = PRModSettings.exportPath;
+            if (PRModSettings.createSubdirs)
             {
-                string imageName;
-                if (fileNamePattern == FileNamePattern.Numbered)
-                {
-                    imageName = CreateImageNameNumbered();
-                }
-                else
-                {
-                    imageName = CreateImageNameDateTime();
-                }
+                var subDir = Escape(Find.World.info.seedString, Path.GetInvalidPathChars());
+                path = Path.Combine(path, subDir);
+            }
 
-                imageName = Escape(imageName, Path.GetInvalidFileNameChars());
-
-                // Create path and subdirectory
-                var path = PRModSettings.exportPath;
-                if (PRModSettings.createSubdirs)
-                {
-                    var subDir = Escape(Find.World.info.seedString, Path.GetInvalidPathChars());
-                    path = Path.Combine(path, subDir);
-                }
-
+            Directory.CreateDirectory(path);
+            // Add subdir for manually triggered renderings
+            if (manuallyTriggered)
+            {
+                path = Path.Combine(path, "manually");
                 Directory.CreateDirectory(path);
-                // Add subdir for manually triggered renderings
-                if (manuallyTriggered)
-                {
-                    path = Path.Combine(path, "manually");
-                    Directory.CreateDirectory(path);
-                }
-
-                // Create additional subdir for numbered symlinks
-                if (addTmpSubdir)
-                {
-                    path = Path.Combine(path, "tmp");
-                    Directory.CreateDirectory(path);
-                }
-
-                // Get correct file and location
-                var fileExt = EnumUtils.GetFileExtension(PRModSettings.encoding);
-                var fileName = $"{imageName}.{fileExt}";
-                var filePath = Path.Combine(path, fileName);
-                if (!File.Exists(filePath))
-                {
-                    return filePath;
-                }
-
-                var i = 1;
-                filePath = Path.Combine(path, imageName);
-                string newPath;
-                do
-                {
-                    newPath = filePath + "-alt" + i + "." + fileExt;
-                    i++;
-                } while (File.Exists(newPath));
-
-                return newPath;
             }
-            catch
+
+            // Create additional subdir for numbered symlinks
+            if (addTmpSubdir)
             {
-                Log.Warning(
-                    "Progress renderer could not locate or create the paths. Please check the path setting and if Rimworld is allowed to write there");
-                return null;
+                path = Path.Combine(path, "tmp");
+                Directory.CreateDirectory(path);
             }
+
+            // Get correct file and location
+            var fileExt = EnumUtils.GetFileExtension(PRModSettings.encoding);
+            var fileName = $"{imageName}.{fileExt}";
+            var filePath = Path.Combine(path, fileName);
+            if (!File.Exists(filePath))
+            {
+                return filePath;
+            }
+
+            var i = 1;
+            filePath = Path.Combine(path, imageName);
+            string newPath;
+            do
+            {
+                newPath = filePath + "-alt" + i + "." + fileExt;
+                i++;
+            } while (File.Exists(newPath));
+
+            return newPath;
         }
 
         private string Escape(string str, char[] invalidChars)
