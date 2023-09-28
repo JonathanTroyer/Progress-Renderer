@@ -126,7 +126,6 @@
     <Content Include="Common\Textures\UI\Designators\CornerMarkerOff.png" />
     <Content Include="Common\Textures\UI\Designators\CornerMarkerOn.png" />
     <Content Include="News\UpdateFeatureDefs\UpdateFeatures.xml" />
-    <Content Include="v1.2\Assemblies\Progress-Renderer.dll" />
     <Content Include="v1.4\Assemblies\Progress-Renderer.dll" />
   </ItemGroup>
   <ItemGroup>
@@ -138,8 +137,7 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="v1.1\Assemblies\" />
-    <Folder Include="v1.3\Assemblies\" />
+    <Folder Include="v1.4\Assemblies\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
