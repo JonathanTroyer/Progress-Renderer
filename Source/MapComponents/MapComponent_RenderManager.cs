@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
 using HarmonyLib;
@@ -8,7 +7,6 @@ using ProgressRenderer.Source.Enum;
 using RimWorld;
 using RimWorld.Planet;
 using UnityEngine;
-using UnityEngine.Rendering;
 using Verse;
 
 namespace ProgressRenderer
@@ -163,7 +161,8 @@ namespace ProgressRenderer
             yield return new WaitForFixedUpdate();
             if (Rendering)
             {
-                Log.Error("Progress Renderer is still rendering an image while a new rendering was requested. This can lead to missing or wrong data. (This can also happen in rare situations when you trigger manual rendering the exact same time as an automatic rendering happens. If you did that, just check your export folder if both renderings were done corrently and ignore this error.)");
+                Log.Error(
+                    "Progress Renderer is still rendering an image while a new rendering was requested. This can lead to missing or wrong data. (This can also happen in rare situations when you trigger manual rendering the exact same time as an automatic rendering happens. If you did that, just check your export folder if both renderings were done corrently and ignore this error.)");
             }
 
             Rendering = true;
@@ -220,7 +219,8 @@ namespace ProgressRenderer
             float endZ = map.Size.z;
             if (!forceRenderFullMap)
             {
-                var cornerMarkers = map.designationManager.AllDesignations.FindAll(des => des.def == DesignationDefOf.CornerMarker);
+                var cornerMarkers =
+                    map.designationManager.AllDesignations.FindAll(des => des.def == DesignationDefOf.CornerMarker);
                 if (cornerMarkers.Count > 1)
                 {
                     startX = endX;
@@ -230,10 +230,25 @@ namespace ProgressRenderer
                     foreach (var des in cornerMarkers)
                     {
                         var cell = des.target.Cell;
-                        if (cell.x < startX) { startX = cell.x; }
-                        if (cell.z < startZ) { startZ = cell.z; }
-                        if (cell.x > endX) { endX = cell.x; }
-                        if (cell.z > endZ) { endZ = cell.z; }
+                        if (cell.x < startX)
+                        {
+                            startX = cell.x;
+                        }
+
+                        if (cell.z < startZ)
+                        {
+                            startZ = cell.z;
+                        }
+
+                        if (cell.x > endX)
+                        {
+                            endX = cell.x;
+                        }
+
+                        if (cell.z > endZ)
+                        {
+                            endZ = cell.z;
+                        }
                     }
 
                     endX += 1;
@@ -245,7 +260,8 @@ namespace ProgressRenderer
             if (!manuallyTriggered)
             {
                 // Test if target render area changed to reset smoothing
-                if (rsTargetStartX != startX || rsTargetStartZ != startZ || rsTargetEndX != endX || rsTargetEndZ != endZ)
+                if (rsTargetStartX != startX || rsTargetStartZ != startZ || rsTargetEndX != endX ||
+                    rsTargetEndZ != endZ)
                 {
                     // Check if area was manually reset or uninitialized (-1) to not smooth
                     if (rsTargetStartX == -1f && rsTargetStartZ == -1f && rsTargetEndX == -1f && rsTargetEndZ == -1f)
@@ -297,12 +313,13 @@ namespace ProgressRenderer
             {
                 newImageWidth = (int)(distX * PRModSettings.pixelsPerCell);
                 newImageHeight = (int)(distZ * PRModSettings.pixelsPerCell);
-                if (GameComponentProgressManager.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic) // if image quality is set to automatic, PPC is also stored per map
-                {     
-                        newImageWidth = (int)(distX * GameComponentProgressManager.pixelsPerCell_WORLD);
-                        newImageHeight = (int)(distZ * GameComponentProgressManager.pixelsPerCell_WORLD);
+                if (GameComponentProgressManager.qualityAdjustment ==
+                    JPGQualityAdjustmentSetting
+                        .Automatic) // if image quality is set to automatic, PPC is also stored per map
+                {
+                    newImageWidth = (int)(distX * GameComponentProgressManager.pixelsPerCell_WORLD);
+                    newImageHeight = (int)(distZ * GameComponentProgressManager.pixelsPerCell_WORLD);
                 }
-                
             }
 
             var mustUpdateTexture = false;
@@ -345,7 +362,8 @@ namespace ProgressRenderer
             var camRectMaxX = Math.Max((int)Math.Ceiling(endX), camViewRect.maxX);
             var camRectMaxZ = Math.Max((int)Math.Ceiling(endZ), camViewRect.maxZ);
             var camDriverTraverse = Traverse.Create(camDriver);
-            camDriverTraverse.Field("lastViewRect").SetValue(CellRect.FromLimits(camRectMinX, camRectMinZ, camRectMaxX, camRectMaxZ));
+            camDriverTraverse.Field("lastViewRect")
+                .SetValue(CellRect.FromLimits(camRectMinX, camRectMinZ, camRectMaxX, camRectMaxZ));
             camDriverTraverse.Field("lastViewRectGetFrame").SetValue(Time.frameCount);
 
             #endregion
@@ -369,7 +387,9 @@ namespace ProgressRenderer
                 {
                     map.weatherManager.DrawAllWeather();
                 }
-                camera.transform.position = new Vector3(startX + cameraBasePos.x, cameraBasePos.y, startZ + cameraBasePos.z);
+
+                camera.transform.position =
+                    new Vector3(startX + cameraBasePos.x, cameraBasePos.y, startZ + cameraBasePos.z);
                 camera.Render();
                 imageTexture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0, false);
             }
@@ -435,7 +455,8 @@ namespace ProgressRenderer
         {
             if (encoding)
             {
-                Log.Error("Progress Renderer is still encoding an image while the encoder was called again. This can lead to missing or wrong data.");
+                Log.Error(
+                    "Progress Renderer is still encoding an image while the encoder was called again. This can lead to missing or wrong data.");
             }
 
             switch (PRModSettings.encoding)
@@ -447,7 +468,8 @@ namespace ProgressRenderer
                     EncodeUnityPng();
                     break;
                 default:
-                    Log.Error("Progress Renderer encoding setting is wrong or missing. Using default for now. Go to the settings and set a new value.");
+                    Log.Error(
+                        "Progress Renderer encoding setting is wrong or missing. Using default for now. Go to the settings and set a new value.");
                     EncodeUnityJpg();
                     break;
             }
@@ -473,15 +495,15 @@ namespace ProgressRenderer
         {
             int encodeQuality = 0;
             switch (GameComponentProgressManager.qualityAdjustment)
-            { 
+            {
                 case JPGQualityAdjustmentSetting.Manual:
-                    encodeQuality= PRModSettings.JPGQuality;
+                    encodeQuality = PRModSettings.JPGQuality;
                     break;
                 case JPGQualityAdjustmentSetting.Automatic:
                     encodeQuality = GameComponentProgressManager.JPGQuality_WORLD;
                     break;
             }
-                            
+
             var encodedImage = imageTexture.EncodeToJPG(encodeQuality);
             SaveUnityEncoding(encodedImage);
             while (PRModSettings.JPGQualityInitialize)
@@ -505,12 +527,15 @@ namespace ProgressRenderer
             {
                 File.Copy(filePath, CreateFilePath(FileNamePattern.Numbered, true));
             }
+
             if (File.Exists(filePath))
             {
-                if (PRModSettings.encoding == EncodingType.UnityJPG & GameComponentProgressManager.qualityAdjustment == JPGQualityAdjustmentSetting.Automatic)
+                if (PRModSettings.encoding == EncodingType.UnityJPG & GameComponentProgressManager.qualityAdjustment ==
+                    JPGQualityAdjustmentSetting.Automatic)
                 {
                     AdjustJPGQuality(filePath);
                 }
+
                 DoEncodingPost();
             }
             else
@@ -522,49 +547,65 @@ namespace ProgressRenderer
         private void AdjustJPGQuality(string filePath)
         {
             // Adjust JPG quality to reach target filesize. Prefer quality going up over down.
-           
+
             if (!File.Exists(filePath)) return;
 
             //Get size in mb
-            FileInfo RenderInfo = new FileInfo(filePath);
-            var renderSize = RenderInfo.Length / 1048576f;
-            
+            var renderInfo = new FileInfo(filePath);
+            var renderSize = renderInfo.Length / 1048576f;
+
             var renderMessage = "";
             if (PRModSettings.JPGQualityInitialize)
             {
-                renderMessage+="Initializing (please wait), ";
+                renderMessage += "Initializing (please wait), ";
             }
-            if (GameComponentProgressManager.renderSize != GameComponentProgressManager.JPGQualityLastTarget) // quality has been adjusted in settings
+
+            if (GameComponentProgressManager.renderSize !=
+                GameComponentProgressManager.JPGQualityLastTarget) // quality has been adjusted in settings
             {
                 GameComponentProgressManager.JPGQualityLastTarget = GameComponentProgressManager.renderSize;
                 GameComponentProgressManager.JPGQualityGoingUp = false;
                 GameComponentProgressManager.JPGQualitySteady = false;
                 renderMessage += "Target size adjusted, quality adjustment started, ";
             }
-            else if (GameComponentProgressManager.JPGQualitySteady & ((renderSize > GameComponentProgressManager.JPGQualityTopMargin) | (renderSize < GameComponentProgressManager.JPGQualityBottomMargin))) // margin after size target reached
+            else if (GameComponentProgressManager.JPGQualitySteady &
+                     ((renderSize > GameComponentProgressManager.JPGQualityTopMargin) |
+                      (renderSize <
+                       GameComponentProgressManager.JPGQualityBottomMargin))) // margin after size target reached
             {
                 renderMessage += "JPG quality adjustment resumed, ";
                 GameComponentProgressManager.JPGQualitySteady = false;
             }
-            
-            if (!GameComponentProgressManager.JPGQualitySteady) // quality is not steady (no margins set) | (within margin) | (min/max reached), so keep adjusting
+
+            if (!GameComponentProgressManager
+                    .JPGQualitySteady) // quality is not steady (no margins set) | (within margin) | (min/max reached), so keep adjusting
             {
-                if (renderSize > GameComponentProgressManager.renderSize) // render is too large, let's take a closer look
+                if (renderSize >
+                    GameComponentProgressManager.renderSize) // render is too large, let's take a closer look
                 {
                     if (GameComponentProgressManager.JPGQuality_WORLD > 0)
                     {
                         if (!GameComponentProgressManager.JPGQualityGoingUp) // just decrease the quality
                         {
                             GameComponentProgressManager.JPGQuality_WORLD -= 1;
-                            renderMessage += "JPG quality decreased to " + GameComponentProgressManager.JPGQuality_WORLD.ToString() + "% · render size: " + renderSize.ToString() + " Target: " + GameComponentProgressManager.renderSize.ToString();
+                            renderMessage += "JPG quality decreased to " +
+                                             GameComponentProgressManager.JPGQuality_WORLD.ToString() +
+                                             "% · render size: " + renderSize.ToString() + " Target: " +
+                                             GameComponentProgressManager.renderSize.ToString();
                         }
-                        else if (!GameComponentProgressManager.JPGQualitySteady) // if quality was going up and then down again, we have found the target quality
+                        else if
+                            (!GameComponentProgressManager
+                                .JPGQualitySteady) // if quality was going up and then down again, we have found the target quality
                         {
                             GameComponentProgressManager.JPGQualitySteady = true;
                             GameComponentProgressManager.JPGQualityTopMargin = Convert.ToInt32(renderSize);
                             PRModSettings.JPGQualityInitialize = false; // if initializing, end it now
-                            renderMessage += "JPG quality target reached (" + GameComponentProgressManager.JPGQuality_WORLD.ToString() + "%) · render size: " + renderSize.ToString() + " Target: " + GameComponentProgressManager.renderSize.ToString();
+                            renderMessage += "JPG quality target reached (" +
+                                             GameComponentProgressManager.JPGQuality_WORLD.ToString() +
+                                             "%) · render size: " + renderSize.ToString() + " Target: " +
+                                             GameComponentProgressManager.renderSize.ToString();
                         }
+
                         GameComponentProgressManager.JPGQualityGoingUp = false;
                     }
                     else if (PRModSettings.JPGQualityInitialize) // we've reached 0 going down, end initialization now
@@ -572,7 +613,6 @@ namespace ProgressRenderer
                         renderMessage += "done";
                         PRModSettings.JPGQualityInitialize = false;
                     }
-                    
                 }
                 else if (renderSize <= GameComponentProgressManager.renderSize) // render is too small, increase quality
                 {
@@ -580,15 +620,19 @@ namespace ProgressRenderer
                     {
                         GameComponentProgressManager.JPGQuality_WORLD += 1;
                         GameComponentProgressManager.JPGQualityBottomMargin = Convert.ToInt32(renderSize);
-                        renderMessage += "JPG quality increased to " + GameComponentProgressManager.JPGQuality_WORLD.ToString() + "% · render size: " + renderSize.ToString() + " Target: " + GameComponentProgressManager.renderSize.ToString();
+                        renderMessage += "JPG quality increased to " +
+                                         GameComponentProgressManager.JPGQuality_WORLD.ToString() +
+                                         "% · render size: " + renderSize.ToString() + " Target: " +
+                                         GameComponentProgressManager.renderSize.ToString();
                         GameComponentProgressManager.JPGQualityGoingUp = true;
                     }
                     else if (PRModSettings.JPGQualityInitialize) //we've reached 100 going up, end initialization now
                     {
                         renderMessage += "done";
                         PRModSettings.JPGQualityInitialize = false;
-                    } 
+                    }
                 }
+
                 if (PRModSettings.JPGQualityInitialize) // while initializing, delete the files after adjusting quality
                 {
                     try
@@ -598,9 +642,10 @@ namespace ProgressRenderer
                     catch
                     {
                         renderMessage += "Warning: could not delete initialization render";
-                    }   
+                    }
                 }
             }
+
             Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
         }
 
@@ -626,12 +671,12 @@ namespace ProgressRenderer
 
                 imageName = Escape(imageName, Path.GetInvalidFileNameChars());
 
-            // Create path and subdirectory
-            var path = PRModSettings.exportPath;
-            if (PRModSettings.createSubdirs)
-            {
-                var subDir = Escape(Find.World.info.seedString, Path.GetInvalidPathChars());
-                path = Path.Combine(path, subDir);
+                // Create path and subdirectory
+                var path = PRModSettings.exportPath;
+                if (PRModSettings.createSubdirs)
+                {
+                    var subDir = Escape(Find.World.info.seedString, Path.GetInvalidPathChars());
+                    path = Path.Combine(path, subDir);
                 }
 
                 Directory.CreateDirectory(path);
@@ -652,7 +697,7 @@ namespace ProgressRenderer
                 // Get correct file and location
                 var fileExt = EnumUtils.GetFileExtension(PRModSettings.encoding);
                 var fileName = $"{imageName}.{fileExt}";
-            var filePath = Path.Combine(path, fileName);
+                var filePath = Path.Combine(path, fileName);
                 if (!File.Exists(filePath))
                 {
                     return filePath;
@@ -671,7 +716,8 @@ namespace ProgressRenderer
             }
             catch
             {
-                Log.Warning("Progress renderer could not locate or create the paths. Please check the path setting and if Rimworld is allowed to write there");
+                Log.Warning(
+                    "Progress renderer could not locate or create the paths. Please check the path setting and if Rimworld is allowed to write there");
                 return null;
             }
         }
@@ -694,12 +740,14 @@ namespace ProgressRenderer
             var quadrum = MoreGenDate.QuadrumInteger(tick, longitude);
             var day = GenDate.DayOfQuadrum(tick, longitude) + 1;
             var hour = GenDate.HourInteger(tick, longitude);
-            return "rimworld-" + Find.World.info.seedString + "-" + map.Tile + "-" + year + "-" + quadrum + "-" + ((day < 10) ? "0" : "") + day + "-" + ((hour < 10) ? "0" : "") + hour;
+            return "rimworld-" + Find.World.info.seedString + "-" + map.Tile + "-" + year + "-" + quadrum + "-" +
+                   ((day < 10) ? "0" : "") + day + "-" + ((hour < 10) ? "0" : "") + hour;
         }
 
         private string CreateImageNameNumbered()
         {
-            return "rimworld-" + Find.World.info.seedString + "-" + map.Tile + "-" + lastRenderedCounter.ToString("000000");
+            return "rimworld-" + Find.World.info.seedString + "-" + map.Tile + "-" +
+                   lastRenderedCounter.ToString("000000");
         }
     }
 }
