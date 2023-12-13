@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
 <Manifest>
 	<identifier>ProgressRenderer</identifier>
-	<version>1.4</version>
+	<version>1.4.1</version>
 	<showCrossPromotions>true</showCrossPromotions>
 	<manifestUri>https://raw.githubusercontent.com/JonathanTroyer/Progress-Renderer/master/About/Manifest.xml</manifestUri>
 	<downloadUri>https://github.com/JonathanTroyer/Progress-Renderer/releases/latest</downloadUri>
