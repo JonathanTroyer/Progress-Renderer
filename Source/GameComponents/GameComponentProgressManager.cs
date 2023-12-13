@@ -18,7 +18,7 @@ namespace ProgressRenderer
         // variables related to automatic quality adjustment
 
         public static JPGQualityAdjustmentSetting defaultJPGQualityAdjustment = JPGQualityAdjustmentSetting.Manual;
-        public static int defaultRenderSize = 25;
+        public static int defaultRenderSize = 20;
         public static int defaultJPGQuality_WORLD = 93;
         public static int defaultpixelsPerCell_WORLD = 32;
 
