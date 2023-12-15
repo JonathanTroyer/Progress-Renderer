@@ -252,6 +252,7 @@ namespace ProgressRenderer
             Scribe_Values.Look(ref smoothRenderAreaSteps, "smoothRenderAreaSteps", DefaultSmoothRenderAreaSteps);
             Scribe_Values.Look(ref whichInterval, "whichInterval", RenderIntervalHelper.Intervals.IndexOf(DefaultInterval));
             Scribe_Values.Look(ref timeOfDay, "timeOfDay", DefaultTimeOfDay);
+            Scribe_Values.Look(ref encoding, "encodingFormat", DefaultEncoding);
             Scribe_Values.Look(ref JPGQuality, "JPGQuality", DefaultJPGQuality);
             Scribe_Values.Look(ref pixelsPerCell, "pixelsPerCell", DefaultpixelsPerCell);
             Scribe_Values.Look(ref scaleOutputImage, "scaleOutputImage", DefaultScaleOutputImage);

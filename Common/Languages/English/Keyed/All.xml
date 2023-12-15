@@ -60,7 +60,7 @@
 	<LPR_SettingsJPGQualityAdjustment>Quality adjustment</LPR_SettingsJPGQualityAdjustment>
 	<LPR_JPGQualityAdjustment_Manual>Manual</LPR_JPGQualityAdjustment_Manual>
 	<LPR_JPGQualityAdjustment_Automatic>Automatic</LPR_JPGQualityAdjustment_Automatic>
-	<LPR_RenderSizeLabel>Target render size for this map</LPR_RenderSizeLabel>
+	<LPR_RenderSizeLabel>Target render size for this world</LPR_RenderSizeLabel>
 	<LPR_RenderSizeDescription>JPG quality will automatically be adjusted after each render to be near this target, preferencing quality slightly.</LPR_RenderSizeDescription>
 	<LPR_JPGQualityLabel>JPG Quality</LPR_JPGQualityLabel>
 	<LPR_JPGQualityDescription>Higher values correspond to higher image quality, lower values correspond to smaller image size</LPR_JPGQualityDescription>
