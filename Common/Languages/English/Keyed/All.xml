@@ -36,6 +36,8 @@
 	<LPR_RenderFeedback_Window>Popup</LPR_RenderFeedback_Window>
 	<LPR_SettingsRenderSettingsLabel>Render settings</LPR_SettingsRenderSettingsLabel>
 	<LPR_SettingsRenderSettingsDescription>Configure some optional graphical elements that should be included in the rendered images. The map will always be rendered while some temporary parts like your current selection, targeters or ui text and the mouse cursor are never included.</LPR_SettingsRenderSettingsDescription>
+	<LPR_SettingsRenderNonPlayerHomes>Non-PlayerHome Maps</LPR_SettingsRenderNonPlayerHomes>
+	<LPR_SettingsRenderNonPlayerHomesDescription>Enable this to also render maps which aren't classified as player homes.</LPR_SettingsRenderNonPlayerHomesDescription>
 	<LPR_SettingsRenderDesignationsLabel>Designations</LPR_SettingsRenderDesignationsLabel>
 	<LPR_SettingsRenderDesignationsDescription>Enable this when the rendered images should show designators. For example the mining, smoothing and plant cut designators.</LPR_SettingsRenderDesignationsDescription>
 	<LPR_SettingsRenderThingIconsLabel>Thing icons</LPR_SettingsRenderThingIconsLabel>
@@ -82,4 +84,6 @@
 	<LPR_FileNamePattern_BothTmpCopy>Both (numbered copy in tmp subdir)</LPR_FileNamePattern_BothTmpCopy>
 	<LPR_SettingsCreateSubdirsLabel>Create subdirectories for each world</LPR_SettingsCreateSubdirsLabel>
 	<LPR_SettingsCreateSubdirsDescription>Enable this if you want rendered images to be stored in subdirectories for each game/world by the world seed.</LPR_SettingsCreateSubdirsDescription>
+	<LPR_SettingsUseMapNameInstead>Use map name instead of world tile</LPR_SettingsUseMapNameInstead>
+	<LPR_SettingsUseMapNameInsteadDescription>Enable this if you want the map name to be used in place of the map's world tile ID</LPR_SettingsUseMapNameInsteadDescription>
 </LanguageData>
