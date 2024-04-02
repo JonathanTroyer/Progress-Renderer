@@ -195,6 +195,7 @@ namespace ProgressRenderer
                 showPollutionOverlay = settings.showPollutionOverlay,
                 showTemperatureOverlay = settings.showTemperatureOverlay
             };
+            var oldHighlight = Prefs.DotHighlightDisplayMode;
 
             if (!PRModSettings.renderZones)
                 Find.PlaySettings.showZones = false;
@@ -206,6 +207,7 @@ namespace ProgressRenderer
                 Find.PlaySettings.showPollutionOverlay = false;
                 Find.PlaySettings.showTemperatureOverlay = false;
             }
+            Prefs.DotHighlightDisplayMode = DotHighlightDisplayMode.None;
 
             //TODO: Hide fog of war (stretch) 
 
@@ -388,8 +390,7 @@ namespace ProgressRenderer
                     map.weatherManager.DrawAllWeather();
                 }
 
-                camera.transform.position =
-                    new Vector3(startX + cameraBasePos.x, cameraBasePos.y, startZ + cameraBasePos.z);
+                camera.transform.position = new Vector3(startX + cameraBasePos.x, cameraBasePos.y, startZ + cameraBasePos.z);
                 camera.Render();
                 imageTexture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0, false);
             }
@@ -419,6 +420,8 @@ namespace ProgressRenderer
             Find.PlaySettings.showTerrainAffordanceOverlay = oldVisibilities.showTerrainAffordanceOverlay;
             Find.PlaySettings.showPollutionOverlay = oldVisibilities.showPollutionOverlay;
             Find.PlaySettings.showTemperatureOverlay = oldVisibilities.showTemperatureOverlay;
+
+            Prefs.DotHighlightDisplayMode = oldHighlight;
 
             // Switch back to world view if needed
             if (rememberedWorldRendered)
