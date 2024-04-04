@@ -11,6 +11,7 @@ namespace ProgressRenderer
     public class PRModSettings : ModSettings
     {
         private static RenderFeedback DefaultRenderFeedback = RenderFeedback.Window;
+        private static bool DefaultRenderNonPlayerHomes = false;
         private static bool DefaultRenderDesignations = false;
         private static bool DefaultRenderThingIcons = false;
         private static bool DefaultRenderGameConditions = true;
@@ -49,6 +50,7 @@ namespace ProgressRenderer
         public static int outputImageFixedHeight = DefaultOutputImageFixedHeight;
         public static string exportPath;
         public static bool createSubdirs = DefaultCreateSubdirs;
+        public static bool useMapNameInstead = false; 
         public static FileNamePattern fileNamePattern = DefaultFileNamePattern;
 
         private static string outputImageFixedHeightBuffer;
@@ -56,6 +58,8 @@ namespace ProgressRenderer
         public static bool DoMigrations { get; internal set; } = true;
         public static bool migratedOutputImageSettings = false;
         public static bool migratedInterval = false;
+
+        public static bool renderNonPlayerHomes = false;
 
         public PRModSettings() : base()
         {
@@ -121,6 +125,7 @@ namespace ProgressRenderer
             ls.CheckboxLabeled("LPR_SettingsRenderWeatherLabel".Translate(), ref renderWeather, "LPR_SettingsRenderWeatherDescription".Translate());
             ls.CheckboxLabeled("LPR_SettingsRenderZonesLabel".Translate(), ref renderZones, "LPR_SettingsRenderZonesDescription".Translate());
             ls.CheckboxLabeled("LPR_SettingsRenderOverlaysLabel".Translate(), ref renderOverlays, "LPR_SettingsRenderOverlaysDescription".Translate());
+            ls.CheckboxLabeled("LPR_SettingsRenderNonPlayerHomes".Translate(), ref renderNonPlayerHomes, "LPR_SettingsRenderNonPlayerHomesDescription".Translate());
             ls.GapLine();
 
             ls.Gap();
@@ -219,6 +224,7 @@ namespace ProgressRenderer
 
             ls.Gap();
             ls.CheckboxLabeled("LPR_SettingsCreateSubdirsLabel".Translate(), ref createSubdirs, "LPR_SettingsCreateSubdirsDescription".Translate());
+            ls.CheckboxLabeled("LPR_SettingsUseMapNameInstead".Translate(), ref useMapNameInstead, "LPR_SettingsUseMapNameInsteadDescription".Translate());
             backupAnchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleLeft;
             if (ls.ButtonTextLabeled("LPR_SettingsFileNamePatternLabel".Translate(), ("LPR_FileNamePattern_" + fileNamePattern).Translate()))
@@ -244,6 +250,7 @@ namespace ProgressRenderer
             base.ExposeData();
             Scribe_Values.Look(ref renderFeedback, "renderFeedback", DefaultRenderFeedback);
             Scribe_Values.Look(ref renderDesignations, "renderDesignations", DefaultRenderDesignations);
+            Scribe_Values.Look(ref renderNonPlayerHomes, "renderNonPlayerHomes", DefaultRenderNonPlayerHomes);
             Scribe_Values.Look(ref renderThingIcons, "renderThingIcons", DefaultRenderThingIcons);
             Scribe_Values.Look(ref renderGameConditions, "renderGameConditions", DefaultRenderGameConditions);
             Scribe_Values.Look(ref renderWeather, "renderWeather", DefaultRenderWeather);
@@ -259,6 +266,7 @@ namespace ProgressRenderer
             Scribe_Values.Look(ref outputImageFixedHeight, "outputImageFixedHeight", DefaultOutputImageFixedHeight);
             Scribe_Values.Look(ref exportPath, "exportPath", DesktopPath);
             Scribe_Values.Look(ref createSubdirs, "createSubdirs", DefaultCreateSubdirs);
+            Scribe_Values.Look(ref useMapNameInstead, "useMapNameInstead", false);
             Scribe_Values.Look(ref fileNamePattern, "fileNamePattern", DefaultFileNamePattern);
             Scribe_Values.Look(ref migratedOutputImageSettings, "migratedOutputImageSettings", false, true);
             Scribe_Values.Look(ref migratedInterval, "migratedInterval", false, true);

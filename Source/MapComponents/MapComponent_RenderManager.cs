@@ -82,7 +82,7 @@ namespace ProgressRenderer
 
             // Check for rendering
             // Only render player home maps
-            if (!map.IsPlayerHome)
+            if (!map.IsPlayerHome && !PRModSettings.renderNonPlayerHomes)
             {
                 return;
             }
@@ -736,13 +736,15 @@ namespace ProgressRenderer
             var quadrum = MoreGenDate.QuadrumInteger(tick, longitude);
             var day = GenDate.DayOfQuadrum(tick, longitude) + 1;
             var hour = GenDate.HourInteger(tick, longitude);
-            return "rimworld-" + Find.World.info.seedString + "-" + map.Tile + "-" + year + "-" + quadrum + "-" +
+            string mapName = PRModSettings.useMapNameInstead ? map.ToString() : map.Tile.ToString();
+            return "rimworld-" + Find.World.info.seedString + "-" + mapName + "-" + year + "-" + quadrum + "-" +
                    ((day < 10) ? "0" : "") + day + "-" + ((hour < 10) ? "0" : "") + hour;
         }
 
         private string CreateImageNameNumbered()
         {
-            return "rimworld-" + Find.World.info.seedString + "-" + map.Tile + "-" +
+            string mapName = PRModSettings.useMapNameInstead ? map.ToString() : map.Tile.ToString();
+            return "rimworld-" + Find.World.info.seedString + "-" + mapName + "-" +
                    lastRenderedCounter.ToString("000000");
         }
     }
