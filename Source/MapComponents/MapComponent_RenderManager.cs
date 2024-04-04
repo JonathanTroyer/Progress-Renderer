@@ -158,13 +158,14 @@ namespace ProgressRenderer
 
         private IEnumerator DoRendering(bool forceRenderFullMap = false)
         {
+            yield return new WaitUntil(() => Utils.GlobalRenderingLock);
+            Utils.GlobalRenderingLock = true;
+            
             yield return new WaitForFixedUpdate();
             if (Rendering)
             {
-                Log.Error(
-                    "Progress Renderer is still rendering an image while a new rendering was requested. This can lead to missing or wrong data. (This can also happen in rare situations when you trigger manual rendering the exact same time as an automatic rendering happens. If you did that, just check your export folder if both renderings were done corrently and ignore this error.)");
+                Log.Error("Progress Renderer is still rendering an image while a new rendering was requested. This can lead to missing or wrong data. (This can also happen in rare situations when you trigger manual rendering the exact same time as an automatic rendering happens. If you did that, just check your export folder if both renderings were done correctly and ignore this error.)");
             }
-
             Rendering = true;
 
             // Temporary switch to this map for rendering
@@ -439,6 +440,8 @@ namespace ProgressRenderer
 
             // Signal finished rendering
             Rendering = false;
+            Utils.GlobalRenderingLock = false;
+            
             // Hide message box
             if (messageBox != null)
             {
@@ -458,8 +461,7 @@ namespace ProgressRenderer
         {
             if (encoding)
             {
-                Log.Error(
-                    "Progress Renderer is still encoding an image while the encoder was called again. This can lead to missing or wrong data.");
+                Log.Error("Progress Renderer is still encoding an image while the encoder was called again. This can lead to missing or wrong data.");
             }
 
             switch (PRModSettings.encoding)
@@ -471,8 +473,7 @@ namespace ProgressRenderer
                     EncodeUnityPng();
                     break;
                 default:
-                    Log.Error(
-                        "Progress Renderer encoding setting is wrong or missing. Using default for now. Go to the settings and set a new value.");
+                    Log.Error("Progress Renderer encoding setting is wrong or missing. Using default for now. Go to the settings and set a new value.");
                     EncodeUnityJpg();
                     break;
             }
