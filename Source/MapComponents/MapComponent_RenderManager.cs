@@ -109,10 +109,8 @@ namespace ProgressRenderer
                 return;
             }
 
-            // Show message window or print message
-            ShowCurrentRenderMessage();
             // Start rendering
-            Find.CameraDriver.StartCoroutine(DoRendering());
+            RequestDoRendering();
         }
 
         public override void ExposeData()
@@ -156,17 +154,38 @@ namespace ProgressRenderer
             }
         }
 
-        private IEnumerator DoRendering(bool forceRenderFullMap = false)
+        private void RequestDoRendering(bool forceRenderFullMap = false)
         {
-            yield return new WaitUntil(() => Utils.GlobalRenderingLock);
-            Utils.GlobalRenderingLock = true;
-            
-            yield return new WaitForFixedUpdate();
-            if (Rendering)
+            lock (Utils.Lock)
             {
-                Log.Error("Progress Renderer is still rendering an image while a new rendering was requested. This can lead to missing or wrong data. (This can also happen in rare situations when you trigger manual rendering the exact same time as an automatic rendering happens. If you did that, just check your export folder if both renderings were done correctly and ignore this error.)");
+                Utils.Renderings.Enqueue(DoRendering(forceRenderFullMap));
             }
+
+            Find.CameraDriver.StartCoroutine(Utils.ProcessRenderings());
+        }
+
+        private IEnumerator DoRendering(bool forceRenderFullMap)
+        {
+#if DEBUG
+            Log.Message($"Map {map}: " + $"Local rendering lock is {Rendering}");
+#endif
+            yield return new WaitUntil(() => !Rendering);
             Rendering = true;
+#if DEBUG
+            Log.Message($"Map {map}: " + "Acquired local lock");
+#endif
+
+            ShowCurrentRenderMessage();
+#if DEBUG
+            Log.Message($"Map {map}: " + "Showed message box");
+#endif
+
+            yield return new WaitForFixedUpdate();
+#if DEBUG
+            Log.Message($"Map {map}: " + "WaitForFixedUpdate");
+#endif
+
+            #region Switch map
 
             // Temporary switch to this map for rendering
             var switchedMap = false;
@@ -183,6 +202,12 @@ namespace ProgressRenderer
             {
                 CameraJumper.TryHideWorld();
             }
+
+            #endregion
+
+#if DEBUG
+            Log.Message($"Map {map}: " + $"Switched map? {switchedMap}");
+#endif
 
             #region Hide overlays
 
@@ -213,6 +238,10 @@ namespace ProgressRenderer
             //TODO: Hide fog of war (stretch) 
 
             #endregion
+
+#if DEBUG
+            Log.Message($"Map {map}: " + "Hid things");
+#endif
 
             #region Calculate rendered area
 
@@ -263,11 +292,20 @@ namespace ProgressRenderer
             if (!manuallyTriggered)
             {
                 // Test if target render area changed to reset smoothing
-                if (rsTargetStartX != startX || rsTargetStartZ != startZ || rsTargetEndX != endX ||
-                    rsTargetEndZ != endZ)
+                if (!(
+                        rsTargetStartX.CloseEquals(startX) &&
+                        rsTargetStartZ.CloseEquals(startZ) &&
+                        rsTargetEndX.CloseEquals(endX) &&
+                        rsTargetEndZ.CloseEquals(endZ)
+                    ))
                 {
                     // Check if area was manually reset or uninitialized (-1) to not smooth
-                    if (rsTargetStartX == -1f && rsTargetStartZ == -1f && rsTargetEndX == -1f && rsTargetEndZ == -1f)
+                    if (
+                        rsTargetStartX.CloseEquals(-1f) &&
+                        rsTargetStartZ.CloseEquals(-1f) &&
+                        rsTargetEndX.CloseEquals(-1f) &&
+                        rsTargetEndZ.CloseEquals(-1f)
+                    )
                     {
                         rsCurrentPosition = 1f;
                     }
@@ -302,6 +340,10 @@ namespace ProgressRenderer
 
             #endregion
 
+#if DEBUG
+            Log.Message($"Map {map}: " + "Calculated the rendered area");
+#endif
+
             #region Calculate texture size
 
             // Calculate basic values that are used for rendering
@@ -334,6 +376,10 @@ namespace ProgressRenderer
             }
 
             #endregion
+
+#if DEBUG
+            Log.Message($"Map {map}: " + "Calculated the texture size");
+#endif
 
             #region Initialize camera and textures
 
@@ -371,7 +417,14 @@ namespace ProgressRenderer
 
             #endregion
 
+#if DEBUG
+            Log.Message($"Map {map}: " + "Initialized camera");
+#endif
+
             yield return new WaitForEndOfFrame();
+#if DEBUG
+            Log.Message($"Map {map}: " + "WaitForEndOfFrame");
+#endif
 
             // Set camera values needed for rendering
             camera.orthographicSize = orthographicSize;
@@ -401,6 +454,10 @@ namespace ProgressRenderer
             }
 
             #endregion
+
+#if DEBUG
+            Log.Message($"Map {map}: " + "Did render");
+#endif
 
             #region Restore pre-render state
 
@@ -438,23 +495,38 @@ namespace ProgressRenderer
 
             #endregion
 
-            // Signal finished rendering
-            Rendering = false;
-            Utils.GlobalRenderingLock = false;
-            
+#if DEBUG
+            Log.Message($"Map {map}: " + "Restored pre-rendered state");
+#endif
+
             // Hide message box
             if (messageBox != null)
             {
                 messageBox.Close();
                 messageBox = null;
             }
+#if DEBUG
+            Log.Message($"Map {map}: " + "Hid message box");
+#endif
 
             yield return null;
+#if DEBUG
+            Log.Message($"Map {map}: " + "Waited a frame");
+#endif
 
             // Start encoding
             if (EncodingTask != null && !EncodingTask.IsCompleted)
                 EncodingTask.Wait();
             EncodingTask = Task.Run(DoEncoding);
+#if DEBUG
+            Log.Message($"Map {map}: " + "Started encoding task");
+#endif
+
+            // Signal finished rendering
+            Rendering = false;
+#if DEBUG
+            Log.Message($"Map {map}: " + "Released local lock");
+#endif
         }
 
         private void DoEncoding()
