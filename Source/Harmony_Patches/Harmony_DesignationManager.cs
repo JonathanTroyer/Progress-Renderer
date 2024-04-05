@@ -3,13 +3,21 @@ using Verse;
 
 namespace ProgressRenderer
 {
+
     [HarmonyPatch(typeof(DesignationManager))]
     [HarmonyPatch("DrawDesignations")]
-    public class HarmonyDesignationManagerDrawDesignations
+    public class Harmony_DesignationManager_DrawDesignations
     {
-        public static bool Prefix(DesignationManager instance)
+
+        public static bool Prefix(DesignationManager __instance)
         {
-            return PrModSettings.RenderDesignations || !instance.map.GetComponent<MapComponentRenderManager>().Rendering;
+            if (!PRModSettings.renderDesignations && __instance.map.GetComponent<MapComponent_RenderManager>().Rendering)
+            {
+                return false;
+            }
+            return true;
         }
+
     }
+    
 }

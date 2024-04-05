@@ -3,13 +3,21 @@ using Verse;
 
 namespace ProgressRenderer
 {
+
     [HarmonyPatch(typeof(DesignatorManager))]
     [HarmonyPatch("DesignatorManagerUpdate")]
-    public class HarmonyDesignatorManagerDesignatorManagerUpdate
+    public class Harmony_DesignatorManager_DesignatorManagerUpdate
     {
+
         public static bool Prefix()
         {
-            return !Find.CurrentMap.GetComponent<MapComponentRenderManager>().Rendering;
+            if (Find.CurrentMap.GetComponent<MapComponent_RenderManager>().Rendering)
+            {
+                return false;
+            }
+            return true;
         }
+
     }
+    
 }

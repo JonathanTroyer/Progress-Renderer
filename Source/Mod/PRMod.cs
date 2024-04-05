@@ -4,17 +4,19 @@ using Verse;
 
 namespace ProgressRenderer
 {
-    public class PrMod : Mod
-    {
-        private readonly PrModSettings _settings;
 
-        public PrMod(ModContentPack content) : base(content)
+    public class PRMod : Mod
+    {
+
+        public PRModSettings settings;
+
+        public PRMod(ModContentPack content) : base(content)
         {
-            _settings = GetSettings<PrModSettings>();
+            settings = GetSettings<PRModSettings>();
             var modConfigFile = $"Mod_{Content.FolderName}_{GetType().Name}.xml";
             if (File.Exists(Path.Combine(GenFilePaths.ConfigFolderPath, GenText.SanitizeFilename(modConfigFile))))
             {
-                PrModSettings.DoMigrations = false;
+                PRModSettings.DoMigrations = false;
             }
         }
 
@@ -25,8 +27,10 @@ namespace ProgressRenderer
 
         public override void DoSettingsWindowContents(Rect rect)
         {
-            _settings.DoWindowContents(rect);
+            settings.DoWindowContents(rect);
             base.DoSettingsWindowContents(rect);
         }
+
     }
+
 }

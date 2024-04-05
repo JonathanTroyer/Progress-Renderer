@@ -3,13 +3,21 @@ using Verse;
 
 namespace ProgressRenderer
 {
+
     [HarmonyPatch(typeof(EnvironmentStatsDrawer))]
     [HarmonyPatch("DrawRoomOverlays")]
-    public class HarmonyEnvironmentStatsDrawerDrawRoomOverlays
+    public class Harmony_EnvironmentStatsDrawer_DrawRoomOverlays
     {
+
         public static bool Prefix()
         {
-            return !Find.CurrentMap.GetComponent<MapComponentRenderManager>().Rendering;
+            if (Find.CurrentMap.GetComponent<MapComponent_RenderManager>().Rendering)
+            {
+                return false;
+            }
+            return true;
         }
+
     }
+    
 }

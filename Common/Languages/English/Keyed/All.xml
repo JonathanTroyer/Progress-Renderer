@@ -1,148 +1,89 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <LanguageData>
 
-    <!-- General -->
-    <LPR_RenderEveryHours>{0} hours</LPR_RenderEveryHours>
-    <LPR_RenderEveryHour>hour</LPR_RenderEveryHour>
-    <LPR_RenderEveryDays>{0} days</LPR_RenderEveryDays>
-    <LPR_RenderEveryDay>day</LPR_RenderEveryDay>
+	<!-- General -->
+	<LPR_RenderEveryHours>{0} hours</LPR_RenderEveryHours>
+	<LPR_RenderEveryHour>hour</LPR_RenderEveryHour>
+	<LPR_RenderEveryDays>{0} days</LPR_RenderEveryDays>
+	<LPR_RenderEveryDay>day</LPR_RenderEveryDay>
 
-    <!-- Messages -->
-    <LPR_MessageCornerMarkerAmount>There are now {0} corner markers on this map.</LPR_MessageCornerMarkerAmount>
-    <LPR_MessageCornerMarkerTooLess>Rendering needs 2 markers to limit the rendered area. Now the full map will be
-        rendered.
-    </LPR_MessageCornerMarkerTooLess>
-    <LPR_MessageCornerMarkerTooMany>Rendering will create and use a virtual rect around all markers. You may want to
-        remove unnecessary ones.
-    </LPR_MessageCornerMarkerTooMany>
-    <LPR_MessageCornerMarkerCorrect>Rendering will limit to the enclosed area.</LPR_MessageCornerMarkerCorrect>
-    <LPR_MessageCornerMarkersRect>Enclosing rect size is {0}x{1} cells.</LPR_MessageCornerMarkersRect>
-    <LPR_MessageCornerMarkersRectRatio>Aspect ratio is {0}.</LPR_MessageCornerMarkersRectRatio>
-    <LPR_MessageCornerMarkersRectRatioDefined>Aspect ratio is {0} ({1}).</LPR_MessageCornerMarkersRectRatioDefined>
-    <LPR_MessageCornerMarkersRectHeightTooLow>Height is too low. This will result in incorrect renderings. More than 20
-        cells height are recommended.
-    </LPR_MessageCornerMarkersRectHeightTooLow>
+	<!-- Messages -->
+	<LPR_MessageCornerMarkerAmount>There are now {0} corner markers on this map.</LPR_MessageCornerMarkerAmount>
+	<LPR_MessageCornerMarkerTooLess>Rendering needs 2 markers to limit the rendered area. Now the full map will be rendered.</LPR_MessageCornerMarkerTooLess>
+	<LPR_MessageCornerMarkerTooMany>Rendering will create and use a virtual rect around all markers. You may want to remove unnecessary ones.</LPR_MessageCornerMarkerTooMany>
+	<LPR_MessageCornerMarkerCorrect>Rendering will limit to the enclosed area.</LPR_MessageCornerMarkerCorrect>
+	<LPR_MessageCornerMarkersRect>Enclosing rect size is {0}x{1} cells.</LPR_MessageCornerMarkersRect>
+	<LPR_MessageCornerMarkersRectRatio>Aspect ratio is {0}.</LPR_MessageCornerMarkersRectRatio>
+	<LPR_MessageCornerMarkersRectRatioDefined>Aspect ratio is {0} ({1}).</LPR_MessageCornerMarkersRectRatioDefined>
+	<LPR_MessageCornerMarkesRectHeightTooLow>Height is too low. This will result in incorrect renderings. More than 20 cells height are recommended.</LPR_MessageCornerMarkesRectHeightTooLow>
 
-    <!-- Designation -->
-    <DesignatorCornerMarker>Rendering corner marker</DesignatorCornerMarker>
-    <DesignatorCornerMarkerDesc>Place corner markers for map rendering. Placing 2 will limit the rendering to only
-        render the enclosed area.
-    </DesignatorCornerMarkerDesc>
-    <DesignatorCornerMarkerRemove>Remove corner marker</DesignatorCornerMarkerRemove>
-    <DesignatorCornerMarkerRemoveDesc>Remove corner markers for map rendering. Removing all will let the rendering
-        render the full map.
-    </DesignatorCornerMarkerRemoveDesc>
+	<!-- Designation -->
+	<DesignatorCornerMarker>Rendering corner marker</DesignatorCornerMarker>
+	<DesignatorCornerMarkerDesc>Place corner markers for map rendering. Placing 2 will limit the rendering to only render the enclosed area.</DesignatorCornerMarkerDesc>
+	<DesignatorConerMarkerRemove>Remove corner marker</DesignatorConerMarkerRemove>
+	<DesignatorCornerMarkerRemoveDesc>Remove corner markers for map rendering. Removing all will let the rendering render the full map.</DesignatorCornerMarkerRemoveDesc>
 
-    <!-- Misc -->
-    <LPR_Rendering>Rendering map image...</LPR_Rendering>
+	<!-- Misc -->
+	<LPR_Rendering>Rendering map image...</LPR_Rendering>
 
-    <!-- Settings -->
-    <LPR_SettingsCategory>Progress Renderer</LPR_SettingsCategory>
-    <LPR_SettingsEnabledLabel>Enabled (must be disabled per world)</LPR_SettingsEnabledLabel>
-    <LPR_SettingsEnabledDescription>When enabled, this mod takes automatic renderings of current maps while playing and
-        uses the settings below. You can temporary disable this here so you don't have to remove the mod each time.
-    </LPR_SettingsEnabledDescription>
-    <LPR_SettingsRenderFeedbackLabel>Render feedback</LPR_SettingsRenderFeedbackLabel>
-    <LPR_RenderFeedback_None>None</LPR_RenderFeedback_None>
-    <LPR_RenderFeedback_Message>Message</LPR_RenderFeedback_Message>
-    <LPR_RenderFeedback_Window>Popup</LPR_RenderFeedback_Window>
-    <LPR_SettingsRenderSettingsLabel>Render settings</LPR_SettingsRenderSettingsLabel>
-    <LPR_SettingsRenderSettingsDescription>Configure some optional graphical elements that should be included in the
-        rendered images. The map will always be rendered while some temporary parts like your current selection,
-        targeters or ui text and the mouse cursor are never included.
-    </LPR_SettingsRenderSettingsDescription>
-    <LPR_SettingsRenderNonPlayerHomes>Non-colony maps</LPR_SettingsRenderNonPlayerHomes>
-    <LPR_SettingsRenderNonPlayerHomesDescription>Enable this to also render maps which aren't classified as player
-        homes.
-    </LPR_SettingsRenderNonPlayerHomesDescription>
-    <LPR_SettingsRenderDesignationsLabel>Designations</LPR_SettingsRenderDesignationsLabel>
-    <LPR_SettingsRenderDesignationsDescription>Enable this when the rendered images should show designators. For example
-        the mining, smoothing and plant cut designators.
-    </LPR_SettingsRenderDesignationsDescription>
-    <LPR_SettingsRenderThingIconsLabel>Thing icons</LPR_SettingsRenderThingIconsLabel>
-    <LPR_SettingsRenderThingIconsDescription>Enable this when the rendered images should show overlay icons on things
-        and buildings. For example "forbidden", "no fuel", "no power" and such icons.
-    </LPR_SettingsRenderThingIconsDescription>
-    <LPR_SettingsRenderGameConditionsLabel>Game conditions</LPR_SettingsRenderGameConditionsLabel>
-    <LPR_SettingsRenderGameConditionsDescription>Enable this when the rendered images should contain game condition
-        effects (like weather and lighting from toxic fallout).
-    </LPR_SettingsRenderGameConditionsDescription>
-    <LPR_SettingsRenderWeatherLabel>Weather</LPR_SettingsRenderWeatherLabel>
-    <LPR_SettingsRenderWeatherDescription>Enable this when the rendered images should contain the current ingame
-        weather.
-    </LPR_SettingsRenderWeatherDescription>
-    <LPR_SettingsRenderZonesLabel>Zones</LPR_SettingsRenderZonesLabel>
-    <LPR_SettingsRenderZonesDescription>Enable this to include zones in the rendered image.
-    </LPR_SettingsRenderZonesDescription>
-    <LPR_SettingsRenderOverlaysLabel>Overlays</LPR_SettingsRenderOverlaysLabel>
-    <LPR_SettingsRenderOverlaysDescription>Enable this to include overlays in the rendered image. This setting includes
-        all overlays.
-    </LPR_SettingsRenderOverlaysDescription>
-    <LPR_SettingsSmoothRenderAreaStepsLabel>Smooth render area on change (set smoothing steps)
-    </LPR_SettingsSmoothRenderAreaStepsLabel>
-    <LPR_SettingsSmoothRenderAreaStepsDescription>You can increase this if you want a smoother transition of your
-        rendered area when you change the area with corner markers. Rendering will transition smoothly to the new area
-        in the next X renderings. (Note that it may take a while to get to the new area if you choose a high step value
-        and a low render interval.)
-    </LPR_SettingsSmoothRenderAreaStepsDescription>
-    <LPR_SettingsIntervalLabel>Render every</LPR_SettingsIntervalLabel>
-    <LPR_SettingsIntervalDescription>Choose the render interval, so how often a progress image should be taken. You can
-        choose a frequency between once a quadrum and hourly.
-    </LPR_SettingsIntervalDescription>
-    <LPR_SettingsTimeOfDayLabel>Render at</LPR_SettingsTimeOfDayLabel>
-    <LPR_SettingsTimeOfDayDescription>Choose at which time (in hours) of the selected days the rendering should happen.
-        If you chose an interval of multiple times per day above, this setting works as an offset.
-    </LPR_SettingsTimeOfDayDescription>
-    <LPR_SettingsEncodingLabel>Exported image encoding</LPR_SettingsEncodingLabel>
-    <LPR_ImgEncoding_PNG_unity>PNG (Unity)</LPR_ImgEncoding_PNG_unity>
-    <LPR_ImgEncoding_JPG_unity>JPG (Unity)</LPR_ImgEncoding_JPG_unity>
-    <LPR_SettingsJPGQualityAdjustment>Quality adjustment</LPR_SettingsJPGQualityAdjustment>
-    <LPR_JPGQualityAdjustment_Manual>Manual</LPR_JPGQualityAdjustment_Manual>
-    <LPR_JPGQualityAdjustment_Automatic>Automatic</LPR_JPGQualityAdjustment_Automatic>
-    <LPR_RenderSizeLabel>Target render size for this world</LPR_RenderSizeLabel>
-    <LPR_RenderSizeDescription>JPG quality will automatically be adjusted after each render to be near this target,
-        preferencing quality slightly.
-    </LPR_RenderSizeDescription>
-    <LPR_JPGQualityLabel>JPG Quality</LPR_JPGQualityLabel>
-    <LPR_JPGQualityDescription>Higher values correspond to higher image quality, lower values correspond to smaller
-        image size
-    </LPR_JPGQualityDescription>
-    <LPR_SettingsPixelsPerCellLabel>Pixel per cell (for image resolution)</LPR_SettingsPixelsPerCellLabel>
-    <LPR_SettingsPixelsPerCell_WORLDLabel>Pixel per cell for this world (for image resolution)
-    </LPR_SettingsPixelsPerCell_WORLDLabel>
-    <LPR_SettingsPixelsPerCellDescription>Define with how many pixels each ingame map cell should be displayed on the
-        rendered image.
-    </LPR_SettingsPixelsPerCellDescription>
-    <LPR_SettingsPixelsPerCell_WORLDDescription>Define with how many pixels each ingame map cell should be displayed on
-        the rendered image. Because automatic mode is enabled, it is saved only for this world.
-    </LPR_SettingsPixelsPerCell_WORLDDescription>
-    <LPR_SettingsInitializeLabel>Initialize quality adjustment at first render</LPR_SettingsInitializeLabel>
-    <LPR_SettingsInitializeDescription>At first render, perform multiple renders, adjusting quality until the target is
-        reached. !WARNING! this will take some time and cannot be interrupted and may be a lot of work for your
-        computer. Pausing recommended.
-    </LPR_SettingsInitializeDescription>
-    <LPR_SettingsScaleOutputImageLabel>Rescale to fixed height</LPR_SettingsScaleOutputImageLabel>
-    <LPR_SettingsScaleOutputImageDescription>Set this if you want the rendered output image to have a fixed height. The
-        width will be calculated to preserve the aspect ratio. Useful when you change the rendered area size mid-game
-        and and plan to animate the image sequence later, so you can work with one fixed image size.
-    </LPR_SettingsScaleOutputImageDescription>
-    <LPR_SettingsOutputImageFixedHeightLabel>Output height (px)</LPR_SettingsOutputImageFixedHeightLabel>
-    <LPR_SettingsExportPathLabel>Export path</LPR_SettingsExportPathLabel>
-    <LPR_SettingsExportPathDescription>The path where rendered images will be saved. Note that this must be a valid path
-        to an existing and accessible directory on your computer. You can copy+paste a directory from your file explorer
-        here for simple editing.
-    </LPR_SettingsExportPathDescription>
-    <LPR_SettingsExportPathInvalid>INVALID PATH</LPR_SettingsExportPathInvalid>
-    <LPR_SettingsFileNamePatternLabel>Exported image name pattern</LPR_SettingsFileNamePatternLabel>
-    <LPR_FileNamePattern_DateTime>Ingame date and time</LPR_FileNamePattern_DateTime>
-    <LPR_FileNamePattern_Numbered>Numbered consecutively (for each map)</LPR_FileNamePattern_Numbered>
-    <LPR_FileNamePattern_BothTmpCopy>Both (numbered copy in tmp subdir)</LPR_FileNamePattern_BothTmpCopy>
-    <LPR_SettingsCreateSubdirsLabel>Create subdirectories for each world</LPR_SettingsCreateSubdirsLabel>
-    <LPR_SettingsCreateSubdirsDescription>Enable this if you want rendered images to be stored in subdirectories for
-        each game/world by the world seed.
-    </LPR_SettingsCreateSubdirsDescription>
-    <LPR_SettingsUseMapNameInstead>Use map name instead of world tile</LPR_SettingsUseMapNameInstead>
-    <LPR_SettingsUseMapNameInsteadDescription>Enable this if you want the map name to be used in place of the map's
-        world tile ID
-    </LPR_SettingsUseMapNameInsteadDescription>
+	<!-- Settings -->
+	<LPR_SettingsCategory>Progress Renderer</LPR_SettingsCategory>
+	<LPR_SettingsEnabledLabel>Enabled (must be disabled per world)</LPR_SettingsEnabledLabel>
+	<LPR_SettingsEnabledDescription>When enabled, this mod takes automatic renderings of current maps while playing and uses the settings below. You can temporary disable this here so you don't have to remove the mod each time.</LPR_SettingsEnabledDescription>
+	<LPR_SettingsRenderFeedbackLabel>Render feedback</LPR_SettingsRenderFeedbackLabel>
+	<LPR_RenderFeedback_None>None</LPR_RenderFeedback_None>
+	<LPR_RenderFeedback_Message>Message</LPR_RenderFeedback_Message>
+	<LPR_RenderFeedback_Window>Popup</LPR_RenderFeedback_Window>
+	<LPR_SettingsRenderSettingsLabel>Render settings</LPR_SettingsRenderSettingsLabel>
+	<LPR_SettingsRenderSettingsDescription>Configure some optional graphical elements that should be included in the rendered images. The map will always be rendered while some temporary parts like your current selection, targeters or ui text and the mouse cursor are never included.</LPR_SettingsRenderSettingsDescription>
+	<LPR_SettingsRenderNonPlayerHomes>Non-colony maps</LPR_SettingsRenderNonPlayerHomes>
+	<LPR_SettingsRenderNonPlayerHomesDescription>Enable this to also render maps which aren't classified as player homes.</LPR_SettingsRenderNonPlayerHomesDescription>
+	<LPR_SettingsRenderDesignationsLabel>Designations</LPR_SettingsRenderDesignationsLabel>
+	<LPR_SettingsRenderDesignationsDescription>Enable this when the rendered images should show designators. For example the mining, smoothing and plant cut designators.</LPR_SettingsRenderDesignationsDescription>
+	<LPR_SettingsRenderThingIconsLabel>Thing icons</LPR_SettingsRenderThingIconsLabel>
+	<LPR_SettingsRenderThingIconsDescription>Enable this when the rendered images should show overlay icons on things and buildings. For example "forbidden", "no fuel", "no power" and such icons.</LPR_SettingsRenderThingIconsDescription>
+	<LPR_SettingsRenderGameConditionsLabel>Game conditions</LPR_SettingsRenderGameConditionsLabel>
+	<LPR_SettingsRenderGameConditionsDescription>Enable this when the rendered images should contain game condition effects (like weather and lighting from toxic fallout).</LPR_SettingsRenderGameConditionsDescription>
+	<LPR_SettingsRenderWeatherLabel>Weather</LPR_SettingsRenderWeatherLabel>
+	<LPR_SettingsRenderWeatherDescription>Enable this when the rendered images should contain the current ingame weather.</LPR_SettingsRenderWeatherDescription>
+	<LPR_SettingsRenderZonesLabel>Zones</LPR_SettingsRenderZonesLabel>
+	<LPR_SettingsRenderZonesDescription>Enable this to include zones in the rendered image.</LPR_SettingsRenderZonesDescription>
+	<LPR_SettingsRenderOverlaysLabel>Overlays</LPR_SettingsRenderOverlaysLabel>
+	<LPR_SettingsRenderOverlaysDescription>Enable this to include overlays in the rendered image. This setting includes all overlays.</LPR_SettingsRenderOverlaysDescription>
+	<LPR_SettingsSmoothRenderAreaStepsLabel>Smooth render area on change (set smoothing steps)</LPR_SettingsSmoothRenderAreaStepsLabel>
+	<LPR_SettingsSmoothRenderAreaStepsDescription>You can increase this if you want a smoother transition of your rendered area when you change the area with corner markers. Rendering will transition smoothly to the new area in the next X renderings. (Note that it may take a while to get to the new area if you choose a high step value and a low render interval.)</LPR_SettingsSmoothRenderAreaStepsDescription>
+	<LPR_SettingsIntervalLabel>Render every</LPR_SettingsIntervalLabel>
+	<LPR_SettingsIntervalDescription>Choose the render interval, so how often a progress image should be taken. You can choose a frequency between once a quadrum and hourly.</LPR_SettingsIntervalDescription>
+	<LPR_SettingsTimeOfDayLabel>Render at</LPR_SettingsTimeOfDayLabel>
+	<LPR_SettingsTimeOfDayDescription>Choose at which time (in hours) of the selected days the rendering should happen. If you chose an interval of multiple times per day above, this setting works as an offset.</LPR_SettingsTimeOfDayDescription>
+	<LPR_SettingsEncodingLabel>Exported image encoding</LPR_SettingsEncodingLabel>
+	<LPR_ImgEncoding_PNG_unity>PNG (Unity)</LPR_ImgEncoding_PNG_unity>
+	<LPR_ImgEncoding_JPG_unity>JPG (Unity)</LPR_ImgEncoding_JPG_unity>
+	<LPR_SettingsJPGQualityAdjustment>Quality adjustment</LPR_SettingsJPGQualityAdjustment>
+	<LPR_JPGQualityAdjustment_Manual>Manual</LPR_JPGQualityAdjustment_Manual>
+	<LPR_JPGQualityAdjustment_Automatic>Automatic</LPR_JPGQualityAdjustment_Automatic>
+	<LPR_RenderSizeLabel>Target render size for this world</LPR_RenderSizeLabel>
+	<LPR_RenderSizeDescription>JPG quality will automatically be adjusted after each render to be near this target, preferencing quality slightly.</LPR_RenderSizeDescription>
+	<LPR_JPGQualityLabel>JPG Quality</LPR_JPGQualityLabel>
+	<LPR_JPGQualityDescription>Higher values correspond to higher image quality, lower values correspond to smaller image size</LPR_JPGQualityDescription>
+	<LPR_SettingspixelsPerCellLabel>Pixel per cell (for image resolution)</LPR_SettingspixelsPerCellLabel>
+	<LPR_SettingspixelsPerCell_WORLDLabel>Pixel per cell for this world (for image resolution)</LPR_SettingspixelsPerCell_WORLDLabel>
+	<LPR_SettingspixelsPerCellDescription>Define with how many pixels each ingame map cell should be displayed on the rendered image.</LPR_SettingspixelsPerCellDescription>
+	<LPR_SettingspixelsPerCell_WORLDDescription>Define with how many pixels each ingame map cell should be displayed on the rendered image. Because automatic mode is enabled, it is saved only for this world.</LPR_SettingspixelsPerCell_WORLDDescription>
+	<LPR_SettingsInitializeLabel>Initialize quality adjustment at first render</LPR_SettingsInitializeLabel>
+	<LPR_SettingsInitializeDescription>At first render, perform multiple renders, adjusting quality until the target is reached. !WARNING! this will take some time and cannot be interrupted and may be a lot of work for your computer. Pausing recommended.</LPR_SettingsInitializeDescription>
+	<LPR_SettingsScaleOutputImageLabel>Rescale to fixed height</LPR_SettingsScaleOutputImageLabel>
+	<LPR_SettingsScaleOutputImageDescription>Set this if you want the rendered output image to have a fixed height. The width will be calculated to preserve the aspect ratio. Useful when you change the rendered area size mid-game and and plan to animate the image sequence later, so you can work with one fixed image size.</LPR_SettingsScaleOutputImageDescription>
+	<LPR_SettingsOutputImageFixedHeightLabel>Output height (px)</LPR_SettingsOutputImageFixedHeightLabel>
+	<LPR_SettingsExportPathLabel>Export path</LPR_SettingsExportPathLabel>
+	<LPR_SettingsExportPathDescription>The path where rendered images will be saved. Note that this must be a valid path to an existing and accessible directory on your computer. You can copy+paste a directory from your file explorer here for simple editing.</LPR_SettingsExportPathDescription>
+	<LPR_SettingsExportPathInvalid>INVALID PATH</LPR_SettingsExportPathInvalid>
+	<LPR_SettingsFileNamePatternLabel>Exported image name pattern</LPR_SettingsFileNamePatternLabel>
+	<LPR_FileNamePattern_DateTime>Ingame date and time</LPR_FileNamePattern_DateTime>
+	<LPR_FileNamePattern_Numbered>Numbered consecutively (for each map)</LPR_FileNamePattern_Numbered>
+	<LPR_FileNamePattern_BothTmpCopy>Both (numbered copy in tmp subdir)</LPR_FileNamePattern_BothTmpCopy>
+	<LPR_SettingsCreateSubdirsLabel>Create subdirectories for each world</LPR_SettingsCreateSubdirsLabel>
+	<LPR_SettingsCreateSubdirsDescription>Enable this if you want rendered images to be stored in subdirectories for each game/world by the world seed.</LPR_SettingsCreateSubdirsDescription>
+	<LPR_SettingsUseMapNameInstead>Use map name instead of world tile</LPR_SettingsUseMapNameInstead>
+	<LPR_SettingsUseMapNameInsteadDescription>Enable this if you want the map name to be used in place of the map's world tile ID</LPR_SettingsUseMapNameInsteadDescription>
 </LanguageData>

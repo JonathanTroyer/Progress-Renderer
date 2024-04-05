@@ -4,16 +4,16 @@ using Verse;
 
 namespace ProgressRenderer
 {
-    public class DesignatorCornerMarkerRemove : DesignatorCornerMarker
-    {
+	public class Designator_CornerMarkerRemove : Designator_CornerMarker
+	{
 
-        public DesignatorCornerMarkerRemove() : base(DesignateMode.Remove)
-        {
-            defaultLabel = "DesignatorCornerMarkerRemove".Translate();
-            defaultDesc = "DesignatorCornerMarkerRemoveDesc".Translate();
-            icon = ContentFinder<Texture2D>.Get("UI/Designators/CornerMarkerOff");
-            soundSucceeded = SoundDefOf.Designate_PlanRemove;
-        }
+        public Designator_CornerMarkerRemove() : base(DesignateMode.Remove)
+		{
+			defaultLabel = "DesignatorConerMarkerRemove".Translate();
+			defaultDesc = "DesignatorCornerMarkerRemoveDesc".Translate();
+			icon = ContentFinder<Texture2D>.Get("UI/Designators/CornerMarkerOff");
+			soundSucceeded = SoundDefOf.Designate_PlanRemove;
+		}
 
         public override int DraggableDimensions
         {
@@ -22,5 +22,6 @@ namespace ProgressRenderer
                 return 2;
             }
         }
-    }
+
+	}
 }

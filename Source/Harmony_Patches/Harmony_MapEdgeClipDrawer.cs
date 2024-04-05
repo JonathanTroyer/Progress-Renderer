@@ -3,13 +3,21 @@ using Verse;
 
 namespace ProgressRenderer
 {
+
     [HarmonyPatch(typeof(MapEdgeClipDrawer))]
     [HarmonyPatch("DrawClippers")]
-    public class HarmonyMapEdgeClipDrawerDrawClippers
+    public class Harmony_MapEdgeClipDrawer_DrawClippers
     {
+
         public static bool Prefix(Map map)
         {
-            return !map.GetComponent<MapComponentRenderManager>().Rendering;
+            if (map.GetComponent<MapComponent_RenderManager>().Rendering)
+            {
+                return false;
+            }
+            return true;
         }
+
     }
+    
 }

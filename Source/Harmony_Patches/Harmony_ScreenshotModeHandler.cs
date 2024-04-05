@@ -4,22 +4,26 @@ using Verse;
 
 namespace ProgressRenderer
 {
+
     [HarmonyPatch(typeof(ScreenshotModeHandler))]
     [HarmonyPatch("ScreenshotModesOnGUI")]
-    public class HarmonyScreenshotModeHandlerScreenshotModesOnGUI
+    public class Harmony_ScreenshotModeHandler_ScreenshotModesOnGUI
     {
+
         public static void Postfix()
         {
-            if (KeyBindingDefOf.LprManualRendering.KeyDownEvent)
+            if (KeyBindingDefOf.LPR_ManualRendering.KeyDownEvent)
             {
-                MapComponentRenderManager.TriggerCurrentMapManualRendering();
+                MapComponent_RenderManager.TriggerCurrentMapManualRendering();
                 Event.current.Use();
             }
-            else if (KeyBindingDefOf.LprManualRenderingForceFullMap.KeyDownEvent)
+            else if (KeyBindingDefOf.LPR_ManualRendering_ForceFullMap.KeyDownEvent)
             {
-                MapComponentRenderManager.TriggerCurrentMapManualRendering(true);
+                MapComponent_RenderManager.TriggerCurrentMapManualRendering(true);
                 Event.current.Use();
             }
         }
+
     }
+    
 }

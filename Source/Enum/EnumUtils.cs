@@ -4,26 +4,24 @@
     {
         public static string GetFileExtension(EncodingType type)
         {
-            switch (type)
-            {
+            switch(type) {
                 case EncodingType.UnityJPG:
-                default:
                     return "jpg";
                 case EncodingType.UnityPNG:
                     return "png";
             }
+            return "jpg";
         }
-
         public static string ToFriendlyString(EncodingType type)
         {
-            switch (type)
+            switch(type)
             {
                 case EncodingType.UnityJPG:
-                default:
                     return "JPG_unity";
                 case EncodingType.UnityPNG:
                     return "PNG_unity";
             }
+            return "JPG_unity";
         }
 
         public static string ToFriendlyString(JPGQualityAdjustmentSetting type)
@@ -31,11 +29,11 @@
             switch (type)
             {
                 case JPGQualityAdjustmentSetting.Manual:
-                default:
                     return "Manual";
                 case JPGQualityAdjustmentSetting.Automatic:
                     return "Automatic";
             }
+            return "Manual";
         }
 
         public static string ToFriendlyString(FileNamePattern type)
@@ -43,14 +41,13 @@
             switch (type)
             {
                 case FileNamePattern.DateTime:
-                default:
                     return "DateTime";
                 case FileNamePattern.Numbered:
                     return "Numbered";
                 case FileNamePattern.BothTmpCopy:
                     return "BothTmpCopy";
             }
-
+            return "DateTime";
         }
 
         public static string ToFriendlyString(RenderFeedback type)
@@ -60,11 +57,11 @@
                 case RenderFeedback.None:
                     return "None";
                 case RenderFeedback.Message:
-                default:
                     return "Message";
                 case RenderFeedback.Window:
                     return "Window";
             }
+            return "Message";
         }
     }
 }

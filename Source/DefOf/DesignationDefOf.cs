@@ -3,17 +3,18 @@ using Verse;
 
 namespace ProgressRenderer
 {
+	
+	[DefOf]
+	public static class DesignationDefOf
+	{
+		
+		static DesignationDefOf()
+		{
+			DefOfHelper.EnsureInitializedInCtor(typeof(DesignationDefOf));
+		}
 
-    [DefOf]
-    public static class DesignationDefOf
-    {
+		public static DesignationDef CornerMarker;
 
-        public static DesignationDef CornerMarker;
-
-        static DesignationDefOf()
-        {
-            DefOfHelper.EnsureInitializedInCtor(typeof(DesignationDefOf));
-        }
-    }
+	}
 
 }

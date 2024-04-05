@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections;
 using System.IO;
-using System.Threading;
 using System.Threading.Tasks;
 using HarmonyLib;
 using ProgressRenderer.Source.Enum;
@@ -12,68 +11,78 @@ using Verse;
 
 namespace ProgressRenderer
 {
-    public class MapComponentRenderManager : MapComponent
+    public class MapComponent_RenderManager : MapComponent
     {
-        private static int _nextGlobalRenderManagerTickOffset;
-        private bool _ctrlEncodingPost;
-        private bool _encoding;
+        public static int nextGlobalRenderManagerTickOffset = 0;
+        public bool Rendering { get; private set; }
 
-        private Task _encodingTask;
-        private Texture2D _imageTexture;
+        private int tickOffset = -1;
+        private int lastRenderedHour = -999;
+        private int lastRenderedCounter = 0;
+        private float rsOldStartX = -1f;
+        private float rsOldStartZ = -1f;
+        private float rsOldEndX = -1f;
+        private float rsOldEndZ = -1f;
+        private float rsTargetStartX = -1f;
+        private float rsTargetStartZ = -1f;
+        private float rsTargetEndX = -1f;
+        private float rsTargetEndZ = -1f;
+        private float rsCurrentPosition = 1f;
 
-        private int _imageWidth, _imageHeight;
-        private int _lastRenderedCounter;
-        private int _lastRenderedHour = -999;
+        private int imageWidth, imageHeight;
+        private Texture2D imageTexture;
 
-        private bool _manuallyTriggered;
-        private SmallMessageBox _messageBox;
-        private float _rsCurrentPosition = 1f;
-        private float _rsOldEndX = -1f;
-        private float _rsOldEndZ = -1f;
-        private float _rsOldStartX = -1f;
-        private float _rsOldStartZ = -1f;
-        private float _rsTargetEndX = -1f;
-        private float _rsTargetEndZ = -1f;
-        private float _rsTargetStartX = -1f;
-        private float _rsTargetStartZ = -1f;
+        private Task EncodingTask;
 
-        private int _tickOffset = -1;
+        private bool manuallyTriggered = false;
+        private bool encoding = false;
+        private bool ctrlEncodingPost = false;
+        private SmallMessageBox messageBox;
 
-        public MapComponentRenderManager(Map map) : base(map)
+        private struct VisibilitySettings
+        {
+            public bool showZones;
+            public bool showRoofOverlay;
+            public bool showFertilityOverlay;
+            public bool showTerrainAffordanceOverlay;
+            public bool showPollutionOverlay;
+            public bool showTemperatureOverlay;
+        }
+
+        public MapComponent_RenderManager(Map map) : base(map)
         {
         }
-        public bool Rendering { get; private set; }
 
         public override void FinalizeInit() // New map and after loading
         {
-            if (_tickOffset < 0)
+            if (tickOffset < 0)
             {
-                _tickOffset = _nextGlobalRenderManagerTickOffset;
-                _nextGlobalRenderManagerTickOffset = (_nextGlobalRenderManagerTickOffset + 5) % GenTicks.TickRareInterval;
+                tickOffset = nextGlobalRenderManagerTickOffset;
+                nextGlobalRenderManagerTickOffset = (nextGlobalRenderManagerTickOffset + 5) % GenTicks.TickRareInterval;
             }
         }
 
         public override void MapComponentUpdate()
         {
             // Watch for finished encoding to clean up and free memory
-            if (_ctrlEncodingPost)
+            if (ctrlEncodingPost)
             {
                 DoEncodingPost();
-                _ctrlEncodingPost = false;
+                ctrlEncodingPost = false;
             }
         }
 
         public override void MapComponentTick()
         {
             // TickRare
-            if (Find.TickManager.TicksGame % 250 != _tickOffset)
+            if (Find.TickManager.TicksGame % 250 != tickOffset)
             {
                 return;
             }
 
             // Check for rendering
             // Only render player home maps
-            if (!map.IsPlayerHome && !PrModSettings.RenderNonPlayerHomes)
+            if (!map.IsPlayerHome && !PRModSettings.renderNonPlayerHomes)
             {
                 return;
             }
@@ -81,101 +90,83 @@ namespace ProgressRenderer
             // Check for correct time to render
             var longLat = Find.WorldGrid.LongLatOf(map.Tile);
             var currHour = MoreGenDate.HoursPassedInteger(Find.TickManager.TicksAbs, longLat.x);
-            if (currHour <= _lastRenderedHour)
+            if (currHour <= lastRenderedHour)
             {
                 return;
             }
 
-            if (currHour % PrModSettings.Interval != PrModSettings.TimeOfDay % PrModSettings.Interval)
+            if (currHour % PRModSettings.interval != PRModSettings.timeOfDay % PRModSettings.interval)
             {
                 return;
             }
 
             // Update timing variables
-            _lastRenderedHour = currHour;
-            _lastRenderedCounter++;
+            lastRenderedHour = currHour;
+            lastRenderedCounter++;
             // Check if rendering is enabled
-            if (!GameComponentProgressManager.Enabled)
+            if (!GameComponentProgressManager.enabled)
             {
                 return;
             }
 
+            // Show message window or print message
+            ShowCurrentRenderMessage();
             // Start rendering
-            RequestDoRendering();
+            Find.CameraDriver.StartCoroutine(DoRendering());
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref _lastRenderedHour, "lastRenderedHour", -999);
-            Scribe_Values.Look(ref _lastRenderedCounter, "lastRenderedCounter");
-            Scribe_Values.Look(ref _rsOldStartX, "rsOldStartX", -1f);
-            Scribe_Values.Look(ref _rsOldStartZ, "rsOldStartZ", -1f);
-            Scribe_Values.Look(ref _rsOldEndX, "rsOldEndX", -1f);
-            Scribe_Values.Look(ref _rsOldEndZ, "rsOldEndZ", -1f);
-            Scribe_Values.Look(ref _rsTargetStartX, "rsTargetStartX", -1f);
-            Scribe_Values.Look(ref _rsTargetStartZ, "rsTargetStartZ", -1f);
-            Scribe_Values.Look(ref _rsTargetEndX, "rsTargetEndX", -1f);
-            Scribe_Values.Look(ref _rsTargetEndZ, "rsTargetEndZ", -1f);
-            Scribe_Values.Look(ref _rsCurrentPosition, "rsCurrentPosition", 1f);
+            Scribe_Values.Look(ref lastRenderedHour, "lastRenderedHour", -999);
+            Scribe_Values.Look(ref lastRenderedCounter, "lastRenderedCounter", 0);
+            Scribe_Values.Look(ref rsOldStartX, "rsOldStartX", -1f);
+            Scribe_Values.Look(ref rsOldStartZ, "rsOldStartZ", -1f);
+            Scribe_Values.Look(ref rsOldEndX, "rsOldEndX", -1f);
+            Scribe_Values.Look(ref rsOldEndZ, "rsOldEndZ", -1f);
+            Scribe_Values.Look(ref rsTargetStartX, "rsTargetStartX", -1f);
+            Scribe_Values.Look(ref rsTargetStartZ, "rsTargetStartZ", -1f);
+            Scribe_Values.Look(ref rsTargetEndX, "rsTargetEndX", -1f);
+            Scribe_Values.Look(ref rsTargetEndZ, "rsTargetEndZ", -1f);
+            Scribe_Values.Look(ref rsCurrentPosition, "rsCurrentPosition", 1f);
         }
 
         public static void TriggerCurrentMapManualRendering(bool forceRenderFullMap = false)
         {
-            Find.CurrentMap.GetComponent<MapComponentRenderManager>().DoManualRendering(forceRenderFullMap);
+            Find.CurrentMap.GetComponent<MapComponent_RenderManager>().DoManualRendering(forceRenderFullMap);
         }
 
-        private void DoManualRendering(bool forceRenderFullMap = false)
+        public void DoManualRendering(bool forceRenderFullMap = false)
         {
-            _manuallyTriggered = true;
-            RequestDoRendering(forceRenderFullMap);
+            ShowCurrentRenderMessage();
+            manuallyTriggered = true;
+            Find.CameraDriver.StartCoroutine(DoRendering(forceRenderFullMap));
         }
 
         private void ShowCurrentRenderMessage()
         {
-            if (PrModSettings.RenderFeedback == RenderFeedback.Window)
+            if (PRModSettings.renderFeedback == RenderFeedback.Window)
             {
-                _messageBox = new SmallMessageBox("LPR_Rendering".Translate());
-                Find.WindowStack.Add(_messageBox);
+                messageBox = new SmallMessageBox("LPR_Rendering".Translate());
+                Find.WindowStack.Add(messageBox);
             }
-            else if (PrModSettings.RenderFeedback == RenderFeedback.Message)
+            else if (PRModSettings.renderFeedback == RenderFeedback.Message)
             {
                 Messages.Message("LPR_Rendering".Translate(), MessageTypeDefOf.CautionInput, false);
             }
         }
 
-        private void RequestDoRendering(bool forceRenderFullMap = false)
+        private IEnumerator DoRendering(bool forceRenderFullMap = false)
         {
-            lock (Utils.Lock)
-            {
-                Utils.Renderings.Enqueue(DoRendering(forceRenderFullMap));
-            }
-
-            Find.CameraDriver.StartCoroutine(Utils.ProcessRenderings());
-        }
-
-        private IEnumerator DoRendering(bool forceRenderFullMap)
-        {
-#if DEBUG
-            Log.Message($"Map {map}: " + $"Local rendering lock is {Rendering}");
-#endif
-            yield return new WaitUntil(() => !Rendering);
-            Rendering = true;
-#if DEBUG
-            Log.Message($"Map {map}: " + "Acquired local lock");
-#endif
-
-            ShowCurrentRenderMessage();
-#if DEBUG
-            Log.Message($"Map {map}: " + "Showed message box");
-#endif
-
+            yield return new WaitUntil(() => Utils.GlobalRenderingLock);
+            Utils.GlobalRenderingLock = true;
+            
             yield return new WaitForFixedUpdate();
-#if DEBUG
-            Log.Message($"Map {map}: " + "WaitForFixedUpdate");
-#endif
-
-            #region Switch map
+            if (Rendering)
+            {
+                Log.Error("Progress Renderer is still rendering an image while a new rendering was requested. This can lead to missing or wrong data. (This can also happen in rare situations when you trigger manual rendering the exact same time as an automatic rendering happens. If you did that, just check your export folder if both renderings were done correctly and ignore this error.)");
+            }
+            Rendering = true;
 
             // Temporary switch to this map for rendering
             var switchedMap = false;
@@ -193,29 +184,23 @@ namespace ProgressRenderer
                 CameraJumper.TryHideWorld();
             }
 
-            #endregion
-
-#if DEBUG
-            Log.Message($"Map {map}: " + $"Switched map? {switchedMap}");
-#endif
-
             #region Hide overlays
 
             var settings = Find.PlaySettings;
             var oldVisibilities = new VisibilitySettings
             {
-                ShowZones = settings.showZones,
-                ShowRoofOverlay = settings.showRoofOverlay,
-                ShowFertilityOverlay = settings.showFertilityOverlay,
-                ShowTerrainAffordanceOverlay = settings.showTerrainAffordanceOverlay,
-                ShowPollutionOverlay = settings.showPollutionOverlay,
-                ShowTemperatureOverlay = settings.showTemperatureOverlay
+                showZones = settings.showZones,
+                showRoofOverlay = settings.showRoofOverlay,
+                showFertilityOverlay = settings.showFertilityOverlay,
+                showTerrainAffordanceOverlay = settings.showTerrainAffordanceOverlay,
+                showPollutionOverlay = settings.showPollutionOverlay,
+                showTemperatureOverlay = settings.showTemperatureOverlay
             };
             var oldHighlight = Prefs.DotHighlightDisplayMode;
 
-            if (!PrModSettings.RenderZones)
+            if (!PRModSettings.renderZones)
                 Find.PlaySettings.showZones = false;
-            if (!PrModSettings.RenderOverlays)
+            if (!PRModSettings.renderOverlays)
             {
                 Find.PlaySettings.showRoofOverlay = false;
                 Find.PlaySettings.showFertilityOverlay = false;
@@ -228,10 +213,6 @@ namespace ProgressRenderer
             //TODO: Hide fog of war (stretch) 
 
             #endregion
-
-#if DEBUG
-            Log.Message($"Map {map}: " + "Hid things");
-#endif
 
             #region Calculate rendered area
 
@@ -279,49 +260,40 @@ namespace ProgressRenderer
             }
 
             // Only use smoothing when rendering was not triggered manually
-            if (!_manuallyTriggered)
+            if (!manuallyTriggered)
             {
                 // Test if target render area changed to reset smoothing
-                if (!(
-                        _rsTargetStartX.CloseEquals(startX) &&
-                        _rsTargetStartZ.CloseEquals(startZ) &&
-                        _rsTargetEndX.CloseEquals(endX) &&
-                        _rsTargetEndZ.CloseEquals(endZ)
-                    ))
+                if (rsTargetStartX != startX || rsTargetStartZ != startZ || rsTargetEndX != endX ||
+                    rsTargetEndZ != endZ)
                 {
                     // Check if area was manually reset or uninitialized (-1) to not smooth
-                    if (
-                        _rsTargetStartX.CloseEquals(-1f) &&
-                        _rsTargetStartZ.CloseEquals(-1f) &&
-                        _rsTargetEndX.CloseEquals(-1f) &&
-                        _rsTargetEndZ.CloseEquals(-1f)
-                    )
+                    if (rsTargetStartX == -1f && rsTargetStartZ == -1f && rsTargetEndX == -1f && rsTargetEndZ == -1f)
                     {
-                        _rsCurrentPosition = 1f;
+                        rsCurrentPosition = 1f;
                     }
                     else
                     {
-                        _rsCurrentPosition = 1f / (PrModSettings.SmoothRenderAreaSteps + 1);
+                        rsCurrentPosition = 1f / (PRModSettings.smoothRenderAreaSteps + 1);
                     }
 
-                    _rsOldStartX = _rsTargetStartX;
-                    _rsOldStartZ = _rsTargetStartZ;
-                    _rsOldEndX = _rsTargetEndX;
-                    _rsOldEndZ = _rsTargetEndZ;
-                    _rsTargetStartX = startX;
-                    _rsTargetStartZ = startZ;
-                    _rsTargetEndX = endX;
-                    _rsTargetEndZ = endZ;
+                    rsOldStartX = rsTargetStartX;
+                    rsOldStartZ = rsTargetStartZ;
+                    rsOldEndX = rsTargetEndX;
+                    rsOldEndZ = rsTargetEndZ;
+                    rsTargetStartX = startX;
+                    rsTargetStartZ = startZ;
+                    rsTargetEndX = endX;
+                    rsTargetEndZ = endZ;
                 }
 
                 // Apply smoothing to render area
-                if (_rsCurrentPosition < 1f)
+                if (rsCurrentPosition < 1f)
                 {
-                    startX = _rsOldStartX + (_rsTargetStartX - _rsOldStartX) * _rsCurrentPosition;
-                    startZ = _rsOldStartZ + (_rsTargetStartZ - _rsOldStartZ) * _rsCurrentPosition;
-                    endX = _rsOldEndX + (_rsTargetEndX - _rsOldEndX) * _rsCurrentPosition;
-                    endZ = _rsOldEndZ + (_rsTargetEndZ - _rsOldEndZ) * _rsCurrentPosition;
-                    _rsCurrentPosition += 1f / (PrModSettings.SmoothRenderAreaSteps + 1);
+                    startX = rsOldStartX + (rsTargetStartX - rsOldStartX) * rsCurrentPosition;
+                    startZ = rsOldStartZ + (rsTargetStartZ - rsOldStartZ) * rsCurrentPosition;
+                    endX = rsOldEndX + (rsTargetEndX - rsOldEndX) * rsCurrentPosition;
+                    endZ = rsOldEndZ + (rsTargetEndZ - rsOldEndZ) * rsCurrentPosition;
+                    rsCurrentPosition += 1f / (PRModSettings.smoothRenderAreaSteps + 1);
                 }
             }
 
@@ -330,46 +302,38 @@ namespace ProgressRenderer
 
             #endregion
 
-#if DEBUG
-            Log.Message($"Map {map}: " + "Calculated the rendered area");
-#endif
-
             #region Calculate texture size
 
             // Calculate basic values that are used for rendering
             int newImageWidth;
             int newImageHeight;
-            if (PrModSettings.ScaleOutputImage)
+            if (PRModSettings.scaleOutputImage)
             {
-                newImageWidth = (int)(PrModSettings.OutputImageFixedHeight / distZ * distX);
-                newImageHeight = PrModSettings.OutputImageFixedHeight;
+                newImageWidth = (int)(PRModSettings.outputImageFixedHeight / distZ * distX);
+                newImageHeight = PRModSettings.outputImageFixedHeight;
             }
             else
             {
-                newImageWidth = (int)(distX * PrModSettings.PixelsPerCell);
-                newImageHeight = (int)(distZ * PrModSettings.PixelsPerCell);
-                if (GameComponentProgressManager.QualityAdjustment ==
+                newImageWidth = (int)(distX * PRModSettings.pixelsPerCell);
+                newImageHeight = (int)(distZ * PRModSettings.pixelsPerCell);
+                if (GameComponentProgressManager.qualityAdjustment ==
                     JPGQualityAdjustmentSetting
                         .Automatic) // if image quality is set to automatic, PPC is also stored per map
                 {
-                    newImageWidth = (int)(distX * GameComponentProgressManager.PixelsPerCellWorld);
-                    newImageHeight = (int)(distZ * GameComponentProgressManager.PixelsPerCellWorld);
+                    newImageWidth = (int)(distX * GameComponentProgressManager.pixelsPerCell_WORLD);
+                    newImageHeight = (int)(distZ * GameComponentProgressManager.pixelsPerCell_WORLD);
                 }
             }
 
             var mustUpdateTexture = false;
-            if (newImageWidth != _imageWidth || newImageHeight != _imageHeight)
+            if (newImageWidth != imageWidth || newImageHeight != imageHeight)
             {
                 mustUpdateTexture = true;
-                _imageWidth = newImageWidth;
-                _imageHeight = newImageHeight;
+                imageWidth = newImageWidth;
+                imageHeight = newImageHeight;
             }
 
             #endregion
-
-#if DEBUG
-            Log.Message($"Map {map}: " + "Calculated the texture size");
-#endif
 
             #region Initialize camera and textures
 
@@ -379,10 +343,10 @@ namespace ProgressRenderer
             var cameraBasePos = new Vector3(cameraPosX, 15f + (orthographicSize - 11f) / 49f * 50f, cameraPosZ);
 
             // Initialize cameras and textures
-            var renderTexture = RenderTexture.GetTemporary(_imageWidth, _imageHeight, 24);
-            if (_imageTexture == null || mustUpdateTexture)
+            var renderTexture = RenderTexture.GetTemporary(imageWidth, imageHeight, 24);
+            if (imageTexture == null || mustUpdateTexture)
             {
-                _imageTexture = new Texture2D(_imageWidth, _imageHeight, TextureFormat.RGB24, false);
+                imageTexture = new Texture2D(imageWidth, imageHeight, TextureFormat.RGB24, false);
             }
 
             var camera = Find.Camera;
@@ -407,14 +371,7 @@ namespace ProgressRenderer
 
             #endregion
 
-#if DEBUG
-            Log.Message($"Map {map}: " + "Initialized camera");
-#endif
-
             yield return new WaitForEndOfFrame();
-#if DEBUG
-            Log.Message($"Map {map}: " + "WaitForEndOfFrame");
-#endif
 
             // Set camera values needed for rendering
             camera.orthographicSize = orthographicSize;
@@ -429,14 +386,14 @@ namespace ProgressRenderer
             // Render the image texture
             try
             {
-                if (PrModSettings.RenderWeather)
+                if (PRModSettings.renderWeather)
                 {
                     map.weatherManager.DrawAllWeather();
                 }
 
                 camera.transform.position = new Vector3(startX + cameraBasePos.x, cameraBasePos.y, startZ + cameraBasePos.z);
                 camera.Render();
-                _imageTexture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0, false);
+                imageTexture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0, false);
             }
             catch (Exception e)
             {
@@ -444,10 +401,6 @@ namespace ProgressRenderer
             }
 
             #endregion
-
-#if DEBUG
-            Log.Message($"Map {map}: " + "Did render");
-#endif
 
             #region Restore pre-render state
 
@@ -462,12 +415,12 @@ namespace ProgressRenderer
             RenderTexture.ReleaseTemporary(renderTexture);
 
             // Enable overlays
-            Find.PlaySettings.showZones = oldVisibilities.ShowZones;
-            Find.PlaySettings.showRoofOverlay = oldVisibilities.ShowRoofOverlay;
-            Find.PlaySettings.showFertilityOverlay = oldVisibilities.ShowFertilityOverlay;
-            Find.PlaySettings.showTerrainAffordanceOverlay = oldVisibilities.ShowTerrainAffordanceOverlay;
-            Find.PlaySettings.showPollutionOverlay = oldVisibilities.ShowPollutionOverlay;
-            Find.PlaySettings.showTemperatureOverlay = oldVisibilities.ShowTemperatureOverlay;
+            Find.PlaySettings.showZones = oldVisibilities.showZones;
+            Find.PlaySettings.showRoofOverlay = oldVisibilities.showRoofOverlay;
+            Find.PlaySettings.showFertilityOverlay = oldVisibilities.showFertilityOverlay;
+            Find.PlaySettings.showTerrainAffordanceOverlay = oldVisibilities.showTerrainAffordanceOverlay;
+            Find.PlaySettings.showPollutionOverlay = oldVisibilities.showPollutionOverlay;
+            Find.PlaySettings.showTemperatureOverlay = oldVisibilities.showTemperatureOverlay;
 
             Prefs.DotHighlightDisplayMode = oldHighlight;
 
@@ -485,48 +438,33 @@ namespace ProgressRenderer
 
             #endregion
 
-#if DEBUG
-            Log.Message($"Map {map}: " + "Restored pre-rendered state");
-#endif
-
-            // Hide message box
-            if (_messageBox != null)
-            {
-                _messageBox.Close();
-                _messageBox = null;
-            }
-#if DEBUG
-            Log.Message($"Map {map}: " + "Hid message box");
-#endif
-
-            yield return null;
-#if DEBUG
-            Log.Message($"Map {map}: " + "Waited a frame");
-#endif
-
-            // Start encoding
-            if (_encodingTask != null && !_encodingTask.IsCompleted)
-                _encodingTask.Wait();
-            _encodingTask = Task.Run(DoEncoding);
-#if DEBUG
-            Log.Message($"Map {map}: " + "Started encoding task");
-#endif
-
             // Signal finished rendering
             Rendering = false;
-#if DEBUG
-            Log.Message($"Map {map}: " + "Released local lock");
-#endif
+            Utils.GlobalRenderingLock = false;
+            
+            // Hide message box
+            if (messageBox != null)
+            {
+                messageBox.Close();
+                messageBox = null;
+            }
+
+            yield return null;
+
+            // Start encoding
+            if (EncodingTask != null && !EncodingTask.IsCompleted)
+                EncodingTask.Wait();
+            EncodingTask = Task.Run(DoEncoding);
         }
 
         private void DoEncoding()
         {
-            if (_encoding)
+            if (encoding)
             {
                 Log.Error("Progress Renderer is still encoding an image while the encoder was called again. This can lead to missing or wrong data.");
             }
 
-            switch (PrModSettings.Encoding)
+            switch (PRModSettings.encoding)
             {
                 case EncodingType.UnityJPG:
                     EncodeUnityJpg();
@@ -547,36 +485,36 @@ namespace ProgressRenderer
             //UnityEngine.Object.Destroy(imageTexture);
 
             // Signal finished encoding
-            _manuallyTriggered = false;
-            _encoding = false;
+            manuallyTriggered = false;
+            encoding = false;
         }
 
         private void EncodeUnityPng()
         {
-            var encodedImage = _imageTexture.EncodeToPNG();
+            var encodedImage = imageTexture.EncodeToPNG();
             SaveUnityEncoding(encodedImage);
         }
 
         private void EncodeUnityJpg()
         {
-            var encodeQuality = 0;
-            switch (GameComponentProgressManager.QualityAdjustment)
+            int encodeQuality = 0;
+            switch (GameComponentProgressManager.qualityAdjustment)
             {
                 case JPGQualityAdjustmentSetting.Manual:
-                    encodeQuality = PrModSettings.JPGQuality;
+                    encodeQuality = PRModSettings.JPGQuality;
                     break;
                 case JPGQualityAdjustmentSetting.Automatic:
-                    encodeQuality = GameComponentProgressManager.JPGQualityWorld;
+                    encodeQuality = GameComponentProgressManager.JPGQuality_WORLD;
                     break;
             }
 
-            var encodedImage = _imageTexture.EncodeToJPG(encodeQuality);
+            var encodedImage = imageTexture.EncodeToJPG(encodeQuality);
             SaveUnityEncoding(encodedImage);
-            while (PrModSettings.JPGQualityInitialize)
+            while (PRModSettings.JPGQualityInitialize)
             {
-                Thread.Sleep(500);
-                encodeQuality = GameComponentProgressManager.JPGQualityWorld;
-                encodedImage = _imageTexture.EncodeToJPG(encodeQuality);
+                System.Threading.Thread.Sleep(500);
+                encodeQuality = GameComponentProgressManager.JPGQuality_WORLD;
+                encodedImage = imageTexture.EncodeToJPG(encodeQuality);
                 SaveUnityEncoding(encodedImage);
             }
         }
@@ -589,14 +527,14 @@ namespace ProgressRenderer
             File.WriteAllBytes(filePath, encodedImage);
 
             // Create tmp copy to file if needed
-            if (!_manuallyTriggered && PrModSettings.FileNamePattern == FileNamePattern.BothTmpCopy)
+            if (!manuallyTriggered && PRModSettings.fileNamePattern == FileNamePattern.BothTmpCopy)
             {
                 File.Copy(filePath, CreateFilePath(FileNamePattern.Numbered, true));
             }
 
             if (File.Exists(filePath))
             {
-                if (PrModSettings.Encoding == EncodingType.UnityJPG & GameComponentProgressManager.QualityAdjustment ==
+                if (PRModSettings.encoding == EncodingType.UnityJPG & GameComponentProgressManager.qualityAdjustment ==
                     JPGQualityAdjustmentSetting.Automatic)
                 {
                     AdjustJPGQuality(filePath);
@@ -621,24 +559,24 @@ namespace ProgressRenderer
             var renderSize = renderInfo.Length / 1048576f;
 
             var renderMessage = "";
-            if (PrModSettings.JPGQualityInitialize)
+            if (PRModSettings.JPGQualityInitialize)
             {
                 renderMessage += "Initializing (please wait), ";
             }
 
             // quality has been adjusted in settings
-            if (GameComponentProgressManager.RenderSize != GameComponentProgressManager.JPGQualityLastTarget)
+            if (GameComponentProgressManager.renderSize != GameComponentProgressManager.JPGQualityLastTarget)
             {
-                GameComponentProgressManager.JPGQualityLastTarget = GameComponentProgressManager.RenderSize;
+                GameComponentProgressManager.JPGQualityLastTarget = GameComponentProgressManager.renderSize;
                 GameComponentProgressManager.JPGQualityGoingUp = false;
                 GameComponentProgressManager.JPGQualitySteady = false;
                 renderMessage += "Target size adjusted, quality adjustment started, ";
             }
             // map conditions have changed enough that we're outside of our target
             else if (GameComponentProgressManager.JPGQualitySteady &
-                     (renderSize > GameComponentProgressManager.JPGQualityTopMargin |
-                      renderSize <
-                      GameComponentProgressManager.JPGQualityBottomMargin)) // margin after size target reached
+                     ((renderSize > GameComponentProgressManager.JPGQualityTopMargin) |
+                      (renderSize <
+                       GameComponentProgressManager.JPGQualityBottomMargin))) // margin after size target reached
             {
                 renderMessage += "JPG quality adjustment resumed, ";
                 GameComponentProgressManager.JPGQualitySteady = false;
@@ -646,10 +584,10 @@ namespace ProgressRenderer
 
             if (GameComponentProgressManager.JPGQualitySteady)
             {
-                if (PrModSettings.JPGQualityInitialize)
+                if (PRModSettings.JPGQualityInitialize)
                 {
                     renderMessage += "Target size reached, initialization ended, ";
-                    PrModSettings.JPGQualityInitialize = false;
+                    PRModSettings.JPGQualityInitialize = false;
                 }
                 Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
                 return;
@@ -658,7 +596,7 @@ namespace ProgressRenderer
             renderMessage = CalculateQuality(renderSize, renderMessage);
 
             // while initializing, delete the files after adjusting quality
-            if (PrModSettings.JPGQualityInitialize)
+            if (PRModSettings.JPGQualityInitialize)
             {
                 File.Delete(filePath);
             }
@@ -669,55 +607,55 @@ namespace ProgressRenderer
         private string CalculateQuality(float renderSize, string renderMessage)
         {
             // if render is too large, let's take a closer look
-            if (renderSize > GameComponentProgressManager.RenderSize)
+            if (renderSize > GameComponentProgressManager.renderSize)
             {
-                if (GameComponentProgressManager.JPGQualityWorld > 0)
+                if (GameComponentProgressManager.JPGQuality_WORLD > 0)
                 {
                     // just decrease the quality
                     if (!GameComponentProgressManager.JPGQualityGoingUp)
                     {
-                        GameComponentProgressManager.JPGQualityWorld -= 1;
+                        GameComponentProgressManager.JPGQuality_WORLD -= 1;
                         renderMessage += "JPG quality decreased to " +
-                                         GameComponentProgressManager.JPGQualityWorld +
+                                         GameComponentProgressManager.JPGQuality_WORLD +
                                          "% · render size: " + renderSize.ToString("0.00") + " Target: " +
-                                         GameComponentProgressManager.RenderSize;
+                                         GameComponentProgressManager.renderSize;
                     }
                     // if quality was going up and then down again, we have found the target quality
                     else if (!GameComponentProgressManager.JPGQualitySteady)
                     {
                         GameComponentProgressManager.JPGQualitySteady = true;
                         GameComponentProgressManager.JPGQualityTopMargin = Convert.ToInt32(Math.Ceiling(renderSize));
-                        PrModSettings.JPGQualityInitialize = false; // if initializing, end it now
+                        PRModSettings.JPGQualityInitialize = false; // if initializing, end it now
                         renderMessage += "JPG quality target reached (" +
-                                         GameComponentProgressManager.JPGQualityWorld +
+                                         GameComponentProgressManager.JPGQuality_WORLD +
                                          "%) · render size: " + renderSize.ToString("0.00") + " Target: " +
-                                         GameComponentProgressManager.RenderSize;
+                                         GameComponentProgressManager.renderSize;
                     }
 
                     GameComponentProgressManager.JPGQualityGoingUp = false;
                 }
-                else if (PrModSettings.JPGQualityInitialize) // we've reached 0 going down, end initialization now
+                else if (PRModSettings.JPGQualityInitialize) // we've reached 0 going down, end initialization now
                 {
                     renderMessage += "done";
-                    PrModSettings.JPGQualityInitialize = false;
+                    PRModSettings.JPGQualityInitialize = false;
                 }
             }
-            else if (renderSize <= GameComponentProgressManager.RenderSize) // render is too small, increase quality
+            else if (renderSize <= GameComponentProgressManager.renderSize) // render is too small, increase quality
             {
-                if (GameComponentProgressManager.JPGQualityWorld < 100)
+                if (GameComponentProgressManager.JPGQuality_WORLD < 100)
                 {
-                    GameComponentProgressManager.JPGQualityWorld += 1;
+                    GameComponentProgressManager.JPGQuality_WORLD += 1;
                     GameComponentProgressManager.JPGQualityBottomMargin = Convert.ToInt32(Math.Floor(renderSize));
                     renderMessage += "JPG quality increased to " +
-                                     GameComponentProgressManager.JPGQualityWorld +
+                                     GameComponentProgressManager.JPGQuality_WORLD +
                                      "% · render size: " + renderSize + " Target: " +
-                                     GameComponentProgressManager.RenderSize;
+                                     GameComponentProgressManager.renderSize;
                     GameComponentProgressManager.JPGQualityGoingUp = true;
                 }
-                else if (PrModSettings.JPGQualityInitialize) //we've reached 100 going up, end initialization now
+                else if (PRModSettings.JPGQualityInitialize) //we've reached 100 going up, end initialization now
                 {
                     renderMessage += "done";
-                    PrModSettings.JPGQualityInitialize = false;
+                    PRModSettings.JPGQualityInitialize = false;
                 }
             }
 
@@ -726,7 +664,7 @@ namespace ProgressRenderer
 
         private string CreateCurrentFilePath()
         {
-            return CreateFilePath(_manuallyTriggered ? FileNamePattern.DateTime : PrModSettings.FileNamePattern);
+            return CreateFilePath(manuallyTriggered ? FileNamePattern.DateTime : PRModSettings.fileNamePattern);
         }
 
         private string CreateFilePath(FileNamePattern fileNamePattern, bool addTmpSubdir = false)
@@ -738,8 +676,8 @@ namespace ProgressRenderer
             imageName = Escape(imageName, Path.GetInvalidFileNameChars());
 
             // Create path and subdirectory
-            var path = PrModSettings.ExportPath;
-            if (PrModSettings.CreateSubdirs)
+            var path = PRModSettings.exportPath;
+            if (PRModSettings.createSubdirs)
             {
                 var subDir = Escape(Find.World.info.seedString, Path.GetInvalidPathChars());
                 path = Path.Combine(path, subDir);
@@ -747,7 +685,7 @@ namespace ProgressRenderer
 
             Directory.CreateDirectory(path);
             // Add subdir for manually triggered renderings
-            if (_manuallyTriggered)
+            if (manuallyTriggered)
             {
                 path = Path.Combine(path, "manually");
                 Directory.CreateDirectory(path);
@@ -761,7 +699,7 @@ namespace ProgressRenderer
             }
 
             // Get correct file and location
-            var fileExt = EnumUtils.GetFileExtension(PrModSettings.Encoding);
+            var fileExt = EnumUtils.GetFileExtension(PRModSettings.encoding);
             var fileName = $"{imageName}.{fileExt}";
             var filePath = Path.Combine(path, fileName);
             if (!File.Exists(filePath))
@@ -799,26 +737,16 @@ namespace ProgressRenderer
             var quadrum = MoreGenDate.QuadrumInteger(tick, longitude);
             var day = GenDate.DayOfQuadrum(tick, longitude) + 1;
             var hour = GenDate.HourInteger(tick, longitude);
-            var mapName = PrModSettings.UseMapNameInstead ? map.ToString() : map.Tile.ToString();
+            string mapName = PRModSettings.useMapNameInstead ? map.ToString() : map.Tile.ToString();
             return "rimworld-" + Find.World.info.seedString + "-" + mapName + "-" + year + "-" + quadrum + "-" +
-                   (day < 10 ? "0" : "") + day + "-" + (hour < 10 ? "0" : "") + hour;
+                   ((day < 10) ? "0" : "") + day + "-" + ((hour < 10) ? "0" : "") + hour;
         }
 
         private string CreateImageNameNumbered()
         {
-            var mapName = PrModSettings.UseMapNameInstead ? map.ToString() : map.Tile.ToString();
+            string mapName = PRModSettings.useMapNameInstead ? map.ToString() : map.Tile.ToString();
             return "rimworld-" + Find.World.info.seedString + "-" + mapName + "-" +
-                   _lastRenderedCounter.ToString("000000");
-        }
-
-        private struct VisibilitySettings
-        {
-            public bool ShowZones;
-            public bool ShowRoofOverlay;
-            public bool ShowFertilityOverlay;
-            public bool ShowTerrainAffordanceOverlay;
-            public bool ShowPollutionOverlay;
-            public bool ShowTemperatureOverlay;
+                   lastRenderedCounter.ToString("000000");
         }
     }
 }
