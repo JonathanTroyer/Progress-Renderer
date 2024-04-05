@@ -1,24 +1,16 @@
 ﻿using HarmonyLib;
-using Verse;
 using RimWorld;
+using Verse;
 
 namespace ProgressRenderer
 {
-
     [HarmonyPatch(typeof(OverlayDrawHandler))]
     [HarmonyPatch("ShouldDrawPowerGrid", MethodType.Getter)]
-    public class Harmony_OverlayDrawHandler_ShouldDrawPowerGrid
+    public class HarmonyOverlayDrawHandlerShouldDrawPowerGrid
     {
-
         public static bool Prefix()
         {
-            if (Find.CurrentMap.GetComponent<MapComponent_RenderManager>().Rendering)
-            {
-                return false;
-            }
-            return true;
+            return !Find.CurrentMap.GetComponent<MapComponentRenderManager>().Rendering;
         }
-
     }
-
 }

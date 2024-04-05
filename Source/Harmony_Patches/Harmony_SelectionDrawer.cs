@@ -4,21 +4,13 @@ using Verse;
 
 namespace ProgressRenderer
 {
-
     [HarmonyPatch(typeof(SelectionDrawer))]
     [HarmonyPatch("DrawSelectionOverlays")]
-    public class Harmony_SelectionDrawer_DrawSelectionOverlays
+    public class HarmonySelectionDrawerDrawSelectionOverlays
     {
-
         public static bool Prefix()
         {
-            if (Find.CurrentMap.GetComponent<MapComponent_RenderManager>().Rendering)
-            {
-                return false;
-            }
-            return true;
+            return !Find.CurrentMap.GetComponent<MapComponentRenderManager>().Rendering;
         }
-
     }
-
 }

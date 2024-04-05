@@ -1,6 +1,6 @@
 ﻿namespace ProgressRenderer
 {
-    /*
+    /*TODO: fixup and re-enable
     [HarmonyPatch(typeof(MainMenuDrawer))]
     [HarmonyPatch("DoMainMenuControls")]
     public class Harmony_MainMenuDrawer_DoMainMenuControls
@@ -8,7 +8,7 @@
 
         private static void DoMainMenuHelper()
         {
-            
+
         }
 
         public static IEnumerable<CodeInstruction> Transpiler(IEnumerable<CodeInstruction> instructions, ILGenerator il)

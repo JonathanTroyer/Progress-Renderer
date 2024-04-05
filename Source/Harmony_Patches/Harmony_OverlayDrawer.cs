@@ -4,21 +4,13 @@ using Verse;
 
 namespace ProgressRenderer
 {
-
     [HarmonyPatch(typeof(OverlayDrawer))]
     [HarmonyPatch("DrawAllOverlays")]
-    public class Harmony_OverlayDrawer_DrawAllOverlays
+    public class HarmonyOverlayDrawerDrawAllOverlays
     {
-
         public static bool Prefix()
         {
-            if (!PRModSettings.renderThingIcons && Find.CurrentMap.GetComponent<MapComponent_RenderManager>().Rendering)
-            {
-                return false;
-            }
-            return true;
+            return PrModSettings.RenderThingIcons || !Find.CurrentMap.GetComponent<MapComponentRenderManager>().Rendering;
         }
-
     }
-    
 }

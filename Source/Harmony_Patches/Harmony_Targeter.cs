@@ -4,21 +4,13 @@ using Verse;
 
 namespace ProgressRenderer
 {
-
     [HarmonyPatch(typeof(Targeter))]
     [HarmonyPatch("TargeterUpdate")]
-    public class Harmony_Targeter_TargeterUpdate
+    public class HarmonyTargeterTargeterUpdate
     {
-
         public static bool Prefix()
         {
-            if (Find.CurrentMap.GetComponent<MapComponent_RenderManager>().Rendering)
-            {
-                return false;
-            }
-            return true;
+            return !Find.CurrentMap.GetComponent<MapComponentRenderManager>().Rendering;
         }
-
     }
-    
 }

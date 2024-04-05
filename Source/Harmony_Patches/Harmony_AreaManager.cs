@@ -3,21 +3,13 @@ using Verse;
 
 namespace ProgressRenderer
 {
-
     [HarmonyPatch(typeof(AreaManager))]
     [HarmonyPatch("AreaManagerUpdate")]
-    public class Harmony_AreaManager_AreaManagerUpdate
+    public class HarmonyAreaManagerAreaManagerUpdate
     {
-
-        public static bool Prefix(AreaManager __instance)
+        public static bool Prefix(AreaManager instance)
         {
-            if (__instance.map.GetComponent<MapComponent_RenderManager>().Rendering)
-            {
-                return false;
-            }
-            return true;
+            return !instance.map.GetComponent<MapComponentRenderManager>().Rendering;
         }
-
     }
-    
 }

@@ -3,15 +3,13 @@ using Verse;
 
 namespace ProgressRenderer
 {
-
     public class SmallMessageBox : Window
     {
-
-        string text;
+        private readonly string _text;
 
         public SmallMessageBox(string text)
         {
-            this.text = text;
+            _text = text;
             closeOnAccept = false;
             closeOnCancel = false;
         }
@@ -28,7 +26,7 @@ namespace ProgressRenderer
         {
             var backupAnchor = Text.Anchor;
             Text.Anchor = TextAnchor.MiddleCenter;
-            Widgets.Label(inRect, text);
+            Widgets.Label(inRect, _text);
             Text.Anchor = backupAnchor;
         }
 
@@ -36,7 +34,5 @@ namespace ProgressRenderer
         {
             Close(false);
         }
-
     }
-
 }

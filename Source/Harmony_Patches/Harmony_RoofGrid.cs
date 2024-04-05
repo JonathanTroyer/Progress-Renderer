@@ -3,21 +3,13 @@ using Verse;
 
 namespace ProgressRenderer
 {
-
     [HarmonyPatch(typeof(RoofGrid))]
     [HarmonyPatch("RoofGridUpdate")]
-    public class Harmony_RoofGrid_RoofGridUpdate
+    public class HarmonyRoofGridRoofGridUpdate
     {
-
-        public static bool Prefix(Map ___map)
+        public static bool Prefix(Map map)
         {
-            if (___map.GetComponent<MapComponent_RenderManager>().Rendering)
-            {
-                return false;
-            }
-            return true;
+            return !map.GetComponent<MapComponentRenderManager>().Rendering;
         }
-
     }
-
 }

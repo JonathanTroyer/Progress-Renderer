@@ -4,21 +4,13 @@ using Verse;
 
 namespace ProgressRenderer
 {
-
     [HarmonyPatch(typeof(GameConditionManager))]
     [HarmonyPatch("GameConditionManagerDraw")]
-    public class Harmony_GameConditionManager_GameConditionManagerDraw
+    public class HarmonyGameConditionManagerGameConditionManagerDraw
     {
-
         public static bool Prefix(Map map)
         {
-            if (!PRModSettings.renderGameConditions && map.GetComponent<MapComponent_RenderManager>().Rendering)
-            {
-                return false;
-            }
-            return true;
+            return PrModSettings.RenderGameConditions || !map.GetComponent<MapComponentRenderManager>().Rendering;
         }
-
     }
-    
 }
