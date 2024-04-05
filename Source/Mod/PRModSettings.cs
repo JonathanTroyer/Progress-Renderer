@@ -187,7 +187,7 @@ namespace ProgressRenderer
                 }
                 else
                 {
-                    ls.Label("LPR_RenderSizeLabel".Translate() + GameComponentProgressManager.renderSize.ToString(": ##0") + "MB (Current JPG quality" + GameComponentProgressManager.JPGQuality_WORLD.ToString(": ##0)"), -1, "LPR_RenderSizeDescription".Translate());
+                    ls.Label("LPR_RenderSizeLabel".Translate() + GameComponentProgressManager.renderSize.ToString(": ##0") + "MB (Current JPG quality" + GameComponentProgressManager.JPGQuality_WORLD.ToString(": ###0)"), -1, "LPR_RenderSizeDescription".Translate());
                     GameComponentProgressManager.renderSize = (int)ls.Slider(GameComponentProgressManager.renderSize, 5, 30);
                     ls.Label("LPR_SettingspixelsPerCell_WORLDLabel".Translate() + GameComponentProgressManager.pixelsPerCell_WORLD.ToString(": ##0 ppc"), -1, "LPR_SettingspixelsPerCell_WORLDDescription".Translate());
                     GameComponentProgressManager.pixelsPerCell_WORLD = (int)ls.Slider(GameComponentProgressManager.pixelsPerCell_WORLD, 1, 64);
