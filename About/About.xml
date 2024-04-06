@@ -2,6 +2,7 @@
 <ModMetaData>
 	<name>Progress Renderer</name>
 	<author>Neptimus7</author>
+	<modIconPath IgnoreIfNoMatchingField="True">PRicon</modIconPath>
 	<url>https://github.com/JonathanTroyer/Progress-Renderer</url>
   <supportedVersions>
     <li>1.1</li>
