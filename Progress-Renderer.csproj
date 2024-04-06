@@ -130,6 +130,7 @@
     <Content Include="News\UpdateFeatureDefs\UpdateFeatures.xml" />
     <Content Include="v1.4\Assemblies\Progress-Renderer.dll" />
     <Content Include="v1.5\Assemblies\Progress-Renderer.dll" />
+    <Content Include="v1.5\Textures\PRicon.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitattributes" />
