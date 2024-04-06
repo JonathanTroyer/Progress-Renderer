@@ -703,7 +703,6 @@ namespace ProgressRenderer
                                          "%) · render size: " + renderSize.ToString("0.00") + " Target: " +
                                          GameComponentProgressManager.renderSize;
                     }
-
                     GameComponentProgressManager.JPGQualityGoingUp = false;
                 }
                 else if (PRModSettings.JPGQualityInitialize) // we've reached 0 going down, end initialization now

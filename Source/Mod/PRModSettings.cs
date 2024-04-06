@@ -180,14 +180,14 @@ namespace ProgressRenderer
 
                 if (GameComponentProgressManager.qualityAdjustment == JPGQualityAdjustmentSetting.Manual)
                 {
-                    ls.Label("LPR_JPGQualityLabel".Translate() + JPGQuality.ToString(": ##0") + "%", -1, "LPR_JPGQualityDescription".Translate());
+                    ls.Label("LPR_JPGQualityLabel".Translate() + JPGQuality.ToString(": ###0") + "%", -1, "LPR_JPGQualityDescription".Translate());
                     JPGQuality = (int)ls.Slider(JPGQuality, 1, 100);
                     ls.Label("LPR_SettingspixelsPerCellLabel".Translate() + pixelsPerCell.ToString(": ##0 ppc"), -1, "LPR_SettingspixelsPerCellDescription".Translate());
                     pixelsPerCell = (int)ls.Slider(pixelsPerCell, 1, 64);
                 }
                 else
                 {
-                    ls.Label("LPR_RenderSizeLabel".Translate() + GameComponentProgressManager.renderSize.ToString(": ##0") + "MB (Current JPG quality" + GameComponentProgressManager.JPGQuality_WORLD.ToString(": ##0)"), -1, "LPR_RenderSizeDescription".Translate());
+                    ls.Label("LPR_RenderSizeLabel".Translate() + GameComponentProgressManager.renderSize.ToString(": ##0") + "MB (Current JPG quality" + GameComponentProgressManager.JPGQuality_WORLD.ToString(": ###0)"), -1, "LPR_RenderSizeDescription".Translate());
                     GameComponentProgressManager.renderSize = (int)ls.Slider(GameComponentProgressManager.renderSize, 5, 30);
                     ls.Label("LPR_SettingspixelsPerCell_WORLDLabel".Translate() + GameComponentProgressManager.pixelsPerCell_WORLD.ToString(": ##0 ppc"), -1, "LPR_SettingspixelsPerCell_WORLDDescription".Translate());
                     GameComponentProgressManager.pixelsPerCell_WORLD = (int)ls.Slider(GameComponentProgressManager.pixelsPerCell_WORLD, 1, 64);
