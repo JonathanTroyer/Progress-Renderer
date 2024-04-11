@@ -40,7 +40,7 @@ namespace ProgressRenderer
         override public void StartedNewGame()
         {
             enabled = true; //When a new game is created or Progress Renderer is added as a mod mid game, rendering is automatically enabled
-            tileFoldersEnabled = true; //Only when a new game is created, automatic tile folder creation is automatically enabled
+            tileFoldersEnabled = true; //Only when a new game is created, automatic tile folder creation is automatically enabled. If 1.6 is ever released, remove all this logic as a new game will have to be started anyway, likely.
             qualityAdjustment = defaultJPGQualityAdjustment;
             renderSize = defaultRenderSize;
             JPGQuality_WORLD = defaultJPGQuality_WORLD;
