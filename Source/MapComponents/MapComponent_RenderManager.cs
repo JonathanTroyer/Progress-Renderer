@@ -1,4 +1,6 @@
-﻿using System;
+﻿#define VERSION_1_5
+
+using System;
 using System.Collections;
 using System.IO;
 using System.Threading.Tasks;
@@ -221,7 +223,9 @@ namespace ProgressRenderer
                 showPollutionOverlay = settings.showPollutionOverlay,
                 showTemperatureOverlay = settings.showTemperatureOverlay
             };
+#if VERSION_1_5
             var oldHighlight = Prefs.DotHighlightDisplayMode;
+#endif
 
             if (!PRModSettings.renderZones)
                 Find.PlaySettings.showZones = false;
@@ -233,8 +237,9 @@ namespace ProgressRenderer
                 Find.PlaySettings.showPollutionOverlay = false;
                 Find.PlaySettings.showTemperatureOverlay = false;
             }
+#if VERSION_1_5
             Prefs.DotHighlightDisplayMode = DotHighlightDisplayMode.None;
-
+#endif
             //TODO: Hide fog of war (stretch) 
 
             #endregion
@@ -478,9 +483,9 @@ namespace ProgressRenderer
             Find.PlaySettings.showTerrainAffordanceOverlay = oldVisibilities.showTerrainAffordanceOverlay;
             Find.PlaySettings.showPollutionOverlay = oldVisibilities.showPollutionOverlay;
             Find.PlaySettings.showTemperatureOverlay = oldVisibilities.showTemperatureOverlay;
-
+#if VERSION_1_5
             Prefs.DotHighlightDisplayMode = oldHighlight;
-
+#endif
             // Switch back to world view if needed
             if (rememberedWorldRendered)
             {
