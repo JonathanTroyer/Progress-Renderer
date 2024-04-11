@@ -757,6 +757,10 @@ namespace ProgressRenderer
             {
                 var subDir = Escape(Find.World.info.seedString, Path.GetInvalidPathChars());
                 path = Path.Combine(path, subDir);
+                if (!manuallyTriggered)
+                {
+                    path = Path.Combine(path, "tile-" + map.Tile.ToString());
+                }
             }
 
             Directory.CreateDirectory(path);
@@ -814,15 +818,15 @@ namespace ProgressRenderer
             var day = GenDate.DayOfQuadrum(tick, longitude) + 1;
             var hour = GenDate.HourInteger(tick, longitude);
             string mapName = PRModSettings.useMapNameInstead ? map.ToString() : map.Tile.ToString();
-            return "rimworld-" + Find.World.info.seedString + "-" + mapName + "-" + year + "-" + quadrum + "-" +
-                   ((day < 10) ? "0" : "") + day + "-" + ((hour < 10) ? "0" : "") + hour;
+            return "rimworld-" + Find.World.info.seedString + "-" + year + "-" + quadrum + "-" +
+                   ((day < 10) ? "0" : "") + day + "-" + ((hour < 10) ? "0" : "") + hour + "-" + mapName;
         }
 
         private string CreateImageNameNumbered()
         {
             string mapName = PRModSettings.useMapNameInstead ? map.ToString() : map.Tile.ToString();
-            return "rimworld-" + Find.World.info.seedString + "-" + mapName + "-" +
-                   lastRenderedCounter.ToString("000000");
+            return "rimworld-" + Find.World.info.seedString + "-" +
+                   lastRenderedCounter.ToString("000000") + "-" + mapName;
         }
     }
 }
