@@ -11,9 +11,9 @@ namespace ProgressRenderer
 {
     public class GameComponentProgressManager : GameComponent // for game wide ProgressRenderer settings to be saved per game
     {
-        public static bool defaultEnabled = true;
-        public static bool enabled = defaultEnabled;
-
+        
+        public static bool enabled = true;
+        public static bool tileFoldersEnabled = false;
 
         // variables related to automatic quality adjustment
 
@@ -39,7 +39,8 @@ namespace ProgressRenderer
         
         override public void StartedNewGame()
         {
-            enabled = defaultEnabled;
+            enabled = true; //When a new game is created or Progress Renderer is added as a mod mid game, rendering is automatically enabled
+            tileFoldersEnabled = true; //Only when a new game is created, automatic tile folder creation is automatically enabled. If 1.6 is ever released, remove all this logic as a new game will have to be started anyway, likely.
             qualityAdjustment = defaultJPGQualityAdjustment;
             renderSize = defaultRenderSize;
             JPGQuality_WORLD = defaultJPGQuality_WORLD;
@@ -50,13 +51,13 @@ namespace ProgressRenderer
             JPGQualityTopMargin = -1;
             JPGQualityLastTarget = defaultRenderSize;
             PRModSettings.JPGQualityInitialize = false;
-
         }
 
         public override void ExposeData()
         {
             base.ExposeData();
-            Scribe_Values.Look(ref enabled, "enabled", defaultEnabled);
+            Scribe_Values.Look(ref enabled, "enabled", true);
+            Scribe_Values.Look(ref tileFoldersEnabled, "tileFoldersEnabled", false);
             Scribe_Values.Look(ref qualityAdjustment, "JPGQualityAdjustment", defaultJPGQualityAdjustment);
             Scribe_Values.Look(ref renderSize, "renderSize", defaultRenderSize);
             Scribe_Values.Look(ref JPGQuality_WORLD, "JPGQuality", defaultJPGQuality_WORLD);

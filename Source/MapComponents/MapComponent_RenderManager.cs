@@ -757,7 +757,7 @@ namespace ProgressRenderer
             {
                 var subDir = Escape(Find.World.info.seedString, Path.GetInvalidPathChars());
                 path = Path.Combine(path, subDir);
-                if (!manuallyTriggered)
+                if (!manuallyTriggered & GameComponentProgressManager.tileFoldersEnabled) // start using tile folders when a new game is created to avoid confusion in existing games
                 {
                     path = Path.Combine(path, "tile-" + map.Tile.ToString());
                 }
