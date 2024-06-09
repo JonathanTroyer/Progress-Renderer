@@ -3,6 +3,7 @@
 using System;
 using System.Collections;
 using System.IO;
+using System.Reflection;
 using System.Threading.Tasks;
 using HarmonyLib;
 using ProgressRenderer.Source.Enum;
@@ -237,9 +238,18 @@ namespace ProgressRenderer
                 Find.PlaySettings.showPollutionOverlay = false;
                 Find.PlaySettings.showTemperatureOverlay = false;
             }
+            
 #if VERSION_1_5
             Prefs.DotHighlightDisplayMode = DotHighlightDisplayMode.None;
 #endif
+            //Turn off Camera+ stuff
+            var skipCustomRendering = Type.GetType("CameraPlus.CameraPlusMain")
+                ?.GetField("skipCustomRendering", BindingFlags.Public | BindingFlags.Static);
+            if (skipCustomRendering != null)
+            {
+                skipCustomRendering.SetValue(null, true);
+            }
+            
             //TODO: Hide fog of war (stretch) 
 
             #endregion
@@ -486,6 +496,12 @@ namespace ProgressRenderer
 #if VERSION_1_5
             Prefs.DotHighlightDisplayMode = oldHighlight;
 #endif
+            //Enable Camera+ if necessary
+            if (skipCustomRendering != null)
+            {
+                skipCustomRendering.SetValue(null, false);
+            }
+            
             // Switch back to world view if needed
             if (rememberedWorldRendered)
             {
