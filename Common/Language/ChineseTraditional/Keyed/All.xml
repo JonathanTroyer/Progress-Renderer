@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LanguageData>
+
+  <!-- General -->
+	<LPR_RenderEveryHours>{0}小時</LPR_RenderEveryHours>
+	<LPR_RenderEveryHour>小時</LPR_RenderEveryHour>
+	<LPR_RenderEveryDays>{0}天</LPR_RenderEveryDays>
+	<LPR_RenderEveryDay>天</LPR_RenderEveryDay>
+
+  <!-- Messages -->
+	<LPR_MessageCornerMarkerAmount>現在地圖上有{0}個標記.</LPR_MessageCornerMarkerAmount>
+	<LPR_MessageCornerMarkerTooLess>Renderer需要2個標記來限制區域，現在將對整個地圖進行截圖。</LPR_MessageCornerMarkerTooLess>
+	<LPR_MessageCornerMarkerTooMany>Renderer將使用所有的標記來創建一個近似的矩形，你可能需要刪除一些不必要的標記。</LPR_MessageCornerMarkerTooMany>
+	<LPR_MessageCornerMarkerCorrect>Renderer的區域將限制在被標記圈定的區域內.</LPR_MessageCornerMarkerCorrect>
+	<LPR_MessageCornerMarkersRect>標記所圍成的區域大小是{0}x{1}個方格。</LPR_MessageCornerMarkersRect>
+	<LPR_MessageCornerMarkersRectRatio>縱橫比為{0}.</LPR_MessageCornerMarkersRectRatio>
+	<LPR_MessageCornerMarkersRectRatioDefined>縱橫比為{0} ({1}).</LPR_MessageCornerMarkersRectRatioDefined>
+	<LPR_MessageCornerMarkesRectHeightTooLow>高度太低，這將導致截圖錯誤，建議高度超過20個方格。</LPR_MessageCornerMarkesRectHeightTooLow>
+
+  <!-- Designation -->
+	<DesignatorCornerMarker>截圖範圍角標</DesignatorCornerMarker>
+	<DesignatorCornerMarkerDesc>放置用於截圖的角標。放置2個將會限制僅截圖以兩個標記為對角線的矩形區域。</DesignatorCornerMarkerDesc>
+	<DesignatorConerMarkerRemove>移除截圖範圍角標</DesignatorConerMarkerRemove>
+	<DesignatorCornerMarkerRemoveDesc>移除截圖範圍角標。將角標全部移除將會對整個地圖進行截圖。</DesignatorCornerMarkerRemoveDesc>
+
+  <!-- Misc -->
+	<LPR_Rendering>正在截圖...</LPR_Rendering>
+
+  <!-- Settings -->
+	<LPR_SettingsCategory>Progress Renderer自動截圖</LPR_SettingsCategory>
+	<LPR_SettingsEnabledLabel>啟用</LPR_SettingsEnabledLabel>
+	<LPR_SettingsEnabledDescription>當啟用時，本MOD將在遊戲中使用以下設置自動截圖。你可以在這裡暫時關閉它。</LPR_SettingsEnabledDescription>
+	<LPR_SettingsRenderFeedbackLabel>截圖信息反饋</LPR_SettingsRenderFeedbackLabel>
+	<LPR_RenderFeedback_None>無</LPR_RenderFeedback_None>
+	<LPR_RenderFeedback_Message>信息</LPR_RenderFeedback_Message>
+	<LPR_RenderFeedback_Window>彈出式菜單</LPR_RenderFeedback_Window>
+	<LPR_SettingsRenderSettingsLabel>Render設置</LPR_SettingsRenderSettingsLabel>
+	<LPR_SettingsRenderSettingsDescription>配置截圖中應包括的一些可選圖形元素。 始終會渲染地圖，而永遠不會包括一些臨時部分，例如您當前的選擇，目標器或ui文本以及鼠標光標。</LPR_SettingsRenderSettingsDescription>
+	<LPR_SettingsRenderNonPlayerHomes>非殖民地地圖</LPR_SettingsRenderNonPlayerHomes>
+	<LPR_SettingsRenderNonPlayerHomesDescription>啟用此功能也可以渲染未被歸類為玩家家園的地圖。</LPR_SettingsRenderNonPlayerHomesDescription>
+	<LPR_SettingsRenderDesignationsLabel>計劃標記</LPR_SettingsRenderDesignationsLabel>
+	<LPR_SettingsRenderDesignationsDescription>啟用此選項將會在截圖中顯示類似採礦、收穫、拆除等指令計劃的標記。</LPR_SettingsRenderDesignationsDescription>
+	<LPR_SettingsRenderThingIconsLabel>物體標記</LPR_SettingsRenderThingIconsLabel>
+	<LPR_SettingsRenderThingIconsDescription>啟用此選項將會在截圖中顯示類似禁止互動、缺少燃料、電力不足的圖標。</LPR_SettingsRenderThingIconsDescription>
+	<LPR_SettingsRenderGameConditionsLabel>天氣特殊效果</LPR_SettingsRenderGameConditionsLabel>
+	<LPR_SettingsRenderGameConditionsDescription>啟用此選項將會在截圖中顯示遊戲遊戲中由天氣等因素（如有毒塵埃，閃電風暴等）產生的粒子效果。（譯者注：閃電太過隨緣無法測試，目前此設置的主要特徵是關閉後截圖中沒有有毒塵埃那些空中飄落的小顆粒，天色還是綠的。）</LPR_SettingsRenderGameConditionsDescription>
+	<LPR_SettingsRenderWeatherLabel>天氣</LPR_SettingsRenderWeatherLabel>
+	<LPR_SettingsRenderWeatherDescription>啟用此選項將會在截圖中表現天氣，例如雨點。</LPR_SettingsRenderWeatherDescription>
+	<LPR_SettingsRenderZonesLabel>區域</LPR_SettingsRenderZonesLabel>
+	<LPR_SettingsRenderZonesDescription>啟用此選項以在渲染圖像中包含區域。</LPR_SettingsRenderZonesDescription>
+	<LPR_SettingsRenderOverlaysLabel>覆蓋</LPR_SettingsRenderOverlaysLabel>
+	<LPR_SettingsRenderOverlaysDescription>啟用此功能以在渲染圖像中包含覆蓋層。</LPR_SettingsRenderOverlaysDescription>
+	<LPR_SettingsSmoothRenderAreaStepsLabel>平滑過渡截圖變更區域</LPR_SettingsSmoothRenderAreaStepsLabel>
+	<LPR_SettingsSmoothRenderAreaStepsDescription>如果要在使用角標記更改截圖區域時想要平滑地過渡變更，可以增加此數值。 渲染將在下一個X渲染中平穩過渡到新區域。 （請注意，如果您選擇較高的步長值和較低的截圖間隔，則可能需要一段時間才能適應新區域。）</LPR_SettingsSmoothRenderAreaStepsDescription>
+	<LPR_SettingsIntervalLabel>截圖間隔：每</LPR_SettingsIntervalLabel>
+	<LPR_SettingsIntervalDescription>選擇自動截圖的間隔時間，你可以在每小時一次到每15天一次的範圍內進行變更。</LPR_SettingsIntervalDescription>
+	<LPR_SettingsTimeOfDayLabel>定時截圖，在</LPR_SettingsTimeOfDayLabel>
+	<LPR_SettingsTimeOfDayDescription>選擇在每一天的幾點進行截圖（遊戲時間，精確到小時）。如果你上一步設置的截圖間隔超過一天，那麼此項設置將生效。</LPR_SettingsTimeOfDayDescription>
+	<LPR_SettingsEncodingLabel>生成圖片格式</LPR_SettingsEncodingLabel>
+	<LPR_ImgEncoding_PNG_unity>PNG (Unity)</LPR_ImgEncoding_PNG_unity>
+	<LPR_ImgEncoding_JPG_unity>JPG (Unity)</LPR_ImgEncoding_JPG_unity>
+	<LPR_SettingsJPGQualityAdjustment>質量調整</LPR_SettingsJPGQualityAdjustment>
+	<LPR_JPGQualityAdjustment_Manual>手動</LPR_JPGQualityAdjustment_Manual>
+	<LPR_JPGQualityAdjustment_Automatic>自動</LPR_JPGQualityAdjustment_Automatic>
+	<LPR_RenderSizeLabel>這個世界的目標渲染大小</LPR_RenderSizeLabel>
+	<LPR_RenderSizeDescription>JPG質量將在每次渲染後自動調整，以接近此目標，稍微優先選擇質量。</LPR_RenderSizeDescription>
+	<LPR_JPGQualityLabel>JPG圖像質量</LPR_JPGQualityLabel>
+	<LPR_JPGQualityDescription>較高的值截圖會有更高的分辨率，調低此選項數值會導致圖片模糊，但能減小截圖文件的大小</LPR_JPGQualityDescription>
+	<LPR_SettingspixelsPerCellLabel>圖像分辨率比例</LPR_SettingspixelsPerCellLabel>
+	<LPR_SettingspixelsPerCell_WORLDLabel>這個世界的每個單元像素(用於圖像分辨率)</LPR_SettingspixelsPerCell_WORLDLabel>
+	<LPR_SettingspixelsPerCellDescription>定義每個遊戲內地圖格應在截圖上顯示多少像素。</LPR_SettingspixelsPerCellDescription>
+	<LPR_SettingspixelsPerCell_WORLDDescription>定義每個遊戲內地圖單元在渲染圖像上應該顯示多少像素。</LPR_SettingspixelsPerCell_WORLDDescription>
+	<LPR_SettingsInitializeLabel>在第一次渲染時初始化質量調整</LPR_SettingsInitializeLabel>
+	<LPR_SettingsInitializeDescription>在第一次渲染時，執行多次渲染，調整質量直到達到目標。警告!這將需要一些時間，不能中斷，可能會使您的計算機工作很久。不推薦。</LPR_SettingsInitializeDescription>
+	<LPR_SettingsScaleOutputImageLabel>重新縮放到固定高度</LPR_SettingsScaleOutputImageLabel>
+	<LPR_SettingsScaleOutputImageDescription>如果希望截圖具有固定的高度，請設置此選項。 將計算寬度以保留寬高比。 在遊戲中更改截圖區域大小並計劃以後對圖像序列進行動畫處理時非常有用，因此您可以使用一個固定的圖像大小。</LPR_SettingsScaleOutputImageDescription>
+	<LPR_SettingsOutputImageFixedHeightLabel>輸出高度（像素）</LPR_SettingsOutputImageFixedHeightLabel>
+	<LPR_SettingsExportPathLabel>輸出路徑</LPR_SettingsExportPathLabel>
+	<LPR_SettingsExportPathDescription>截圖的保存路徑。 請注意，這必須是您計算機上現有的可訪問目錄的有效路徑。 您可以從文件資源管理器複製+粘貼目錄到此處以進行簡單的編輯。</LPR_SettingsExportPathDescription>
+	<LPR_SettingsExportPathInvalid>無效的路徑</LPR_SettingsExportPathInvalid>
+	<LPR_SettingsFileNamePatternLabel>輸出圖像名稱模式</LPR_SettingsFileNamePatternLabel>
+	<LPR_FileNamePattern_DateTime>遊戲中日期和時間</LPR_FileNamePattern_DateTime>
+	<LPR_FileNamePattern_Numbered>連續編號（針對每個地圖）</LPR_FileNamePattern_Numbered>
+	<LPR_FileNamePattern_BothTmpCopy>二者都有（會在保存路徑保存一個日期和時間的圖片，并新建一個tmp子文件夾在其中保存以編號命名的圖片）</LPR_FileNamePattern_BothTmpCopy>
+	<LPR_SettingsCreateSubdirsLabel>為每個新世界創建一個新文件夾</LPR_SettingsCreateSubdirsLabel>
+	<LPR_SettingsCreateSubdirsDescription>如果要通過世界種子將截圖分別存儲在每個遊戲/世界的子目錄中，請啟用此選項。</LPR_SettingsCreateSubdirsDescription>
+	<LPR_SettingsUseMapNameInstead>使用地圖名稱而不是世界標題</LPR_SettingsUseMapNameInstead>
+	<LPR_SettingsUseMapNameInsteadDescription>如果您希望使用地圖名稱代替地圖的世界標題ID，請啟用此選項</LPR_SettingsUseMapNameInsteadDescription>
+
+</LanguageData>
