@@ -22,13 +22,10 @@ namespace ProgressRenderer
 
             optList.Add(new ListableOption_WebLink("Share your renders", delegate () {
                 System.Diagnostics.Process.Start("https://rimworld.gallery/m/rwpr");
-            }, SculptureSmallAbstractC));
+            }, IconRWP));
         }
 
-        public static readonly Texture2D Icon = ContentFinder<Texture2D>.Get("Icon");
-        public static readonly Texture2D IconMain = ContentFinder<Texture2D>.Get("Icon Main");
-        public static readonly Texture2D PRInfo = ContentFinder<Texture2D>.Get("PRInfo");
-        public static readonly Texture2D ImagesFolderInfo = ContentFinder<Texture2D>.Get("ImagesFolderInfo");
-        public static readonly Texture2D SculptureSmallAbstractC = ContentFinder<Texture2D>.Get("Things/Building/Art/SculptureSmall/SculptureSmallAbstractC");
+        public static readonly Texture2D IconRWP = ContentFinder<Texture2D>.Get("Icon RWP");
+        
     }
 }
