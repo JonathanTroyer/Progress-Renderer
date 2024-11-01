@@ -100,6 +100,7 @@
     <Compile Include="Source\Harmony_Patches\Harmony_GameConditionManager.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_MainMenuDrawer.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_MapEdgeClipDrawer.cs" />
+    <Compile Include="Source\Harmony_Patches\Harmony_OptionListingUtility.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_OverlayDrawer.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_OverlayDrawHandler.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_RoofGrid.cs" />
@@ -140,7 +141,9 @@
     <None Include="packages.config" />
     <None Include="README.md" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Source\Textures\" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
     <PostBuildEvent>$(ProjectDir)Install.bat $(ConfigurationName) "$(ProjectDir)" "$(ProjectName)" "About Common v1.1 v1.2 v1.3 v1.4 v1.5" "LoadFolders.xml"</PostBuildEvent>
