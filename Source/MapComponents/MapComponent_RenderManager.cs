@@ -361,6 +361,19 @@ namespace ProgressRenderer
             // Calculate basic values that are used for rendering
             int newImageWidth;
             int newImageHeight;
+            int ppcValue = 1;
+            
+            if (GameComponentProgressManager.qualityAdjustment ==
+                    JPGQualityAdjustmentSetting
+                        .Automatic)
+            {
+                ppcValue = GameComponentProgressManager.pixelsPerCell_WORLD;
+            }
+            else
+            {
+                ppcValue = (int)PRModSettings.pixelsPerCell;
+            }
+            
             if (PRModSettings.scaleOutputImage)
             {
                 newImageWidth = (int)(PRModSettings.outputImageFixedHeight / distZ * distX);
@@ -368,15 +381,21 @@ namespace ProgressRenderer
             }
             else
             {
-                newImageWidth = (int)(distX * PRModSettings.pixelsPerCell);
-                newImageHeight = (int)(distZ * PRModSettings.pixelsPerCell);
-                if (GameComponentProgressManager.qualityAdjustment ==
-                    JPGQualityAdjustmentSetting
-                        .Automatic) // if image quality is set to automatic, PPC is also stored per map
+                // set limits for ppc depending on map size to prevent render failure. Only guaranteed to work with vanilla sizes                
+                if ((ppcValue * distX > 16250) | (ppcValue * distZ > 16250)) // 16250 is the max width / height, due to Unity hard texture size limits
                 {
-                    newImageWidth = (int)(distX * GameComponentProgressManager.pixelsPerCell_WORLD);
-                    newImageHeight = (int)(distZ * GameComponentProgressManager.pixelsPerCell_WORLD);
+                    ppcValue = Math.Min((int)(16250 / distX), (int)(16250 / distZ));
+                    if (ppcValue > 0)
+                        { Messages.Message($"Your progress renderer ppc setting is too high for this map size. Please reduce it to: {ppcValue}", MessageTypeDefOf.CautionInput, false); }
+                    else // having a ppc of 0 is a really bad idea
+                        { 
+                            Messages.Message($"Unity can't handle your map size with progress renderer and it will likely fail", MessageTypeDefOf.CautionInput, false);
+                            ppcValue = 1;
+                        }
                 }
+                
+                newImageWidth = (int)(distX * ppcValue);
+                newImageHeight = (int)(distZ * ppcValue);
             }
 
             var mustUpdateTexture = false;
@@ -390,7 +409,7 @@ namespace ProgressRenderer
             #endregion
 
 #if DEBUG
-            Log.Message($"Map {map}: " + "Calculated the texture size");
+            Log.Message($"Map {map}: " + $"Calculated the texture size {ppcValue}ppc {newImageWidth} x {newImageHeight}");
 #endif
 
             #region Initialize camera and textures
@@ -639,18 +658,26 @@ namespace ProgressRenderer
         private void AdjustJPGQuality(string filePath)
         {
             // Adjust JPG quality to reach target filesize. Prefer quality going up over down.
-
-            if (!File.Exists(filePath)) return;
-
-            //Get size in mb
-            var renderInfo = new FileInfo(filePath);
-            var renderSize = renderInfo.Length / 1048576f;
-
             var renderMessage = "";
             if (PRModSettings.JPGQualityInitialize)
             {
                 renderMessage += "Initializing (please wait), ";
             }
+            
+            if (!File.Exists(filePath))
+            {
+                renderMessage += "file was not written, aborting initialization";
+                Messages.Message(renderMessage, MessageTypeDefOf.CautionInput, false);
+                PRModSettings.JPGQualityInitialize = false;
+                Log.Message($"During progress renderer initialization, an image was not written: {filePath}");
+                return;
+
+            }
+
+            //Get size in mb
+            var renderInfo = new FileInfo(filePath);
+            var renderSize = renderInfo.Length / 1048576f;
+
 
             // quality has been adjusted in settings
             if (GameComponentProgressManager.renderSize != GameComponentProgressManager.JPGQualityLastTarget)
@@ -773,8 +800,14 @@ namespace ProgressRenderer
                     path = Path.Combine(path, "tile-" + map.Tile.ToString());
                 }
             }
+            if (!Directory.Exists(path))
+            {
+                Log.Error($"Progress renderer could not create directory for {path} please check settings");
+                PRModSettings.JPGQualityInitialize = false;
 
-            Directory.CreateDirectory(path);
+            }
+
+                Directory.CreateDirectory(path);
             // Add subdir for manually triggered renderings
             if (manuallyTriggered)
             {
