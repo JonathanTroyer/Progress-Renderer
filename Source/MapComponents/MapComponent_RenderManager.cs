@@ -41,7 +41,8 @@ namespace ProgressRenderer
         private bool encoding = false;
         private bool ctrlEncodingPost = false;
         private SmallMessageBox messageBox;
-
+        
+        
         private struct VisibilitySettings
         {
             public bool showZones;
@@ -243,17 +244,13 @@ namespace ProgressRenderer
             Prefs.DotHighlightDisplayMode = DotHighlightDisplayMode.None;
 #endif
             //Turn off Camera+ stuff
-            var skipCustomRendering = Type.GetType("CameraPlus.CameraPlusMain")
-                ?.GetField("skipCustomRendering", BindingFlags.Public | BindingFlags.Static);
-            if (skipCustomRendering != null)
-            {
-                skipCustomRendering.SetValue(null, true);
-            }
+            if(PRMod.SkipCustomRenderingRef != null)
+                PRMod.SkipCustomRenderingRef() = true;
             
             //TODO: Hide fog of war (stretch) 
 
             #endregion
-
+            
 #if DEBUG
             Log.Message($"Map {map}: " + "Hid things");
 #endif
@@ -515,11 +512,9 @@ namespace ProgressRenderer
 #if VERSION_1_5
             Prefs.DotHighlightDisplayMode = oldHighlight;
 #endif
-            //Enable Camera+ if necessary
-            if (skipCustomRendering != null)
-            {
-                skipCustomRendering.SetValue(null, false);
-            }
+            //Enable Camera+
+            if(PRMod.SkipCustomRenderingRef != null)
+                PRMod.SkipCustomRenderingRef() = false;
             
             // Switch back to world view if needed
             if (rememberedWorldRendered)
