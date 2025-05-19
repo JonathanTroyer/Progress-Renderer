@@ -4,7 +4,7 @@ Automatically create scheduled renderings of the full map(s) or only a chosen pa
 There are many options to configure in the mod settings
 There is a how to video on youtube: https://www.youtube.com/watch?v=1vYqa65hfAA
 
-#### Scheduled - For later timelapses - and manually / on demand
+#### Scheduled - For future timelapses - and manually / on demand
 You can choose an interval from once a quadrum to hourly.
 At this interval, automatically rendered images will be saved in a chosen directory seperated into a directory for each player settlement*
 Manually created rendered images can be made by pressing a key and will be saved in the manually directory
