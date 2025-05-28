@@ -41,8 +41,8 @@ namespace ProgressRenderer
         private bool encoding = false;
         private bool ctrlEncodingPost = false;
         private SmallMessageBox messageBox;
-        
-        
+
+
         private struct VisibilitySettings
         {
             public bool showZones;
@@ -158,6 +158,19 @@ namespace ProgressRenderer
             }
         }
 
+        private void ShowRenderFailureMessage()
+        {
+            if (PRModSettings.renderFeedback == RenderFeedback.Window)
+            {
+                messageBox = new SmallMessageBox("LPR_Rendering_Failure".Translate());
+                Find.WindowStack.Add(messageBox);
+            }
+            else if (PRModSettings.renderFeedback == RenderFeedback.Message)
+            {
+                Messages.Message("LPR_Rendering_Failure".Translate(), MessageTypeDefOf.CautionInput, false);
+            }
+        }
+
         private void RequestDoRendering(bool forceRenderFullMap = false)
         {
             lock (Utils.Lock)
@@ -239,18 +252,18 @@ namespace ProgressRenderer
                 Find.PlaySettings.showPollutionOverlay = false;
                 Find.PlaySettings.showTemperatureOverlay = false;
             }
-            
+
 #if VERSION_1_5
             Prefs.DotHighlightDisplayMode = DotHighlightDisplayMode.None;
 #endif
             //Turn off Camera+ stuff
-            if(PRMod.SkipCustomRenderingRef != null)
+            if (PRMod.SkipCustomRenderingRef != null)
                 PRMod.SkipCustomRenderingRef() = true;
-            
+
             //TODO: Hide fog of war (stretch) 
 
             #endregion
-            
+
 #if DEBUG
             Log.Message($"Map {map}: " + "Hid things");
 #endif
@@ -362,10 +375,10 @@ namespace ProgressRenderer
             int newImageWidth;
             int newImageHeight;
             int ppcValue = 1;
-            
+
             if (GameComponentProgressManager.qualityAdjustment ==
-                    JPGQualityAdjustmentSetting
-                        .Automatic)
+                JPGQualityAdjustmentSetting
+                    .Automatic)
             {
                 ppcValue = GameComponentProgressManager.pixelsPerCell_WORLD;
             }
@@ -373,7 +386,7 @@ namespace ProgressRenderer
             {
                 ppcValue = (int)PRModSettings.pixelsPerCell;
             }
-            
+
             if (PRModSettings.scaleOutputImage)
             {
                 newImageWidth = (int)(PRModSettings.outputImageFixedHeight / distZ * distX);
@@ -382,18 +395,12 @@ namespace ProgressRenderer
             else
             {
                 // set limits for ppc depending on map size to prevent render failure. Only guaranteed to work with vanilla sizes                
-                if ((ppcValue * distX > 16250) | (ppcValue * distZ > 16250)) // 16250 is the max width / height, due to Unity hard texture size limits
+                if (ppcValue * distX > 16250 | ppcValue * distZ > 16250) // 16250 is the max width / height, due to Unity hard texture size limits
                 {
-                    ppcValue = Math.Min((int)(16250 / distX), (int)(16250 / distZ));
-                    if (ppcValue > 0)
-                        { Messages.Message($"Your progress renderer ppc setting is too high for this map size. Please reduce it to: {ppcValue}", MessageTypeDefOf.CautionInput, false); }
-                    else // having a ppc of 0 is a really bad idea
-                        { 
-                            Messages.Message($"Unity can't handle your map size with progress renderer and it will likely fail", MessageTypeDefOf.CautionInput, false);
-                            ppcValue = 1;
-                        }
+                    var lowerPpcValue = Math.Min((int)(16250 / distX), (int)(16250 / distZ));
+                    Messages.Message("LPR_SettingspixelsPerCellTooHighWarning".Translate(lowerPpcValue), MessageTypeDefOf.CautionInput, false);
                 }
-                
+
                 newImageWidth = (int)(distX * ppcValue);
                 newImageHeight = (int)(distZ * ppcValue);
             }
@@ -423,7 +430,7 @@ namespace ProgressRenderer
             var renderTexture = RenderTexture.GetTemporary(imageWidth, imageHeight, 24);
             if (imageTexture == null || mustUpdateTexture)
             {
-                imageTexture = new Texture2D(imageWidth, imageHeight, TextureFormat.RGB24, false);
+                imageTexture = new Texture2D(imageWidth, imageHeight, TextureFormat.RGBA32, false);
             }
 
             var camera = Find.Camera;
@@ -478,6 +485,7 @@ namespace ProgressRenderer
                 camera.transform.position = new Vector3(startX + cameraBasePos.x, cameraBasePos.y, startZ + cameraBasePos.z);
                 camera.Render();
                 imageTexture.ReadPixels(new Rect(0, 0, renderTexture.width, renderTexture.height), 0, 0, false);
+
             }
             catch (Exception e)
             {
@@ -513,9 +521,9 @@ namespace ProgressRenderer
             Prefs.DotHighlightDisplayMode = oldHighlight;
 #endif
             //Enable Camera+
-            if(PRMod.SkipCustomRenderingRef != null)
+            if (PRMod.SkipCustomRenderingRef != null)
                 PRMod.SkipCustomRenderingRef() = false;
-            
+
             // Switch back to world view if needed
             if (rememberedWorldRendered)
             {
@@ -548,11 +556,18 @@ namespace ProgressRenderer
 #if DEBUG
             Log.Message($"Map {map}: " + "Waited a frame");
 #endif
-
+            
             // Start encoding
-            if (EncodingTask != null && !EncodingTask.IsCompleted)
-                EncodingTask.Wait();
-            EncodingTask = Task.Run(DoEncoding);
+            TryCompleteEncoding();
+            if (!imageTexture.IsAllBlack())
+            {
+                EncodingTask = Task.Run(DoEncoding);
+            }
+            else
+            {
+                Log.Warning("Attempted to encode blank image, skipping");
+                ShowRenderFailureMessage();
+            }
 #if DEBUG
             Log.Message($"Map {map}: " + "Started encoding task");
 #endif
@@ -562,6 +577,14 @@ namespace ProgressRenderer
 #if DEBUG
             Log.Message($"Map {map}: " + "Released local lock");
 #endif
+        }
+
+        private void TryCompleteEncoding()
+        {
+            if (EncodingTask == null || EncodingTask.IsCompleted) return;
+            if (EncodingTask.Wait(10000)) return;
+            Log.Warning("Progress Renderer is taking too long to write the last render, aborting");
+            ShowRenderFailureMessage();
         }
 
         private void DoEncoding()
@@ -588,9 +611,6 @@ namespace ProgressRenderer
 
         private void DoEncodingPost()
         {
-            // Clean up unused objects
-            //UnityEngine.Object.Destroy(imageTexture);
-
             // Signal finished encoding
             manuallyTriggered = false;
             encoding = false;
@@ -663,7 +683,7 @@ namespace ProgressRenderer
             {
                 renderMessage += "Initializing (please wait), ";
             }
-            
+
             if (!File.Exists(filePath))
             {
                 renderMessage += "file was not written, aborting initialization";
@@ -807,7 +827,7 @@ namespace ProgressRenderer
 
             }
 
-                Directory.CreateDirectory(path);
+            Directory.CreateDirectory(path);
             // Add subdir for manually triggered renderings
             if (manuallyTriggered)
             {

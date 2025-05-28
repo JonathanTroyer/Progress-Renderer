@@ -25,6 +25,7 @@
 
 	<!-- Misc -->
 	<LPR_Rendering>Rendering map image...</LPR_Rendering>
+	<LPR_Rendering_Failure>Render failed. Check that you have sufficient disk space and system memory.</LPR_Rendering_Failure>
 
 	<!-- Settings -->
 	<LPR_SettingsCategory>Progress Renderer</LPR_SettingsCategory>
@@ -67,6 +68,7 @@
 	<LPR_JPGQualityLabel>JPG Quality</LPR_JPGQualityLabel>
 	<LPR_JPGQualityDescription>Higher values correspond to higher image quality, lower values correspond to smaller image size</LPR_JPGQualityDescription>
 	<LPR_SettingspixelsPerCellLabel>Pixel per cell (for image resolution)</LPR_SettingspixelsPerCellLabel>
+	<LPR_SettingspixelsPerCellTooHighWarning>Pixels per cell is too high for this map, please reduce it to {0}</LPR_SettingspixelsPerCellTooHighWarning>
 	<LPR_SettingspixelsPerCell_WORLDLabel>Pixel per cell for this world (for image resolution)</LPR_SettingspixelsPerCell_WORLDLabel>
 	<LPR_SettingspixelsPerCellDescription>Define with how many pixels each ingame map cell should be displayed on the rendered image.</LPR_SettingspixelsPerCellDescription>
 	<LPR_SettingspixelsPerCell_WORLDDescription>Define with how many pixels each ingame map cell should be displayed on the rendered image. Because automatic mode is enabled, it is saved only for this world.</LPR_SettingspixelsPerCell_WORLDDescription>
