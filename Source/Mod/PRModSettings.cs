@@ -10,7 +10,7 @@ namespace ProgressRenderer
 
     public class PRModSettings : ModSettings
     {
-        private static RenderFeedback DefaultRenderFeedback = RenderFeedback.Window;
+        private static RenderFeedback DefaultRenderFeedback = RenderFeedback.Message;
         private static bool DefaultRenderNonPlayerHomes = false;
         private static bool DefaultRenderDesignations = false;
         private static bool DefaultRenderThingIcons = false;
