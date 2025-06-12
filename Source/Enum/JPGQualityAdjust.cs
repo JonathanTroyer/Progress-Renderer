@@ -4,6 +4,6 @@
     {
         Manual,
         Automatic
-    };
+    }
 
 }

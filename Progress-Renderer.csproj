@@ -98,7 +98,6 @@
     <Compile Include="Source\Harmony_Patches\Harmony_DesignatorManager.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_EnvironmentStatsDrawer.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_GameConditionManager.cs" />
-    <Compile Include="Source\Harmony_Patches\Harmony_MainMenuDrawer.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_MapEdgeClipDrawer.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_OptionListingUtility.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_OverlayDrawer.cs" />

@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.Security.Policy;
+using System.Diagnostics;
 using HarmonyLib;
 using UnityEngine;
 using Verse;
@@ -20,12 +20,13 @@ namespace ProgressRenderer
                 return;
             }
 
-            optList.Add(new ListableOption_WebLink("Share your renders", delegate () {
-                System.Diagnostics.Process.Start("https://rimworld.gallery/m/rwpr");
-            }, IconRWP));
+            optList.Add(new ListableOption_WebLink("Share your renders", delegate
+            {
+                Process.Start("https://rimworld.gallery/m/rwpr");
+            }, IconRwp));
         }
 
-        public static readonly Texture2D IconRWP = ContentFinder<Texture2D>.Get("Icon RWP");
+        public static readonly Texture2D IconRwp = ContentFinder<Texture2D>.Get("Icon RWP");
         
     }
 }

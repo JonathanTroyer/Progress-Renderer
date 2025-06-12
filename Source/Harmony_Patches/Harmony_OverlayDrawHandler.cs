@@ -1,6 +1,6 @@
 ﻿using HarmonyLib;
-using Verse;
 using RimWorld;
+using Verse;
 
 namespace ProgressRenderer
 {

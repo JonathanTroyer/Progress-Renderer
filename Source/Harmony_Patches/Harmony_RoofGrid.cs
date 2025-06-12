@@ -9,9 +9,9 @@ namespace ProgressRenderer
     public class Harmony_RoofGrid_RoofGridUpdate
     {
 
-        public static bool Prefix(Map ___map)
+        public static bool Prefix(Map map)
         {
-            if (___map.GetComponent<MapComponent_RenderManager>().Rendering)
+            if (map.GetComponent<MapComponent_RenderManager>().Rendering)
             {
                 return false;
             }

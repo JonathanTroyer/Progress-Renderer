@@ -73,7 +73,7 @@ namespace ProgressRenderer
             var cornerMarkers = Map.designationManager.AllDesignations.FindAll(des => des.def == DesignationDefOf.CornerMarker);
             // Message for the amount of markers on the map
             var markerCount = cornerMarkers.Count;
-            string message = TranslatorFormattedStringExtensions.Translate("LPR_MessageCornerMarkerAmount", markerCount) + " ";
+            string message = "LPR_MessageCornerMarkerAmount".Translate(markerCount) + " ";
             if (markerCount < 2)
             {
                 message += "LPR_MessageCornerMarkerTooLess".Translate();
@@ -107,26 +107,26 @@ namespace ProgressRenderer
                 var distX = endX - startX;
                 var distZ = endZ - startZ;
                 var ratio = ((float)distX / distZ).ToString("0.###");
-                string messageRect = TranslatorFormattedStringExtensions.Translate("LPR_MessageCornerMarkersRect", distX, distZ);
+                string messageRect = "LPR_MessageCornerMarkersRect".Translate(distX, distZ);
                 if (distX * 3 == distZ * 4)
                 {
-                    messageRect += " " + TranslatorFormattedStringExtensions.Translate("LPR_MessageCornerMarkersRectRatioDefined", ratio, "4:3");
+                    messageRect += " " + "LPR_MessageCornerMarkersRectRatioDefined".Translate(ratio, "4:3");
                 }
                 else if (distX * 2 == distZ * 3)
                 {
-                    messageRect += " " + TranslatorFormattedStringExtensions.Translate("LPR_MessageCornerMarkersRectRatioDefined", ratio, "3:2");
+                    messageRect += " " + "LPR_MessageCornerMarkersRectRatioDefined".Translate(ratio, "3:2");
                 }
                 else if (distX * 10 == distZ * 16)
                 {
-                    messageRect += " " + TranslatorFormattedStringExtensions.Translate("LPR_MessageCornerMarkersRectRatioDefined", ratio, "16:10" );
+                    messageRect += " " + "LPR_MessageCornerMarkersRectRatioDefined".Translate(ratio, "16:10" );
                 }
                 else if (distX * 9 == distZ * 16)
                 {
-                    messageRect += " " + TranslatorFormattedStringExtensions.Translate("LPR_MessageCornerMarkersRectRatioDefined", ratio, "16:9" );
+                    messageRect += " " + "LPR_MessageCornerMarkersRectRatioDefined".Translate(ratio, "16:9" );
                 }
                 else
                 {
-                    messageRect += " " + TranslatorFormattedStringExtensions.Translate("LPR_MessageCornerMarkersRectRatio", ratio);
+                    messageRect += " " + "LPR_MessageCornerMarkersRectRatio".Translate(ratio);
                 }
                 if (distZ <= 20)
                 {

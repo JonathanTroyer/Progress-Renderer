@@ -10,10 +10,10 @@ namespace ProgressRenderer
         {
             var quadrum = GenDate.Quadrum(absTicks, longitude);
             if (quadrum == Quadrum.Aprimay) { return 1; }
-            else if (quadrum == Quadrum.Jugust) { return 2; }
-            else if (quadrum == Quadrum.Septober) { return 3; }
-            else if (quadrum == Quadrum.Decembary) { return 4; }
-            else { return 0; }
+            if (quadrum == Quadrum.Jugust) { return 2; }
+            if (quadrum == Quadrum.Septober) { return 3; }
+            if (quadrum == Quadrum.Decembary) { return 4; }
+            return 0;
         }
         
         public static int HoursPassedInteger(int absTicks, float longitude)
@@ -24,7 +24,7 @@ namespace ProgressRenderer
 
         private static int LocalTicksOffsetFromLongitude(float longitude)
         {
-            return RimWorld.GenDate.TimeZoneAt(longitude) * 2500;
+            return GenDate.TimeZoneAt(longitude) * 2500;
         }
 
     }

@@ -6,6 +6,6 @@
         None,
         Message,
         Window
-    };
+    }
 
 }

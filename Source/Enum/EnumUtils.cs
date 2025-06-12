@@ -1,4 +1,6 @@
-﻿namespace ProgressRenderer.Source.Enum
+﻿using System;
+
+namespace ProgressRenderer.Source.Enum
 {
     public static class EnumUtils
     {
@@ -9,8 +11,9 @@
                     return "jpg";
                 case EncodingType.UnityPNG:
                     return "png";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
-            return "jpg";
         }
         public static string ToFriendlyString(EncodingType type)
         {
@@ -20,8 +23,9 @@
                     return "JPG_unity";
                 case EncodingType.UnityPNG:
                     return "PNG_unity";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
-            return "JPG_unity";
         }
 
         public static string ToFriendlyString(JPGQualityAdjustmentSetting type)
@@ -32,8 +36,9 @@
                     return "Manual";
                 case JPGQualityAdjustmentSetting.Automatic:
                     return "Automatic";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
-            return "Manual";
         }
 
         public static string ToFriendlyString(FileNamePattern type)
@@ -46,8 +51,9 @@
                     return "Numbered";
                 case FileNamePattern.BothTmpCopy:
                     return "BothTmpCopy";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
-            return "DateTime";
         }
 
         public static string ToFriendlyString(RenderFeedback type)
@@ -60,8 +66,9 @@
                     return "Message";
                 case RenderFeedback.Window:
                     return "Window";
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(type), type, null);
             }
-            return "Message";
         }
     }
 }

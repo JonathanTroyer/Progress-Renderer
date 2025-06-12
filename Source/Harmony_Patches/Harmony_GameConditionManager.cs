@@ -12,7 +12,7 @@ namespace ProgressRenderer
 
         public static bool Prefix(Map map)
         {
-            if (!PRModSettings.renderGameConditions && map.GetComponent<MapComponent_RenderManager>().Rendering)
+            if (!PrModSettings.RenderGameConditions && map.GetComponent<MapComponent_RenderManager>().Rendering)
             {
                 return false;
             }

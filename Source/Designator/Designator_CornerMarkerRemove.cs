@@ -7,6 +7,8 @@ namespace ProgressRenderer
 	public class Designator_CornerMarkerRemove : Designator_CornerMarker
 	{
 
+		public override DrawStyleCategoryDef DrawStyleCategory => DrawStyleCategoryDefOf.Cancel;
+		
         public Designator_CornerMarkerRemove() : base(DesignateMode.Remove)
 		{
 			defaultLabel = "DesignatorConerMarkerRemove".Translate();
@@ -14,14 +16,5 @@ namespace ProgressRenderer
 			icon = ContentFinder<Texture2D>.Get("UI/Designators/CornerMarkerOff");
 			soundSucceeded = SoundDefOf.Designate_PlanRemove;
 		}
-
-        public override int DraggableDimensions
-        {
-            get
-            {
-                return 2;
-            }
-        }
-
 	}
 }

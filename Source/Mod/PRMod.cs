@@ -7,20 +7,20 @@ using Verse;
 namespace ProgressRenderer
 {
 
-    public class PRMod : Mod
+    public class PrMod : Mod
     {
 
-        public PRModSettings settings;
+        public PrModSettings Settings;
 
-        public static AccessTools.FieldRef<object, bool> SkipCustomRenderingRef = null;
+        public static AccessTools.FieldRef<object, bool> SkipCustomRenderingRef;
 
-        public PRMod(ModContentPack content) : base(content)
+        public PrMod(ModContentPack content) : base(content)
         {
-            settings = GetSettings<PRModSettings>();
+            Settings = GetSettings<PrModSettings>();
             var modConfigFile = $"Mod_{Content.FolderName}_{GetType().Name}.xml";
             if (File.Exists(Path.Combine(GenFilePaths.ConfigFolderPath, GenText.SanitizeFilename(modConfigFile))))
             {
-                PRModSettings.DoMigrations = false;
+                PrModSettings.DoMigrations = false;
             }
 
             //Only test for Camera+ when mods are loaded, otherwise this can end up never setting the type properly
@@ -40,7 +40,7 @@ namespace ProgressRenderer
 
         public override void DoSettingsWindowContents(Rect rect)
         {
-            settings.DoWindowContents(rect);
+            Settings.DoWindowContents(rect);
             base.DoSettingsWindowContents(rect);
         }
 

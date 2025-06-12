@@ -6,6 +6,6 @@
         DateTime,
         Numbered,
         BothTmpCopy
-    };
+    }
 
 }

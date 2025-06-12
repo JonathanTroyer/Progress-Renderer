@@ -25,7 +25,10 @@ namespace ProgressRenderer
                 yield return Renderings.Dequeue();
             }
 
-            _isProcessing = false;
+            lock (Lock)
+            {
+                _isProcessing = false;
+            }
         }
 
         

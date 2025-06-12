@@ -9,9 +9,9 @@ namespace ProgressRenderer
     public class Harmony_DesignationManager_DrawDesignations
     {
 
-        public static bool Prefix(DesignationManager __instance)
+        public static bool Prefix(DesignationManager instance)
         {
-            if (!PRModSettings.renderDesignations && __instance.map.GetComponent<MapComponent_RenderManager>().Rendering)
+            if (!PrModSettings.RenderDesignations && instance.map.GetComponent<MapComponent_RenderManager>().Rendering)
             {
                 return false;
             }
