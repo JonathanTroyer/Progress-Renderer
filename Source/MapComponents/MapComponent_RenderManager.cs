@@ -1,6 +1,4 @@
-﻿#define VERSION_1_5
-
-using System;
+﻿using System;
 using System.Collections;
 using System.IO;
 using System.Threading;
@@ -240,10 +238,8 @@ namespace ProgressRenderer
                 ShowPollutionOverlay = settings.showPollutionOverlay,
                 ShowTemperatureOverlay = settings.showTemperatureOverlay
             };
-#if VERSION_1_5
             var oldHighlight = Prefs.DotHighlightDisplayMode;
-#endif
-
+            
             if (!PrModSettings.RenderZones)
                 Find.PlaySettings.showZones = false;
             if (!PrModSettings.RenderOverlays)
@@ -255,9 +251,9 @@ namespace ProgressRenderer
                 Find.PlaySettings.showTemperatureOverlay = false;
             }
 
-#if VERSION_1_5
+
             Prefs.DotHighlightDisplayMode = DotHighlightDisplayMode.None;
-#endif
+
             //Turn off Camera+ stuff
             if (PrMod.SkipCustomRenderingRef != null)
                 PrMod.SkipCustomRenderingRef() = true;
@@ -519,9 +515,7 @@ namespace ProgressRenderer
             Find.PlaySettings.showTerrainAffordanceOverlay = oldVisibilities.ShowTerrainAffordanceOverlay;
             Find.PlaySettings.showPollutionOverlay = oldVisibilities.ShowPollutionOverlay;
             Find.PlaySettings.showTemperatureOverlay = oldVisibilities.ShowTemperatureOverlay;
-#if VERSION_1_5
             Prefs.DotHighlightDisplayMode = oldHighlight;
-#endif
             //Enable Camera+
             if (PrMod.SkipCustomRenderingRef != null)
                 PrMod.SkipCustomRenderingRef() = false;
