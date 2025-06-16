@@ -85,6 +85,7 @@ namespace ProgressRenderer
 
             // Check for rendering
             // Only render player home maps
+            // TODO: IsPlayerHome returns true for landed tiles
             if (!map.IsPlayerHome && !PrModSettings.RenderNonPlayerHomes)
             {
                 return;
@@ -816,14 +817,13 @@ namespace ProgressRenderer
                     path = Path.Combine(path, "tile-" + map.Tile);
                 }
             }
+            Directory.CreateDirectory(path);
             if (!Directory.Exists(path))
             {
                 Log.Error($"Progress renderer could not create directory for {path} please check settings");
                 PrModSettings.JPGQualityInitialize = false;
-
             }
 
-            Directory.CreateDirectory(path);
             // Add subdir for manually triggered renderings
             if (manuallyTriggered)
             {

@@ -9,9 +9,9 @@ namespace ProgressRenderer
     public class Harmony_AreaManager_AreaManagerUpdate
     {
 
-        public static bool Prefix(AreaManager instance)
+        public static bool Prefix(Map map)
         {
-            if (instance.map.GetComponent<MapComponent_RenderManager>().Rendering)
+            if (map.GetComponent<MapComponent_RenderManager>().Rendering)
             {
                 return false;
             }

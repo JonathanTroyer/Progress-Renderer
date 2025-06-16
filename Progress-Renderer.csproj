@@ -43,7 +43,7 @@
     <Reference Include="Assembly-CSharp">
       <HintPath Condition="Exists('$(USERPROFILE)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\Assembly-CSharp.dll')">$(USERPROFILE)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\Assembly-CSharp.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\Assembly-CSharp.dll')">/Users/jonathan/Library/Application Support/Steam/steamapps/common/RimWorld/RimWorldMac.app/Contents/Resources/Data/Managed/Assembly-CSharp.dll</HintPath>
-      <HintPath Condition="Exists('$(ProgramFiles(x86))\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll')">$(ProgramFiles(x86))\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
+      <HintPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll')">C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\Assembly-CSharp.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\.steam\steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\Assembly-CSharp.dll')">$(HOME)/.steam/steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed/Assembly-CSharp.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\.local\share\Steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\Assembly-CSharp.dll')">$(HOME)/.local/share/Steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed/Assembly-CSharp.dll</HintPath>
       <Private>False</Private>
@@ -61,7 +61,7 @@
     <Reference Include="UnityEngine">
       <HintPath Condition="Exists('$(USERPROFILE)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.dll')">$(USERPROFILE)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.dll')">/Users/jonathan/Library/Application Support/Steam/steamapps/common/RimWorld/RimWorldMac.app/Contents/Resources/Data/Managed/UnityEngine.dll</HintPath>
-      <HintPath Condition="Exists('$(ProgramFiles(x86))\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.dll')">$(ProgramFiles(x86))\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
+      <HintPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.dll')">C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\.steam\steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.dll')">$(HOME)/.steam/steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed/UnityEngine.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\.local\share\Steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.dll')">$(HOME)/.local/share/Steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed/UnityEngine.dll</HintPath>
       <Private>False</Private>
@@ -70,7 +70,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath Condition="Exists('$(USERPROFILE)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.CoreModule.dll')">$(USERPROFILE)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.CoreModule.dll')">/Users/jonathan/Library/Application Support/Steam/steamapps/common/RimWorld/RimWorldMac.app/Contents/Resources/Data/Managed/UnityEngine.CoreModule.dll</HintPath>
-      <HintPath Condition="Exists('$(ProgramFiles(x86))\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll')">$(ProgramFiles(x86))\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
+      <HintPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll')">C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.CoreModule.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\.steam\steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.CoreModule.dll')">$(HOME)/.steam/steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed/UnityEngine.CoreModule.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\.local\share\Steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.CoreModule.dll')">$(HOME)/.local/share/Steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed/UnityEngine.CoreModule.dll</HintPath>
       <Private>False</Private>
@@ -78,7 +78,7 @@
     <Reference Include="UnityEngine.ImageConversionModule">
       <HintPath Condition="Exists('$(USERPROFILE)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.ImageConversionModule.dll')">$(USERPROFILE)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.ImageConversionModule.dll')">/Users/jonathan/Library/Application Support/Steam/steamapps/common/RimWorld/RimWorldMac.app/Contents/Resources/Data/Managed/UnityEngine.ImageConversionModule.dll</HintPath>
-      <HintPath Condition="Exists('$(ProgramFiles(x86))\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.ImageConversionModule.dll')">$(ProgramFiles(x86))\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
+      <HintPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.ImageConversionModule.dll')">C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.ImageConversionModule.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\.steam\steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.ImageConversionModule.dll')">$(HOME)/.steam/steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed/UnityEngine.ImageConversionModule.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\.local\share\Steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.ImageConversionModule.dll')">$(HOME)/.local/share/Steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed/UnityEngine.ImageConversionModule.dll</HintPath>
       <Private>False</Private>
@@ -87,7 +87,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath Condition="Exists('$(USERPROFILE)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.IMGUIModule.dll')">$(USERPROFILE)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.IMGUIModule.dll')">/Users/jonathan/Library/Application Support/Steam/steamapps/common/RimWorld/RimWorldMac.app/Contents/Resources/Data/Managed/UnityEngine.IMGUIModule.dll</HintPath>
-      <HintPath Condition="Exists('$(ProgramFiles(x86))\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll')">$(ProgramFiles(x86))\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
+      <HintPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll')">C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.IMGUIModule.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\.steam\steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.IMGUIModule.dll')">$(HOME)/.steam/steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed/UnityEngine.IMGUIModule.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\.local\share\Steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.IMGUIModule.dll')">$(HOME)/.local/share/Steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed/UnityEngine.IMGUIModule.dll</HintPath>
       <Private>False</Private>
@@ -96,7 +96,7 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath Condition="Exists('$(USERPROFILE)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.TextRenderingModule.dll')">$(USERPROFILE)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\Library\Application Support\Steam\steamapps\common\RimWorld\RimWorldMac.app\Contents\Resources\Data\Managed\UnityEngine.TextRenderingModule.dll')">/Users/jonathan/Library/Application Support/Steam/steamapps/common/RimWorld/RimWorldMac.app/Contents/Resources/Data/Managed/UnityEngine.TextRenderingModule.dll</HintPath>
-      <HintPath Condition="Exists('$(ProgramFiles(x86))\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll')">$(ProgramFiles(x86))\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
+      <HintPath Condition="Exists('C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll')">C:\Program Files (x86)\Steam\steamapps\common\RimWorld\RimWorldWin64_Data\Managed\UnityEngine.TextRenderingModule.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\.steam\steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.TextRenderingModule.dll')">$(HOME)/.steam/steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed/UnityEngine.TextRenderingModule.dll</HintPath>
       <HintPath Condition="Exists('$(HOME)\.local\share\Steam\steamapps\common\RimWorld\RimWorldLinux_Data\Managed\UnityEngine.TextRenderingModule.dll')">$(HOME)/.local/share/Steam/steamapps/common/RimWorld/RimWorldLinux_Data/Managed/UnityEngine.TextRenderingModule.dll</HintPath>
       <Private>False</Private>
@@ -166,11 +166,10 @@
     <None Include="README.md" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="v1.5\Textures\" />
     <Folder Include="v1.6\Assemblies\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>$(ProjectDir)Install.sh $(ConfigurationName) "$(ProjectDir)" "$(ProjectName)" "About Common v1.4 v1.5 v1.6" "LoadFolders.xml"</PostBuildEvent>
+    <PostBuildEvent>$(ProjectDir)Install.bat $(ConfigurationName) "$(ProjectDir)" "$(ProjectName)" "About Common v1.4 v1.5 v1.6" "LoadFolders.xml"</PostBuildEvent>
   </PropertyGroup>
 </Project>
