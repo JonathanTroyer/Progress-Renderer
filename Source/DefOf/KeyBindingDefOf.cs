@@ -13,8 +13,8 @@ namespace ProgressRenderer
 			DefOfHelper.EnsureInitializedInCtor(typeof(KeyBindingDefOf));
 		}
 
-        public static KeyBindingDef LprManualRendering;
-        public static KeyBindingDef LprManualRenderingForceFullMap;
+        public static KeyBindingDef LPR_ManualRendering;
+        public static KeyBindingDef LPR_ManualRendering_ForceFullMap;
 
 	}
 

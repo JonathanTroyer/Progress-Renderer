@@ -12,12 +12,12 @@ namespace ProgressRenderer
 
         public static void Postfix()
         {
-            if (KeyBindingDefOf.LprManualRendering.KeyDownEvent)
+            if (KeyBindingDefOf.LPR_ManualRendering.KeyDownEvent)
             {
                 MapComponent_RenderManager.TriggerCurrentMapManualRendering();
                 Event.current.Use();
             }
-            else if (KeyBindingDefOf.LprManualRenderingForceFullMap.KeyDownEvent)
+            else if (KeyBindingDefOf.LPR_ManualRendering_ForceFullMap.KeyDownEvent)
             {
                 MapComponent_RenderManager.TriggerCurrentMapManualRendering(true);
                 Event.current.Use();
