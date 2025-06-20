@@ -1,6 +1,7 @@
 ﻿using HarmonyLib;
 using Verse;
 using System.Reflection;
+using RimWorld;
 
 namespace ProgressRenderer
 {
@@ -10,15 +11,19 @@ namespace ProgressRenderer
     {
         public static bool Prefix(DesignationManager __instance)
         {
-            // Use reflection to access the private 'map' field
-            var mapField = typeof(DesignationManager).GetField("map", BindingFlags.NonPublic | BindingFlags.Instance);
-            Map map = (Map)mapField.GetValue(__instance);
-
-            if (map != null && map.GetComponent<MapComponent_RenderManager>().Rendering)
+            try
             {
-                return false;
+                var mapField = typeof(DesignationManager).GetField("map", BindingFlags.NonPublic | BindingFlags.Instance);
+                Map map = (Map)mapField?.GetValue(__instance);
+                if (map != null && map.GetComponent<MapComponent_RenderManager>()?.Rendering == true)
+                    return false;
+                return true;
             }
-            return true;
+            catch (System.Exception ex)
+            {
+                Log.Warning($"[ProgressRenderer] DrawDesignations patch error: {ex.Message}");
+                return true;
+            }
         }
     }
 }

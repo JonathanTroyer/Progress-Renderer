@@ -1,5 +1,6 @@
 ﻿using HarmonyLib;
 using Verse;
+using System.Reflection;
 
 namespace ProgressRenderer
 {
@@ -9,13 +10,18 @@ namespace ProgressRenderer
     {
         public static bool Prefix(AreaManager __instance)
         {
-            Map map = __instance.map; // Access the map field from AreaManager
-
-            if (map.GetComponent<MapComponent_RenderManager>().Rendering)
+            try
             {
-                return false;
+                Map map = __instance.map;
+                if (map != null && map.GetComponent<MapComponent_RenderManager>()?.Rendering == true)
+                    return false;
+                return true;
             }
-            return true;
+            catch (System.Exception ex)
+            {
+                Log.Warning($"[ProgressRenderer] AreaManagerUpdate patch error: {ex.Message}");
+                return true;
+            }
         }
     }
 }

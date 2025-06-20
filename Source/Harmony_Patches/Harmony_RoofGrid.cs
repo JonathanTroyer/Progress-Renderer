@@ -10,17 +10,19 @@ namespace ProgressRenderer
     {
         public static bool Prefix(RoofGrid __instance)
         {
-            // Use reflection to get the private 'map' field
-            var mapField = typeof(RoofGrid).GetField("map", BindingFlags.NonPublic | BindingFlags.Instance);
-            Map map = (Map)mapField.GetValue(__instance);
-
-            if (map != null && map.GetComponent<MapComponent_RenderManager>().Rendering)
+            try
             {
-                // Skip the original method if rendering is in progress
-                return false;
+                var mapField = typeof(RoofGrid).GetField("map", BindingFlags.NonPublic | BindingFlags.Instance);
+                Map map = (Map)mapField?.GetValue(__instance);
+                if (map != null && map.GetComponent<MapComponent_RenderManager>()?.Rendering == true)
+                    return false;
+                return true;
             }
-            // Allow the original method to run
-            return true;
+            catch (System.Exception ex)
+            {
+                Log.Warning($"[ProgressRenderer] RoofGridUpdate patch error: {ex.Message}");
+                return true;
+            }
         }
     }
 }
