@@ -118,7 +118,7 @@
     <Compile Include="Source\Harmony_Patches\HarmonySetup.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_AreaManager.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_DeepResourceGrid.cs" />
-    <Compile Include="Source\Harmony_Patches\Harmony_DesignationManager.cs" />
+    <Compile Include="Source\Harmony_Patches\Harmony_DesignationDraw.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_DesignatorManager.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_EnvironmentStatsDrawer.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_GameConditionManager.cs" />
@@ -128,7 +128,6 @@
     <Compile Include="Source\Harmony_Patches\Harmony_OverlayDrawHandler.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_RoofGrid.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_ScreenshotModeHandler.cs" />
-    <Compile Include="Source\Harmony_Patches\Harmony_SelectionDrawer.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_Targeter.cs" />
     <Compile Include="Source\MapComponents\MapComponent_RenderManager.cs" />
     <Compile Include="Source\Enum\EncodingType.cs" />
