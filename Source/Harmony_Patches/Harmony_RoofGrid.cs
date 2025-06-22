@@ -14,7 +14,7 @@ namespace ProgressRenderer
             {
                 var mapField = typeof(RoofGrid).GetField("map", BindingFlags.NonPublic | BindingFlags.Instance);
                 Map map = (Map)mapField?.GetValue(__instance);
-                if (map != null &&  map.GetComponent<MapComponent_RenderManager>()?.Rendering == true)
+                if (map != null && map.GetComponent<MapComponent_RenderManager>()?.Rendering == true)
                     return false;
                 return true;
             }
