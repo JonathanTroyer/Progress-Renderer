@@ -556,11 +556,6 @@ namespace ProgressRenderer
             
             // Start encoding
             TryCompleteEncoding();
-            imageTexture = new Texture2D(imageWidth, imageHeight, TextureFormat.RGB24, false);
-            Color[] pixels = new Color[imageWidth * imageHeight];
-            for (int i = 0; i < pixels.Length; i++) pixels[i] = Color.black;
-            imageTexture.SetPixels(pixels);
-            imageTexture.Apply();
             encodingTask = Task.Run(DoEncoding);
 #if DEBUG
             Log.Message($"Map {map}: " + "Started encoding task");
