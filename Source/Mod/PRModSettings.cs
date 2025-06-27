@@ -26,7 +26,7 @@ namespace ProgressRenderer
         private static int _defaultJPGQuality = 93;
         private static int _defaultpixelsPerCell = 32;
         private static bool _defaultScaleOutputImage = false;
-        private static int _defaultOutputImageFixedHeight = 1080;
+        private static int _defaultOutputImageFixedHeight = 1024;
         private static bool _defaultCreateSubdirs = false;
         private static FileNamePattern _defaultFileNamePattern = FileNamePattern.DateTime;
         private static bool _defaultJPGQualityInitialize = false;

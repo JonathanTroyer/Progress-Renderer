@@ -429,7 +429,7 @@ namespace ProgressRenderer
             var renderTexture = RenderTexture.GetTemporary(imageWidth, imageHeight, 24);
             if (imageTexture == null || mustUpdateTexture)
             {
-                imageTexture = new Texture2D(imageWidth, imageHeight, TextureFormat.RGBA32, false);
+                imageTexture = new Texture2D(imageWidth, imageHeight, TextureFormat.RGB24, false);
             }
 
             var camera = Find.Camera;
@@ -556,15 +556,12 @@ namespace ProgressRenderer
             
             // Start encoding
             TryCompleteEncoding();
-            if (!imageTexture.IsAllBlack())
-            {
-                encodingTask = Task.Run(DoEncoding);
-            }
-            else
-            {
-                Log.Warning("Attempted to encode blank image, skipping");
-                ShowRenderFailureMessage();
-            }
+            imageTexture = new Texture2D(imageWidth, imageHeight, TextureFormat.RGB24, false);
+            Color[] pixels = new Color[imageWidth * imageHeight];
+            for (int i = 0; i < pixels.Length; i++) pixels[i] = Color.black;
+            imageTexture.SetPixels(pixels);
+            imageTexture.Apply();
+            encodingTask = Task.Run(DoEncoding);
 #if DEBUG
             Log.Message($"Map {map}: " + "Started encoding task");
 #endif
@@ -589,6 +586,13 @@ namespace ProgressRenderer
             if (encoding)
             {
                 Log.Error("Progress Renderer is still encoding an image while the encoder was called again. This can lead to missing or wrong data.");
+            }
+            
+            if (imageTexture.IsAllBlack())
+            {
+                Log.Warning("Attempted to encode blank image, skipping");
+                ShowRenderFailureMessage();
+                return;
             }
 
             switch (PrModSettings.Encoding)
