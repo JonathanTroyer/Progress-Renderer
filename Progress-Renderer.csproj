@@ -127,6 +127,7 @@
     <Compile Include="Source\Harmony_Patches\Harmony_OptionListingUtility.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_OverlayDrawer.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_OverlayDrawHandler.cs" />
+    <Compile Include="Source\Harmony_Patches\Harmony_PlanDesignation_DesignationDraw.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_RoofGrid.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_ScreenshotModeHandler.cs" />
     <Compile Include="Source\Harmony_Patches\Harmony_Targeter.cs" />
