@@ -4,6 +4,7 @@ using Verse;
 
 namespace ProgressRenderer
 {
+    [HarmonyPatchCategory("PlanningExtended")]
     [HarmonyPatch("PlanDesignation", nameof(Designation.DesignationDraw))]
     public static class Harmony_PlanDesignation_DesignationDraw
     {
@@ -11,7 +12,7 @@ namespace ProgressRenderer
         {
             try
             {
-                if (__instance.def == null) return true; 
+                if (__instance.def == null) return true;
 
                 var target = __instance.target;
 
@@ -19,8 +20,7 @@ namespace ProgressRenderer
 
                 var renderManager = map?.GetComponent<MapComponent_RenderManager>();
 
-                if (renderManager?.Rendering == false)
-                    return true;
+                if (renderManager?.Rendering == false) return true;
 
                 return PrModSettings.RenderDesignations;
             }
