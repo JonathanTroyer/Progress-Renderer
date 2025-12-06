@@ -809,7 +809,7 @@ namespace ProgressRenderer
             var path = PrModSettings.ExportPath;
             if (PrModSettings.CreateSubdirs)
             {
-                var subDir = Escape(Find.World.info.seedString, Path.GetInvalidPathChars());
+                var subDir = Escape(Find.World.info.seedString, Path.GetInvalidFileNameChars());
                 path = Path.Combine(path, subDir);
                 if (!manuallyTriggered & GameComponentProgressManager.TileFoldersEnabled) // start using tile folders when a new game is created to avoid confusion in existing games
                 {
