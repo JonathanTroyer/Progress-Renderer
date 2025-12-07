@@ -809,7 +809,7 @@ namespace ProgressRenderer
             var path = PrModSettings.ExportPath;
             if (PrModSettings.CreateSubdirs)
             {
-                var subDir = Escape(Find.World.info.seedString, Path.GetInvalidPathChars());
+                var subDir = Escape(Find.World.info.seedString, Path.GetInvalidFileNameChars());
                 path = Path.Combine(path, subDir);
                 if (!manuallyTriggered & GameComponentProgressManager.TileFoldersEnabled) // start using tile folders when a new game is created to avoid confusion in existing games
                 {
@@ -876,15 +876,17 @@ namespace ProgressRenderer
             var quadrum = MoreGenDate.QuadrumInteger(tick, longitude);
             var day = GenDate.DayOfQuadrum(tick, longitude) + 1;
             var hour = GenDate.HourInteger(tick, longitude);
-            string mapName = PrModSettings.UseMapNameInstead ? map.ToString() : map.Tile.ToString();
-            return "rimworld-" + Find.World.info.seedString + "-" + year + "-" + quadrum + "-" +
+            string seedName = Escape(Find.World.info.seedString, Path.GetInvalidFileNameChars());
+            string mapName = Escape(PrModSettings.UseMapNameInstead ? map.ToString() : map.Tile.ToString(), Path.GetInvalidFileNameChars());
+            return "rimworld-" + seedName + "-" + year + "-" + quadrum + "-" +
                    ((day < 10) ? "0" : "") + day + "-" + ((hour < 10) ? "0" : "") + hour + "-" + mapName;
         }
 
         private string CreateImageNameNumbered()
         {
-            string mapName = PrModSettings.UseMapNameInstead ? map.ToString() : map.Tile.ToString();
-            return "rimworld-" + Find.World.info.seedString + "-" +
+            string seedName = Escape(Find.World.info.seedString, Path.GetInvalidFileNameChars());
+            string mapName = Escape(PrModSettings.UseMapNameInstead ? map.ToString() : map.Tile.ToString(), Path.GetInvalidFileNameChars());
+            return "rimworld-" + seedName + "-" +
                    lastRenderedCounter.ToString("000000") + "-" + mapName;
         }
     }
