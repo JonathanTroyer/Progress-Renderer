@@ -11,7 +11,7 @@ namespace ProgressRenderer
         {
             var harmony = new Harmony("rimworld.neptimus7.progressrenderer");
 
-            if (LoadedModManager.RunningModsListForReading.Any(x => x.Name == "scherub.planningextended"))
+            if (LoadedModManager.RunningModsListForReading.Any(x => x.PackageId == "scherub.planningextended"))
                 harmony.PatchCategory("PlanningExtended");
 
             harmony.PatchAllUncategorized(Assembly.GetExecutingAssembly());
